@@ -1,0 +1,76 @@
+/* On The Go - Clean Green & White Theme */
+
+:root {
+  /* Primary Green */
+  --primary-green: #2E7D32;
+  --primary-green-light: #4CAF50;
+  --primary-green-dark: #1B5E20;
+  --primary-green-bg: #E8F5E9;
+  
+  /* Accent Blue */
+  --accent-blue: #1976D2;
+  
+  /* Neutrals - Light Mode */
+  --white: #FFFFFF;
+  --off-white: #F5F5F5;
+  --light-gray: #E8E8E8;
+  --dark-text: #212121;
+  --medium-text: #424242;
+  --light-text: #757575;
+  
+  /* Background colors */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F5F5F5;
+  --bg-tertiary: #E8E8E8;
+  
+  /* Text colors */
+  --text-primary: #212121;
+  --text-secondary: #424242;
+  --text-tertiary: #757575;
+  
+  /* Border colors */
+  --border-color: #E8E8E8;
+}
+
+/* Dark Mode */
+:root.dark-mode {
+  /* Neutrals - Dark Mode */
+  --white: #121212;
+  --off-white: #1E1E1E;
+  --light-gray: #2C2C2C;
+  --dark-text: #E8E8E8;
+  --medium-text: #B0B0B0;
+  --light-text: #808080;
+  
+  /* Background colors */
+  --bg-primary: #121212;
+  --bg-secondary: #1E1E1E;
+  --bg-tertiary: #2C2C2C;
+  
+  /* Text colors */
+  --text-primary: #E8E8E8;
+  --text-secondary: #B0B0B0;
+  --text-tertiary: #808080;
+  
+  /* Border colors */
+  --border-color: #2C2C2C;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#app {
+  min-height: 100vh;
+}
