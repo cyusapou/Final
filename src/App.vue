@@ -3,6 +3,9 @@
     <!-- Desktop Sidebar / Mobile Bottom Nav -->
     <BottomNav />
     
+    <!-- Location Tracker Modal -->
+    <LocationTracker />
+    
     <!-- Main Content -->
     <main class="main-content" :class="{ collapsed: !sidebarOpen }">
       <div class="content-wrapper">
@@ -16,6 +19,7 @@
 import { computed, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import BottomNav from './components/BottomNav.vue'
+import LocationTracker from './components/LocationTracker.vue'
 import { store } from './store/index.js'
 
 const sidebarOpen = computed(() => store.sidebarOpen)

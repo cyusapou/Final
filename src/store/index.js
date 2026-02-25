@@ -90,6 +90,18 @@ export const store = reactive({
   // Desktop sidebar state
   sidebarOpen: true,
   
+  // Location state
+  userLocation: {
+    latitude: null,
+    longitude: null,
+    accuracy: null,
+    timestamp: null,
+    address: null
+  },
+  locationFetched: false,
+  showLocationModal: false,
+  selectedStopForTracking: null,
+  
   // Routine Trips (saved travel plans)
   routineTrips: [
     {

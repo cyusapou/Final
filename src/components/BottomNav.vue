@@ -79,7 +79,10 @@
         <!-- Other Section -->
         <div class="nav-section">
           <div class="nav-section-title" v-if="sidebarOpen">{{ t.other }}</div>
-          <div class="sidebar-item">
+          <div 
+            :class="['sidebar-item', { active: showLocationModal }]" 
+            @click="openLocationModal"
+          >
             <i class="fas fa-map-marker-alt"></i>
             <span v-if="sidebarOpen">{{ t.track }}</span>
           </div>
@@ -110,6 +113,7 @@ const route = useRoute()
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 const sidebarOpen = computed(() => store.sidebarOpen)
+const showLocationModal = computed(() => store.showLocationModal)
 
 const isActive = (path) => {
   return route.path === path
@@ -121,6 +125,10 @@ const goTo = (path) => {
 
 const toggleSidebar = () => {
   store.sidebarOpen = !store.sidebarOpen
+}
+
+const openLocationModal = () => {
+  store.showLocationModal = true
 }
 </script>
 
