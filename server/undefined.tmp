@@ -1,0 +1,12 @@
+[
+  {
+    "id": "orEw7TK9oW1LgL1riTuaY",
+    "createdAt": "2026-02-26T17:49:32.375Z",
+    "updatedAt": "2026-02-26T17:49:32.385Z",
+    "username": "superadmin",
+    "password": "$2a$12$FVvpSRcw4bA706k9tGG2Te1PTTp6Brq8kQyQ.oX3hAU/4u5cLf6uS",
+    "role": "superadmin",
+    "status": "active",
+    "forcePasswordChange": true
+  }
+]

@@ -28,7 +28,7 @@ export const stops = [
   { id: 115, name: 'Bus Stop 4789', type: 'roadside', city: 'Kigali', hasCode: true, code: '4789', area: 'Kigali City Center' },
   { id: 116, name: 'Bus Stop 4890', type: 'roadside', city: 'Kigali', hasCode: true, code: '4890', area: 'Kigali City Center' },
   
-  // Other Rwandan cities - no codes
+  { id: 200, name: 'CYUSA Clever', type: 'Owner', city: 'Kigali', hasCode: false, code: null, area: 'Kigali City Center' },
   { id: 201, name: 'Musanze Main Station', type: 'station', city: 'Musanze', hasCode: false, code: null },
   { id: 202, name: 'Musanze Market', type: 'roadside', city: 'Musanze', hasCode: false, code: null, area: 'Musanze Town' },
   { id: 203, name: 'Rubavu Terminal', type: 'station', city: 'Rubavu', hasCode: false, code: null },
@@ -70,6 +70,16 @@ export const searchStops = (query, city = null) => {
   return results
 }
 
+// Coordinates variable for storing stations with their coordinates
+// You can add stations and their names willingly here
+export const coordinates = reactive([
+  // Add your stations here in the format:
+  // { name: 'Station Name', lat: -1.9473, lng: 30.0567 }
+  // Example:
+  // { name: 'Nyabugogo Station', lat: -1.9645, lng: 30.0723 },
+  // { name: 'Remera Station', lat: -1.9433, lng: 30.0589 },
+])
+
 // Shared state for passing data between pages
 export const store = reactive({
   // Selected data
@@ -87,6 +97,10 @@ export const store = reactive({
   isProcessing: false,
   stopCode: '',
   
+  // Authentication state
+  user: null,
+  token: null,
+  
   // Desktop sidebar state
   sidebarOpen: true,
   
@@ -101,6 +115,16 @@ export const store = reactive({
   locationFetched: false,
   showLocationModal: false,
   selectedStopForTracking: null,
+  
+  // Bus tracking state
+  isTrackingBus: false,
+  busLocation: {
+    latitude: null,
+    longitude: null,
+    lastUpdated: null
+  },
+  nearestStation: null,
+  trackingIntervalId: null,
   
   // Routine Trips (saved travel plans)
   routineTrips: [

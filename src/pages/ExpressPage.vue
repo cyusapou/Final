@@ -113,7 +113,7 @@ const goToLanding = () => {
 
 const selectExpress = (express) => {
   store.selectedExpress = express
-  router.push('/trips')
+  router.push('/destination')
 }
 </script>
 

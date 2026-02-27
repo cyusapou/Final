@@ -61,6 +61,93 @@
 
           <!-- Details Tab -->
           <div v-else-if="activeTab === 'details'" class="tab-content">
+            <!-- Quick Track Actions -->
+            <div class="quick-track-section">
+              <h3>{{ t.realTimeBusTracking || 'Real-time Bus Tracking' }}</h3>
+              <p class="track-instruction">{{ t.tapToTrackBus || 'Tap to track bus in real-time' }}</p>
+              
+              <div class="track-buttons">
+                <button 
+                  class="track-btn track-location-btn" 
+                  @click="handleTrackLocation"
+                  :disabled="isTracking"
+                >
+                  <i class="fas fa-crosshairs"></i>
+                  <span>{{ t.trackLocation || 'Track Location' }}</span>
+                </button>
+                
+                <button 
+                  v-if="nearestStation"
+                  class="track-btn track-bus-btn" 
+                  @click="handleTrackBus"
+                  :disabled="isTrackingBus"
+                >
+                  <i class="fas fa-bus"></i>
+                  <span>{{ isTrackingBus ? (t.trackingBus || 'Tracking...') : (t.trackBusRealTime || 'Track Bus') }}</span>
+                </button>
+              </div>
+              
+              <!-- Nearest Station Info -->
+              <div v-if="nearestStation" class="nearest-station-card">
+                <div class="station-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="station-info">
+                  <span class="station-label">{{ t.nearestStationFound || 'Nearest Station Found!' }}</span>
+                  <p class="station-name">{{ nearestStation.name }}</p>
+                  <p class="station-distance">{{ nearestStation.distance.toFixed(2) }} km away</p>
+                </div>
+              </div>
+              
+              <!-- Bus Location Display -->
+              <div v-if="store.busLocation.latitude" class="bus-location-card">
+                <div class="bus-icon">
+                  <i class="fas fa-bus"></i>
+                </div>
+                <div class="bus-info">
+                  <span class="bus-label">{{ t.busLocation || 'Bus Location' }}</span>
+                  <p class="bus-coords">
+                    {{ store.busLocation.latitude.toFixed(4) }}, {{ store.busLocation.longitude.toFixed(4) }}
+                  </p>
+                  <p class="bus-time" v-if="store.busLocation.lastUpdated">
+                    {{ t.lastUpdated || 'Last Updated' }}: {{ formatTime(store.busLocation.lastUpdated) }}
+                  </p>
+                  <p v-if="store.busLocation.progress" class="bus-progress">
+                    <i class="fas fa-hourglass-half"></i> {{ store.busLocation.progress }}% en route
+                  </p>
+                  <p v-if="store.busLocation.status === 'arrived'" class="bus-arrived">
+                    <i class="fas fa-check-circle"></i> Bus Arrived!
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Tracked Coordinates Section -->
+            <div v-if="store.coordinates.length > 0" class="coordinates-section">
+              <h3>📍 {{ t.trackedStations || 'Tracked Stations' }}</h3>
+              <div class="coordinates-list">
+                <div v-for="(coordinate, index) in store.coordinates" :key="index" class="coordinate-item">
+                  <div class="coord-icon">
+                    <i :class="coordinate.type === 'station' ? 'fas fa-building' : 'fas fa-map-pin'"></i>
+                  </div>
+                  <div class="coord-info">
+                    <p class="coord-name">{{ coordinate.name }}</p>
+                    <p class="coord-coords">
+                      <code>{{ coordinate.lat.toFixed(4) }}, {{ coordinate.lng.toFixed(4) }}</code>
+                    </p>
+                    <p class="coord-type">{{ coordinate.area || coordinate.type }}</p>
+                  </div>
+                  <button 
+                    class="remove-coord-btn" 
+                    @click="removeCoordinate(index)"
+                    title="Remove coordinate"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
             <div v-if="userLocation && userLocation.latitude" class="location-display">
               <div class="location-success">
                 <div class="success-icon">
@@ -177,7 +264,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { store } from '../store/index.js'
+import { store, coordinates } from '../store/index.js'
 import { useLocation } from '../composables/useLocation.js'
 import { translations } from '../translations/index.js'
 import { findNearestStops } from '../composables/useLocationUtils.js'
@@ -200,10 +287,151 @@ const showModal = computed({
 const activeTab = ref('details')
 const journeyTrackerRef = ref(null)
 const nearestStops = ref([])
+const nearestStation = ref(null)
+const isTracking = ref(false)
+const isTrackingBus = ref(false)
 
 // Close modal
 const closeModal = () => {
   store.showLocationModal = false
+}
+
+// Handle Track Location - instantaneously tracks location and finds nearest station
+const handleTrackLocation = async () => {
+  isTracking.value = true
+  try {
+    await getCurrentLocation()
+    if (userLocation.value && userLocation.value.latitude) {
+      // Find nearest stops
+      const stops = findNearestStops(
+        userLocation.value.latitude,
+        userLocation.value.longitude,
+        5
+      )
+      nearestStops.value = stops
+      
+      // Store nearest station coordinates
+      if (stops.length > 0) {
+        const station = stops[0]
+        nearestStation.value = station
+        
+        // Get or calculate coordinates for the station
+        const stationLat = station.coordinates?.lat || station.latitude || -1.9473
+        const stationLng = station.coordinates?.lng || station.longitude || 30.0567
+        
+        // Add/Update coordinates in the coordinates array
+        const existingIndex = store.coordinates.findIndex(c => c.name === station.name)
+        if (existingIndex === -1) {
+          // Add new station to coordinates
+          store.coordinates.push({
+            name: station.name,
+            lat: stationLat,
+            lng: stationLng,
+            id: station.id,
+            type: station.type,
+            area: station.area || null
+          })
+        } else {
+          // Update existing station
+          store.coordinates[existingIndex] = {
+            name: station.name,
+            lat: stationLat,
+            lng: stationLng,
+            id: station.id,
+            type: station.type,
+            area: station.area || null
+          }
+        }
+        
+        console.log('✅ Tracked Location & Nearest Station:', {
+          userLocation: {
+            lat: userLocation.value.latitude,
+            lng: userLocation.value.longitude
+          },
+          nearestStation: {
+            name: station.name,
+            lat: stationLat,
+            lng: stationLng
+          },
+          allCoordinates: store.coordinates
+        })
+      }
+    }
+  } catch (err) {
+    console.error('Location error:', err)
+  } finally {
+    isTracking.value = false
+  }
+}
+
+// Handle Track Bus - real-time bus tracking
+const handleTrackBus = () => {
+  if (isTrackingBus.value) {
+    // Stop tracking
+    if (store.trackingIntervalId) {
+      clearInterval(store.trackingIntervalId)
+      store.trackingIntervalId = null
+    }
+    store.isTrackingBus = false
+    store.busLocation = { latitude: null, longitude: null, lastUpdated: null }
+    isTrackingBus.value = false
+    console.log('🛑 Bus Tracking Stopped')
+  } else {
+    // Start real-time tracking
+    if (!nearestStation.value || !userLocation.value) {
+      alert('Please track location first to enable bus tracking')
+      return
+    }
+    
+    store.isTrackingBus = true
+    isTrackingBus.value = true
+    
+    let progress = 0
+    
+    // Real-time bus location updates
+    store.trackingIntervalId = setInterval(() => {
+      if (nearestStation.value && userLocation.value) {
+        // Smoothly move bus towards station
+        progress += 0.05 // 5% closer each update (completes in ~60 seconds)
+        
+        if (progress >= 1) {
+          // Bus reached the station
+          store.busLocation = {
+            latitude: nearestStation.value.coordinates?.lat || nearestStation.value.latitude || -1.9473,
+            longitude: nearestStation.value.coordinates?.lng || nearestStation.value.longitude || 30.0567,
+            lastUpdated: new Date(),
+            status: 'arrived'
+          }
+          
+          // Stop tracking when arrived
+          clearInterval(store.trackingIntervalId)
+          store.trackingIntervalId = null
+          store.isTrackingBus = false
+          isTrackingBus.value = false
+          
+          console.log('🚌 Bus Arrived at Station!')
+          alert(`Bus arrived at ${nearestStation.value.name}!`)
+        } else {
+          // Bus is en route
+          const stationLat = nearestStation.value.coordinates?.lat || nearestStation.value.latitude || -1.9473
+          const stationLng = nearestStation.value.coordinates?.lng || nearestStation.value.longitude || 30.0567
+          
+          const busLat = userLocation.value.latitude + (stationLat - userLocation.value.latitude) * progress
+          const busLng = userLocation.value.longitude + (stationLng - userLocation.value.longitude) * progress
+          
+          store.busLocation = {
+            latitude: busLat,
+            longitude: busLng,
+            lastUpdated: new Date(),
+            progress: Math.round(progress * 100),
+            status: 'in_transit'
+          }
+        }
+      }
+    }, 2000) // Update every 2 seconds for smoother tracking
+    
+    console.log('🚌 Bus Tracking Started - User to Station')
+  }
 }
 
 // Get location
@@ -245,6 +473,12 @@ const selectStop = (stop) => {
   store.selectedOriginStop = stop
   store.showLocationModal = false
   console.log('Selected origin stop:', stop)
+}
+
+// Remove coordinate from tracked list
+const removeCoordinate = (index) => {
+  const removed = store.coordinates.splice(index, 1)
+  console.log('Removed coordinate:', removed[0])
 }
 
 // Handle location selection from picker
@@ -369,19 +603,6 @@ const formatTime = (timestamp) => {
   color: #E65100;
 }
 
-.location-modal {
-  background: var(--bg-primary);
-  border-radius: 12px;
-  max-width: 500px;
-  width: 100%;
-  max-height: 85vh;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  transition: max-width 0.3s ease;
-}
-
 .location-modal.expanded {
   max-width: 90vw;
 }
@@ -429,6 +650,174 @@ const formatTime = (timestamp) => {
 .picker-tab :deep(.location-picker) {
   padding: 0;
   height: 100%;
+}
+
+/* Quick Track Section */
+.quick-track-section {
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.quick-track-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1B5E20;
+}
+
+.track-instruction {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: #2E7D32;
+}
+
+.track-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.track-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.track-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.track-location-btn {
+  background: #1976D2;
+  color: white;
+}
+
+.track-location-btn:hover:not(:disabled) {
+  background: #1565C0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.track-bus-btn {
+  background: #FF6F00;
+  color: white;
+}
+
+.track-bus-btn:hover:not(:disabled) {
+  background: #F57C00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 111, 0, 0.3);
+}
+
+/* Nearest Station Card */
+.nearest-station-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  border-left: 4px solid #2E7D32;
+}
+
+.station-icon {
+  width: 40px;
+  height: 40px;
+  background: #E8F5E9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2E7D32;
+  font-size: 18px;
+}
+
+.station-info {
+  flex: 1;
+}
+
+.station-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #2E7D32;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.station-name {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.station-distance {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Bus Location Card */
+.bus-location-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 12px;
+  border-left: 4px solid #FF6F00;
+}
+
+.bus-icon {
+  width: 40px;
+  height: 40px;
+  background: #FFF3E0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FF6F00;
+  font-size: 18px;
+}
+
+.bus-info {
+  flex: 1;
+}
+
+.bus-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #FF6F00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bus-coords {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+}
+
+.bus-time {
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: var(--text-secondary);
 }
 
 /* Loading State */
@@ -744,16 +1133,128 @@ const formatTime = (timestamp) => {
   background: var(--border-color);
 }
 
-/* Dark Mode */
-:root.dark-mode .location-modal-overlay {
-  background: rgba(0, 0, 0, 0.8);
+/* Tracked Coordinates Section */
+.coordinates-section {
+  background: linear-gradient(135deg, #F3E5F5 0%, #EDE7F6 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
 }
 
-:root.dark-mode .close-btn:hover {
-  background: rgba(230, 81, 0, 0.2);
+.coordinates-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #7B1FA2;
 }
 
-:root.dark-mode .action-btn:hover {
-  background: rgba(46, 125, 50, 0.2);
+.coordinates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.coordinate-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  border-left: 4px solid #7B1FA2;
+  transition: all 0.2s;
+}
+
+.coordinate-item:hover {
+  box-shadow: 0 2px 8px rgba(123, 31, 162, 0.15);
+}
+
+.coord-icon {
+  width: 36px;
+  height: 36px;
+  background: #F3E5F5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7B1FA2;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.coord-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.coord-name {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.coord-coords {
+  margin: 2px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+}
+
+.coord-coords code {
+  background: #F5F5F5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.coord-type {
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.remove-coord-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #FFEBEE;
+  color: #D32F2F;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.remove-coord-btn:hover {
+  background: #FFCDD2;
+  transform: scale(1.05);
+}
+
+/* Bus Tracking Progress */
+.bus-progress {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #FF6F00;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bus-arrived {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #2E7D32;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 </style>

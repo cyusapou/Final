@@ -1,0 +1,37 @@
+PROJECT DESCRIPTION - ON THE GO BUS BOOKING APP
+
+COMPONENTS:
+- BottomNav.vue - Bottom navigation bar for mobile view
+- EcoFleetHome.vue - Home page component with hero section
+- JourneyTracker.vue - Component for tracking journey progress
+- LanguageToggle.vue - Language switcher component (English/Kinyarwanda/French)
+- LocationMap.vue - Map display component for location tracking
+- LocationPicker.vue - Component for selecting locations from map or search
+- LocationTracker.vue - Real-time location tracking component
+- StepProgress.vue - Progress indicator for booking steps
+
+PAGES:
+- DestinationPage.vue - Page for selecting destination stops
+- ExpressPage.vue - Page for selecting bus companies
+- LandingPage.vue - Main landing/home page
+- PaymentPage.vue - Payment processing page
+- PlannerPage.vue - Trip planning page for future trips
+- RoutineTripsPage.vue - Page for managing saved routine trips
+- SummaryPage.vue - Trip summary page before payment
+- TrackPage.vue - Real-time bus tracking page
+- TripsPage.vue - Page for selecting available trips
+
+STORE FILES:
+- index.js - Main store with bus stops data, coordinates, shared state, and trip management functions
+
+TRANSLATION FILES:
+- index.js - Translation file containing English, Kinyarwanda, and French translations
+
+COMPOSABLES:
+- useLocation.js - Location management composable
+- useLocationUtils.js - Location utilities composable
+
+MAIN FILES:
+- App.vue - Root Vue component
+- main.js - Application entry point
+- style.css - Global styles

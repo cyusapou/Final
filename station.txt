@@ -1,0 +1,103 @@
+================================================================================
+KIGALI BUS STATIONS - COORDINATES DATABASE
+================================================================================
+
+SECTION 1: WESTERN KIGALI STATIONS (Nyamirambo, Kimisagara, Nyarugenge)
+================================================================================
+
+No. | Station Name | Coordinates | Area Description
+---- | ------------ | ----------- | ---------------
+1   | Kigali Genocide Memorial | -1.9318266738581038, 30.06269452635719 | Memorial Site
+2   | Nyandungu Eco-Park | -1.9340946547703213, 30.062075614922204 | Eco Park
+3   | Nyamirambo Sector (Central) | -1.9390547599710037, 30.066897384067246 | Markets/Residential
+4   | Nyamirambo | -1.9389510193431603, 30.06703578414816 | Central Nyamirambo
+5   | Nyamirambo / Muhima Border | -1.9411295711919148, 30.069250185442773 | Border Area
+6   | Kimisagara Sector | -1.9465033208693892, 30.073826614791834 | Kimisagara
+7   | Kimisagara | -1.948958503037656, 30.0745186151964 | Central Kimisagara
+8   | Kimisagara / Gitega Edge | -1.9473332420025862, 30.07555661580325 | Edge Area
+9   | Kimisagara (Southern) | -1.9507728000455715, 30.07292932036252 | Southern Part
+10  | Lower Kimisagara / Kicukiro | -1.9611006517846243, 30.0769706076261 | Transition Area
+12  | Southern Kimisagara / Urban | -1.9624838414204242, 30.077662608030668 | Urban Fringe
+13  | Kimisagara (Alternative) | -1.9490524711068489, 30.074365893914557 | Alternative Location
+14  | Kimisagara (Alternative 2) | -1.9473234700489408, 30.07554229460232 | Alternative Location
+15  | Nyamirambo / Central | -1.9410329555267818, 30.0693452132475 | Central Area
+16  | Muhima or Gisozi Edge | -1.929626841820757, 30.069219329184914 | Northern Edge
+17  | Muhima Sector | -1.9302702068153579, 30.07012055138297 | Muhima Area
+18  | Muhima / Central Nyarugenge | -1.931817860412816, 30.07224082940661 | Central Area
+19  | Nyarugenge Central / KN 2 Rd | -1.9341368296430326, 30.07662105608674 | Main Road Area
+20  | Nyarugenge / CBD Vicinity | -1.934378217170732, 30.062053344060757 | Central Business District
+
+================================================================================
+SECTION 2: NORTHERN KIGALI STATIONS (Remera, Kimironko, Kanombe)
+================================================================================
+
+No. | Station Name | Coordinates | Area Description
+---- | ------------ | ----------- | ---------------
+1   | Kimironko / Northern Remera | -1.9507346679890836, 30.1225885291653 | Market Area
+2   | Remera Sector (Central) | -1.9545090253310295, 30.117782011019518 | Near Stadium
+3   | Remera / Kimironko Transition | -1.9533625245773485, 30.119529352894727 | Hilly Residential
+4   | Remera Sector | -1.9546171384953759, 30.117995043829865 | Central Remera
+5   | Remera Central/Southern | -1.9562356174892501, 30.115363957006476 | Hotels/Offices
+6   | Remera Sector (Alternative) | -1.9566648433839904, 30.115022331518542 | Alternative Location
+7   | Remera / Toward Kanombe | -1.9579779665706019, 30.111469629467468 | Eastern Fringe
+8   | Kanombe / Remera Border | -1.9590305482249073, 30.11011334106111 | Airport Road
+9   | Kanombe Sector (Residential) | -1.9596198078784712, 30.10814887758115 | Old Airport Area
+10  | Kanombe / Remera Southern Edge | -1.9581628975424956, 30.104960106811312 | Southern Edge
+12  | Kanombe Sector (Alternative) | -1.959833240303406, 30.11219784798481 | Alternative Location
+13  | Kanombe / Kagarama Northern | -1.9659214361736437, 30.10328029333756 | Kicukiro Transition
+14  | Remera / Kanombe | -1.9579624691112312, 30.111803192081357 | Border Area
+15  | Kanombe | -1.959693348045338, 30.108154962852975 | Central Kanombe
+16  | Kanombe Southern | -1.9659099045284278, 30.10330453620632 | Southern Area
+17  | Kanombe / Toward Kicukiro | -1.968277410333052, 30.10288403970271 | Eastern Outskirts
+18  | Kagarama Northern / Kanombe | -1.972401193170589, 30.103618698236414 | Wetlands/Roads
+19  | Kagarama Sector (Southern) | -1.9744511529281645, 30.10415998652099 | Extension Area
+20  | Kagarama / Niboye Northern | -1.9813069676611572, 30.10456626103409 | Southern Cluster
+
+================================================================================
+SECTION 3: EASTERN KIGALI STATIONS (Kicukiro, Kagarama, Gahanga)
+================================================================================
+
+No. | Station Name | Coordinates | Area Description
+---- | ------------ | ----------- | ---------------
+1   | Kicukiro Sector / Center | -1.9692880999706615, 30.086818680225566 | Urban Residential
+2   | Kicukiro / Kigarama Border | -1.9681416898281716, 30.09433847416982 | Border Area
+3   | Kigarama Sector (Hilly) | -1.9692880999706615, 30.10287790119126 | Hilly Residential
+4   | Kicukiro / Central | -1.9761665442466667, 30.087137315562185 | Central Kicukiro
+5   | Kicukiro Sector (Alt) | -1.9764213008955103, 30.091789391476855 | Alternative Location
+6   | Niboye / Kicukiro Southern | -1.9799274757767402, 30.10226254788748 | Southern Edge
+7   | Niboye / Kagarama Northern | -1.981453988893175, 30.10451731913245 | Northern Part
+8   | Kagarama Sector (KK Roads) | -1.9774424965095634, 30.11295761019042 | Near KK Roads
+9   | Kagarama / Toward Gahanga | -1.9796727639275613, 30.11561836144182 | Toward Gahanga
+10  | Kagarama Sector (Alt) | -1.9814741315746673, 30.117249144466875 | Alternative Location
+12  | Gatenga / Southern Kagarama | -1.991973490601787, 30.096209180040553 | Southern Area
+13  | Kagarama Southern / Wetlands | -1.9958335329701933, 30.096123349355025 | Near Wetlands
+14  | Southern Kagarama / Gahanga | -2.001593978001587, 30.091174474425323 | Northern Edge
+15  | Kagarama Central/Southern | -1.9900906257574578, 30.098942157219163 | Central Area
+16  | Gahanga / Southern Kagarama | -2.001583849474875, 30.091200664776398 | Southern Area
+17  | Gahanga Sector (Outskirts) | -2.0121710714341754, 30.107574204219222 | Near Nyamata Road
+18  | Kagarama / Kanombe Transition | -1.978363190363113, 30.112885759085486 | Transition Area
+19  | Kanombe / Kagarama Eastern | -1.9814716413038216, 30.117378425841615 | Eastern Edge
+20  | Gahanga or Nyarugunga | -2.012125270776887, 30.107461588251752 | Southern Outskirts
+
+================================================================================
+DATABASE SUMMARY
+================================================================================
+• Total Stations: 60 unique locations
+• Geographic Coverage: Western, Northern, and Eastern Kigali
+• Coordinate Format: Latitude, Longitude (Decimal Degrees)
+• Latitude Range: -2.012 to -1.929 (South to North)
+• Longitude Range: 30.062 to 30.123 (West to East)
+• Data Quality: GPS coordinates suitable for mapping applications
+
+================================================================================
+USAGE INSTRUCTIONS
+================================================================================
+• Format for mapping libraries: [latitude, longitude]
+• All coordinates are within Kigali, Rwanda boundaries
+• Some stations have multiple entries (different stops in same area)
+• Coordinates can be directly used in GPS navigation systems
+• Suitable for integration with mapping APIs (Google Maps, OpenStreetMap, etc.)
+
+================================================================================
+LAST UPDATED: February 2026
+================================================================================

@@ -1,17 +1,20 @@
 <template>
   <div class="app-layout" :class="{ 'dark-mode': darkMode }">
-    <!-- Desktop Sidebar / Mobile Bottom Nav -->
-    <BottomNav />
-    
-    <!-- Location Tracker Modal -->
-    <LocationTracker />
-    
-    <!-- Main Content -->
-    <main class="main-content" :class="{ collapsed: !sidebarOpen }">
-      <div class="content-wrapper">
-        <RouterView />
-      </div>
-    </main>
+    <!-- Always show app layout -->
+    <div class="app-main">
+      <!-- Desktop Sidebar / Mobile Bottom Nav -->
+      <BottomNav />
+      
+      <!-- Location Tracker Modal -->
+      <LocationTracker />
+      
+      <!-- Main Content -->
+      <main class="main-content" :class="{ collapsed: !sidebarOpen }">
+        <div class="content-wrapper">
+          <RouterView />
+        </div>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -24,6 +27,7 @@ import { store } from './store/index.js'
 
 const sidebarOpen = computed(() => store.sidebarOpen)
 const darkMode = computed(() => store.darkMode)
+const isAuthenticated = computed(() => store.token && store.user)
 
 // Apply dark mode to html element and watch for changes
 const applyDarkMode = (isDark) => {
@@ -67,10 +71,26 @@ body {
 
 /* App Layout */
 .app-layout {
-  display: flex;
   min-height: 100vh;
   background: var(--bg-secondary);
   transition: background-color 0.3s ease;
+}
+
+/* Auth Gate Container - Full width when not authenticated */
+.auth-gate-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* App Main - Flex layout for authenticated users */
+.app-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
 }
 
 /* Main Content - Mobile First (< 500px) - no sidebar margin */
@@ -79,21 +99,24 @@ body {
   min-height: 100vh;
   width: 100%;
   padding-bottom: 70px; /* Space for bottom nav on mobile */
+  margin-left: 0;
 }
 
 /* Content Wrapper - Full width on mobile */
 .content-wrapper {
   width: 100%;
   padding: 16px;
+  max-width: 100%;
 }
 
-/* Desktop (>= 500px) - Sidebar takes up space */
+/* Desktop (>= 500px) - Account for fixed sidebar */
 @media (min-width: 500px) {
   .main-content {
-    margin-left: 220px; /* Sidebar width */
+    margin-left: 220px;
     padding-bottom: 0;
     width: calc(100% - 220px);
     transition: margin-left 0.3s ease, width 0.3s ease;
+    padding-bottom: 0;
   }
   
   .main-content.collapsed {
@@ -103,14 +126,14 @@ body {
   
   .content-wrapper {
     padding: 24px;
+    max-width: 100%;
   }
 }
 
 /* Large desktop: max width for readability */
 @media (min-width: 1200px) {
   .content-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 100%;
   }
 }
 </style>

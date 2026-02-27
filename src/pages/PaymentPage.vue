@@ -35,11 +35,106 @@
           </div>
         </div>
 
+        <!-- Payment Form - Mobile Money -->
+        <div v-if="selectedMethod?.id === 1" class="payment-form">
+          <h3>{{ t.enterMobileNumber || 'Enter Mobile Money Details' }}</h3>
+          <div class="form-group">
+            <label>{{ t.phoneNumber || 'Phone Number' }}</label>
+            <input 
+              v-model="mobileMoneyForm.phone"
+              type="tel" 
+              placeholder="+250788123456"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label>{{ t.momoPassword || 'MoMo Password' }}</label>
+            <input 
+              v-model="mobileMoneyForm.password"
+              type="password" 
+              :placeholder="t.enterPassword || 'Enter your MoMo PIN'"
+              class="form-input"
+            />
+          </div>
+        </div>
+
+        <!-- Payment Form - Credit Card -->
+        <div v-if="selectedMethod?.id === 2" class="payment-form">
+          <h3>{{ t.enterCardDetails || 'Enter Card Details' }}</h3>
+          <div class="form-group">
+            <label>{{ t.cardholderName || 'Cardholder Name' }}</label>
+            <input 
+              v-model="creditCardForm.cardholderName"
+              type="text" 
+              :placeholder="t.fullName || 'Your full name'"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label>{{ t.cardNumber || 'Card Number' }}</label>
+            <input 
+              v-model="creditCardForm.cardNumber"
+              type="text" 
+              placeholder="1234 5678 9012 3456"
+              maxlength="19"
+              class="form-input"
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ t.expiryDate || 'Expiry Date' }}</label>
+              <input 
+                v-model="creditCardForm.expiryDate"
+                type="text" 
+                placeholder="MM/YY"
+                maxlength="5"
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label>{{ t.cvv || 'CVV' }}</label>
+              <input 
+                v-model="creditCardForm.cvv"
+                type="text" 
+                placeholder="123"
+                maxlength="4"
+                class="form-input"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Form - On The Go Wallet -->
+        <div v-if="selectedMethod?.id === 3" class="payment-form">
+          <div v-if="!isAuthenticated" class="auth-warning">
+            <div class="warning-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="warning-content">
+              <h4>{{ t.loginRequired || 'Login Required' }}</h4>
+              <p>{{ t.createAccountForWallet || 'Please create an account or login to use the On The Go Wallet payment method.' }}</p>
+              <button class="btn-warning-action" @click="goToLogin">
+                {{ t.createAccount || 'Create Account' }}
+              </button>
+            </div>
+          </div>
+          <div v-else class="wallet-info">
+            <div class="wallet-balance-display">
+              <span class="label">{{ t.availableBalance || 'Available Balance' }}</span>
+              <span class="amount">RWF {{ formatBalance(store.user?.walletBalance || 0) }}</span>
+            </div>
+            <p v-if="store.user?.walletBalance < store.selectedTrip?.price" class="insufficient-warning">
+              <i class="fas fa-exclamation-triangle"></i>
+              {{ t.insufficientWalletBalance || 'Your wallet balance is insufficient for this transaction.' }}
+            </p>
+          </div>
+        </div>
+
         <!-- Pay Button -->
         <button 
           class="btn-primary btn-large btn-pay" 
           @click="processPayment"
-          :disabled="!selectedMethod"
+          :disabled="!isFormValid()"
         >
           {{ t.payNow }} RWF {{ store.selectedTrip?.price }}
           <i class="fas fa-lock"></i>
@@ -138,8 +233,7 @@ import StepProgress from '../components/StepProgress.vue'
 const router = useRouter()
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
-
-const selectedMethod = ref(null)
+const isAuthenticated = computed(() => store.token && store.user)
 
 const paymentMethods = [
   { 
@@ -162,6 +256,44 @@ const paymentMethods = [
   },
 ]
 
+const selectedMethod = ref(paymentMethods[0])
+
+const mobileMoneyForm = ref({
+  phone: '',
+  password: ''
+})
+
+const creditCardForm = ref({
+  cardholderName: '',
+  cardNumber: '',
+  expiryDate: '',
+  cvv: ''
+})
+
+const isFormValid = () => {
+  if (!selectedMethod.value) return false
+  
+  if (selectedMethod.value.id === 1) {
+    // Mobile Money validation
+    return mobileMoneyForm.value.phone.trim() && mobileMoneyForm.value.password.trim()
+  } else if (selectedMethod.value.id === 2) {
+    // Credit Card validation
+    return creditCardForm.value.cardholderName.trim() && 
+           creditCardForm.value.cardNumber.trim() &&
+           creditCardForm.value.expiryDate.trim() &&
+           creditCardForm.value.cvv.trim()
+  } else if (selectedMethod.value.id === 3) {
+    // On The Go Wallet - requires authentication and sufficient balance
+    return isAuthenticated.value && (store.user?.walletBalance || 0) >= (store.selectedTrip?.price || 0)
+  }
+  
+  return false
+}
+
+const goToLogin = () => {
+  router.push('/login')
+}
+
 const goToSummary = () => {
   router.push('/summary')
 }
@@ -176,7 +308,7 @@ const selectMethod = (method) => {
 }
 
 const processPayment = () => {
-  if (!selectedMethod.value) return
+  if (!isFormValid()) return
   
   store.isProcessing = true
   setTimeout(() => {
@@ -196,6 +328,10 @@ const shareTicket = () => {
 
 const trackBus = () => {
   alert('Track bus - connect to backend')
+}
+
+const formatBalance = (amount) => {
+  return new Intl.NumberFormat('en-US').format(Math.floor(amount))
 }
 
 const formatDate = (dateStr) => {
@@ -289,21 +425,24 @@ const formatDate = (dateStr) => {
 }
 
 .payment-options {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
 
 .payment-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 16px;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 16px;
   background: #FFF;
   border-radius: 12px;
   border: 2px solid #E8E8E8;
   cursor: pointer;
   transition: all 0.2s;
+  text-align: center;
 }
 
 .payment-card:hover {
@@ -332,7 +471,7 @@ const formatDate = (dateStr) => {
 }
 
 .payment-info {
-  flex: 1;
+  width: 100%;
 }
 
 .payment-name {
@@ -351,6 +490,163 @@ const formatDate = (dateStr) => {
 .selected-check {
   color: #2E7D32;
   font-size: 20px;
+}
+
+/* Payment Form Styles */
+.payment-form {
+  background: #FFF;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  border: 1px solid #E8E8E8;
+}
+
+.payment-form h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E8E8E8;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #212121;
+  background: #FFF;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2E7D32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.form-input::placeholder {
+  color: #BDBDBD;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Authentication Warning */
+.auth-warning {
+  background: #FFF3E0;
+  border: 1px solid #FFB74D;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.warning-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: #FFF9C4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F57F17;
+  font-size: 20px;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-content h4 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #E65100;
+}
+
+.warning-content p {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: #BF360C;
+  line-height: 1.4;
+}
+
+.btn-warning-action {
+  background: #FF6F00;
+  color: #FFF;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-warning-action:hover {
+  background: #E65100;
+}
+
+/* Wallet Info */
+.wallet-info {
+  background: #E8F5E9;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.wallet-balance-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.wallet-balance-display .label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.wallet-balance-display .amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2E7D32;
+}
+
+.insufficient-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #FFEBEE;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #C62828;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.insufficient-warning i {
+  flex-shrink: 0;
+  color: #D32F2F;
 }
 
 .btn-primary {
@@ -621,6 +917,17 @@ const formatDate = (dateStr) => {
     top: 12px;
     right: 12px;
     z-index: 100;
+  }
+  
+  .payment-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Smaller screens - stack payment options */
+@media (max-width: 500px) {
+  .payment-options {
+    grid-template-columns: 1fr;
   }
 }
 

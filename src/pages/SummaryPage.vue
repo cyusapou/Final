@@ -25,7 +25,7 @@
             <span>{{ store.selectedExpress?.name }}</span>
           </div>
           <div class="route-time">
-            {{ store.selectedTrip?.departure }} → {{ store.selectedTrip?.arrival }}
+            {{ store.selectedTrip?.departure || '--:--' }} → {{ store.selectedTrip?.arrival || '--:--' }}
           </div>
         </div>
 
@@ -56,20 +56,20 @@
               <i class="fas fa-bus"></i>
               {{ t.bus }}
             </span>
-            <span class="value">{{ store.selectedTrip?.plate }}</span>
+            <span class="value">{{ store.selectedTrip?.plate || 'To be assigned' }}</span>
           </div>
           <div class="detail-row">
             <span class="label">
               <i class="fas fa-phone"></i>
               {{ t.driver }}
             </span>
-            <span class="value">{{ store.selectedTrip?.driverPhone }}</span>
+            <span class="value">{{ store.selectedTrip?.driverPhone || 'To be assigned' }}</span>
           </div>
         </div>
 
         <div class="price-row">
           <span class="label">{{ t.totalPrice }}</span>
-          <span class="price">RWF {{ store.selectedTrip?.price }}</span>
+          <span class="price">RWF {{ store.selectedTrip?.price || '0' }}</span>
         </div>
 
         <button class="btn-primary btn-large btn-pay" @click="goToPayment">
@@ -111,7 +111,7 @@ const goToDestination = () => {
 }
 
 const goToTrips = () => {
-  router.push('/trips')
+  router.push('/destination')
 }
 
 const goToExpress = () => {

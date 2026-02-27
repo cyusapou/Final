@@ -1,12 +1,119 @@
 <template>
   <div class="journey-tracker">
-    <!-- Journey Not Started -->
-    <div v-if="!fromLocation || !toLocation" class="journey-empty">
-      <i class="fas fa-route"></i>
-      <p>{{ t.selectLocations || 'Select start and end locations to track journey' }}</p>
+    <!-- Step 1: Select Destination Location -->
+    <div v-if="!toLocation" class="step-select-destination">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div>
+          <h3>{{ t.selectDestination || 'Select Destination' }}</h3>
+          <p class="step-subtitle">{{ t.chooseDestination || 'Where are you going?' }}</p>
+        </div>
+      </div>
+
+      <!-- Destination Picker -->
+      <div class="destination-picker-wrapper">
+        <LocationPicker 
+          :placeholder="t.searchStop || 'Search a location'"
+          @location-selected="selectDestination"
+        />
+      </div>
+
+      <!-- Or use current location as starting point -->
+      <div v-if="userLocation && userLocation.latitude" class="from-location-section">
+        <div class="from-location-info">
+          <i class="fas fa-map-pin"></i>
+          <div class="location-details">
+            <span class="label">{{ t.departingFrom || 'Departing from' }}</span>
+            <p class="location-name">{{ fromLocationDisplay }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Journey Active -->
+    <!-- Step 2: View Destination & Nearby Stops -->
+    <div v-else-if="!selectedOriginStop" class="step-view-destination">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div>
+          <h3>{{ t.nearestStops || 'Nearest Bus Stops' }}</h3>
+          <p class="step-subtitle">{{ t.pickUpFrom || 'Pick up from nearby stops' }}</p>
+        </div>
+        <button class="back-btn" @click="backToDestination" title="Back">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+      </div>
+
+      <!-- Selected Destination Display -->
+      <div class="destination-display">
+        <div class="destination-card">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="destination-info">
+            <span class="label">{{ t.goingTo || 'Going to' }}</span>
+            <p class="destination-name">{{ toLocation.name }}</p>
+            <p class="destination-city">{{ toLocation.city }}</p>
+          </div>
+          <button class="change-btn" @click="backToDestination" title="Change destination">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Nearest Bus Stops -->
+      <div class="nearest-stops-list">
+        <div v-if="isLoadingStops" class="loading-state">
+          <div class="spinner-small"></div>
+          <p>{{ t.loadingStops || 'Finding nearest stops...' }}</p>
+        </div>
+
+        <div v-else-if="nearestStops.length > 0" class="stops-container">
+          <div 
+            v-for="stop in nearestStops" 
+            :key="stop.id"
+            :class="['stop-card', { selected: selectedOriginStop?.id === stop.id }]"
+            @click="selectOriginStop(stop)"
+          >
+            <div class="stop-header">
+              <div class="stop-info">
+                <div class="stop-icon" :class="stop.type">
+                  <i class="fas fa-bus-alt"></i>
+                </div>
+                <div class="stop-details">
+                  <p class="stop-name">{{ stop.name }}</p>
+                  <p class="stop-area" v-if="stop.area">{{ stop.area }}</p>
+                </div>
+              </div>
+              <div class="stop-distance">
+                <span class="distance-value">{{ stop.distance.toFixed(2) }}</span>
+                <span class="distance-unit">km</span>
+              </div>
+            </div>
+            <div v-if="selectedOriginStop?.id === stop.id" class="stop-footer">
+              <span class="selected-badge">
+                <i class="fas fa-check"></i>
+                {{ t.selected || 'Selected' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="no-stops">
+          <i class="fas fa-search"></i>
+          <p>{{ t.noNearbyStops || 'No nearby stops found' }}</p>
+        </div>
+      </div>
+
+      <!-- Continue Button -->
+      <button 
+        v-if="selectedOriginStop"
+        class="continue-btn"
+        @click="continueToJourney"
+      >
+        {{ t.continue || 'Continue' }}
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- Step 3: Journey Active -->
     <div v-else class="journey-active">
       <!-- Journey Header -->
       <div class="journey-header">
@@ -25,8 +132,8 @@
           </div>
           <div class="location-details">
             <span class="location-label">{{ t.from || 'From' }}</span>
-            <p class="location-name">{{ fromLocation.name }}</p>
-            <p class="location-coords">{{ formatCoords(fromLocation.coordinates) }}</p>
+            <p class="location-name">{{ selectedOriginStop.name }}</p>
+            <p class="location-coords">{{ formatCoords(selectedOriginStop.coordinates) }}</p>
           </div>
         </div>
 
@@ -174,21 +281,27 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
+import LocationPicker from './LocationPicker.vue'
 import {
   getRouteInfo,
   bearingToDirection,
-  formatCoordinates
+  formatCoordinates,
+  findNearestStops
 } from '../composables/useLocationUtils.js'
 
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
+const userLocation = computed(() => store.userLocation)
 
 const fromLocation = ref(null)
 const toLocation = ref(null)
+const selectedOriginStop = ref(null)
 const journey = ref(null)
 const isTracking = ref(false)
 const elapsedTime = ref(0)
 const trackingProgress = ref(0)
+const nearestStops = ref([])
+const isLoadingStops = ref(false)
 
 let trackingInterval = null
 
@@ -204,6 +317,13 @@ const remainingTime = computed(() => {
   return journey.value.estimatedTime.withTraffic - elapsedTime.value
 })
 
+const fromLocationDisplay = computed(() => {
+  if (userLocation.value && userLocation.value.latitude) {
+    return userLocation.value.address || `${userLocation.value.latitude.toFixed(4)}, ${userLocation.value.longitude.toFixed(4)}`
+  }
+  return 'Current Location'
+})
+
 // Format coordinates for display
 const formatCoords = (coords) => {
   if (!coords) return 'N/A'
@@ -217,39 +337,91 @@ const formatTime = (seconds) => {
   return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 
-// Set locations
-const setLocations = (from, to) => {
-  fromLocation.value = from
-  toLocation.value = to
+// Select destination location
+const selectDestination = (location) => {
+  toLocation.value = location
+  // Set from location from user's current location
+  if (userLocation.value && userLocation.value.latitude) {
+    fromLocation.value = {
+      name: userLocation.value.address || 'My Location',
+      coordinates: {
+        lat: userLocation.value.latitude,
+        lng: userLocation.value.longitude
+      }
+    }
+  }
+  // Find nearest bus stops to destination
+  findNearestBusStops()
+}
+
+// Find nearest bus stops to destination
+const findNearestBusStops = () => {
+  if (!toLocation.value) return
+  
+  isLoadingStops.value = true
+  
+  // Simulate a small delay for realistic UX
+  setTimeout(() => {
+    const stops = findNearestStops(
+      toLocation.value.coordinates.lat,
+      toLocation.value.coordinates.lng,
+      8 // Get 8 nearest stops
+    )
+    nearestStops.value = stops
+    isLoadingStops.value = false
+  }, 600)
+}
+
+// Select origin stop
+const selectOriginStop = (stop) => {
+  selectedOriginStop.value = stop
+}
+
+// Back to destination selection
+const backToDestination = () => {
+  selectedOriginStop.value = null
+  nearestStops.value = []
+}
+
+// Back to initial selection
+const backToSelection = () => {
+  toLocation.value = null
+  selectedOriginStop.value = null
+  fromLocation.value = null
+  nearestStops.value = []
+}
+
+// Continue to journey details
+const continueToJourney = () => {
+  if (!selectedOriginStop.value || !toLocation.value) return
   calculateJourney()
 }
 
 // Calculate journey info
 const calculateJourney = () => {
-  if (!fromLocation.value || !toLocation.value) return
+  if (!selectedOriginStop.value || !toLocation.value) return
 
   journey.value = getRouteInfo(
-    fromLocation.value.coordinates.lat,
-    fromLocation.value.coordinates.lng,
+    selectedOriginStop.value.coordinates.lat,
+    selectedOriginStop.value.coordinates.lng,
     toLocation.value.coordinates.lat,
     toLocation.value.coordinates.lng,
-    fromLocation.value.name,
+    selectedOriginStop.value.name,
     toLocation.value.name
   )
 }
 
 // Clear journey
 const clearJourney = () => {
-  fromLocation.value = null
-  toLocation.value = null
+  backToSelection()
   journey.value = null
   stopTracking()
 }
 
 // Reverse route
 const reverseRoute = () => {
-  const temp = fromLocation.value
-  fromLocation.value = toLocation.value
+  const temp = selectedOriginStop.value
+  selectedOriginStop.value = toLocation.value
   toLocation.value = temp
   calculateJourney()
   stopTracking()
@@ -295,24 +467,24 @@ const stopTracking = () => {
 // Book journey function
 const bookJourney = () => {
   // Set selected origin and destination in store
-  store.selectedOriginStop = fromLocation.value
+  store.selectedOriginStop = selectedOriginStop.value
   store.selectedDestinationStop = toLocation.value
   // Could navigate to booking page
   console.log('Booking journey:', journey.value)
 }
 
-// Expose function to set locations from parent
 onMounted(() => {
   // Make function available globally through store or expose
-  store.setJourneyLocations = setLocations
+  store.setJourneyLocations = (from, to) => {
+    fromLocation.value = from
+    toLocation.value = to
+    calculateJourney()
+  }
 })
 
 onUnmounted(() => {
   stopTracking()
 })
-
-// Watch for location selection from store
-store.setJourneyLocations = setLocations
 </script>
 
 <style scoped>
@@ -770,6 +942,449 @@ store.setJourneyLocations = setLocations
   .tracking-info {
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+/* Step Selectors Styles */
+.step-select-destination,
+.step-view-destination {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: #2E7D32;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.step-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.step-header > div:not(.step-number) {
+  flex: 1;
+}
+
+.step-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.back-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.back-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Destination Picker */
+.destination-picker-wrapper {
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.from-location-section {
+  padding: 12px;
+  background: #E8F5E9;
+  border-radius: 8px;
+  border-left: 3px solid #2E7D32;
+}
+
+.from-location-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.from-location-section i {
+  font-size: 20px;
+  color: #2E7D32;
+  flex-shrink: 0;
+}
+
+.from-location-section .location-details {
+  flex: 1;
+}
+
+.from-location-section .label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1B5E20;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.from-location-section .location-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1B5E20;
+}
+
+/* Destination Display */
+.destination-display {
+  padding: 12px 0;
+}
+
+.destination-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: #FFF3E0;
+  border-radius: 8px;
+  border-left: 3px solid #FF6F00;
+}
+
+.destination-card i {
+  font-size: 20px;
+  color: #FF6F00;
+  flex-shrink: 0;
+}
+
+.destination-info {
+  flex: 1;
+}
+
+.destination-info .label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #E65100;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.destination-name {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #E65100;
+}
+
+.destination-city {
+  margin: 0;
+  font-size: 12px;
+  color: #E65100;
+  opacity: 0.8;
+}
+
+.change-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  color: #FF6F00;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.change-btn:hover {
+  background: #FFE0B2;
+  transform: scale(1.1);
+}
+
+/* Nearest Stops List */
+.nearest-stops-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+
+.spinner-small {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #2E7D32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.stops-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.stops-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.stops-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stops-container::-webkit-scrollbar-thumb {
+  background: #BDBDBD;
+  border-radius: 3px;
+}
+
+.stops-container::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+/* Stop Card */
+.stop-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stop-card:hover {
+  background: var(--bg-primary);
+  border-color: #2E7D32;
+  transform: translateX(4px);
+}
+
+.stop-card.selected {
+  background: #E8F5E9;
+  border-color: #2E7D32;
+}
+
+.stop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.stop-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+}
+
+.stop-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  background: #E8F5E9;
+  color: #2E7D32;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.stop-icon.roadside {
+  background: #FFE0B2;
+  color: #FF6F00;
+}
+
+.stop-icon.station {
+  background: #E3F2FD;
+  color: #1976D2;
+}
+
+.stop-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.stop-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.stop-area {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.stop-distance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 6px;
+}
+
+.distance-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E7D32;
+}
+
+.distance-unit {
+  font-size: 11px;
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.stop-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  border-top: 1px solid #C8E6C9;
+  margin-top: 8px;
+}
+
+.selected-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2E7D32;
+}
+
+.selected-badge i {
+  font-size: 14px;
+}
+
+.no-stops {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: var(--text-tertiary);
+}
+
+.no-stops i {
+  font-size: 48px;
+  opacity: 0.3;
+}
+
+/* Continue Button */
+.continue-btn {
+  padding: 12px 20px;
+  background: #2E7D32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.continue-btn:hover {
+  background: #1B5E20;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+}
+
+.continue-btn:disabled {
+  background: #BDBDBD;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 499px) {
+  .step-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .stop-distance {
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .distance-unit {
+    display: none;
+  }
+
+  .stops-container {
+    max-height: 300px;
   }
 }
 </style>

@@ -14,9 +14,9 @@
         <i class="fas fa-map-marker-alt"></i>
         <span>{{ t.track }}</span>
       </div>
-      <div :class="['nav-item', { active: isActive('/planner') }]" @click="goTo('/planner')">
-        <i class="fas fa-calendar-alt"></i>
-        <span>{{ t.planner }}</span>
+      <div :class="['nav-item', { active: isActive('/account') || isActive('/login') }]" @click="handleAccountClick">
+        <i :class="isAuthenticated ? 'fas fa-user' : 'fas fa-sign-in-alt'"></i>
+        <span>{{ isAuthenticated ? t.account : t.signIn }}</span>
       </div>
     </nav>
 
@@ -86,9 +86,12 @@
             <i class="fas fa-map-marker-alt"></i>
             <span v-if="sidebarOpen">{{ t.track }}</span>
           </div>
-          <div class="sidebar-item">
-            <i class="fas fa-user"></i>
-            <span v-if="sidebarOpen">{{ t.account }}</span>
+          <div 
+            :class="['sidebar-item', { active: isActive('/account') || isActive('/login') }]" 
+            @click="handleAccountClick"
+          >
+            <i :class="isAuthenticated ? 'fas fa-user' : 'fas fa-sign-in-alt'"></i>
+            <span v-if="sidebarOpen">{{ isAuthenticated ? t.account : t.signIn }}</span>
           </div>
         </div>
       </div>
@@ -113,6 +116,7 @@ const route = useRoute()
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 const sidebarOpen = computed(() => store.sidebarOpen)
+const isAuthenticated = computed(() => store.token && store.user)
 
 const isActive = (path) => {
   return route.path === path
@@ -120,6 +124,14 @@ const isActive = (path) => {
 
 const goTo = (path) => {
   router.push(path)
+}
+
+const handleAccountClick = () => {
+  if (isAuthenticated.value) {
+    goTo('/account')
+  } else {
+    goTo('/login')
+  }
 }
 
 const toggleSidebar = () => {

@@ -32,10 +32,9 @@ const currentStep = computed(() => {
   const path = route.path
   if (path === '/' || path === '') return 1
   if (path === '/express') return 1
-  if (path === '/trips') return 2
-  if (path === '/destination') return 3
-  if (path === '/summary') return 4
-  if (path === '/payment') return 5
+  if (path === '/destination') return 2
+  if (path === '/summary') return 3
+  if (path === '/payment') return 4
   return 1
 })
 
