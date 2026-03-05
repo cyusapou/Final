@@ -1,0 +1,352 @@
+[
+  {
+    "id": 1,
+    "code": "1001",
+    "name": "Nyabugogo Main Station",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9645,
+    "lng": 30.0723,
+    "area": "Nyabugogo"
+  },
+  {
+    "id": 2,
+    "code": "1002",
+    "name": "Remera Sonatubes",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9433,
+    "lng": 30.0589,
+    "area": "Remera"
+  },
+  {
+    "id": 3,
+    "code": "1003",
+    "name": "Kimironko Market",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9403,
+    "lng": 30.1027,
+    "area": "Kimironko"
+  },
+  {
+    "id": 4,
+    "code": "1004",
+    "name": "Kicukiro Centre",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9526,
+    "lng": 30.0329,
+    "area": "Kicukiro"
+  },
+  {
+    "id": 5,
+    "code": "1005",
+    "name": "Kanombe Terminal",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9686,
+    "lng": 30.0188,
+    "area": "Kanombe"
+  },
+  {
+    "id": 6,
+    "code": "1006",
+    "name": "Gatenga Bus Park",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9765,
+    "lng": 30.0567,
+    "area": "Gatenga"
+  },
+  {
+    "id": 101,
+    "code": "1234",
+    "name": "Bus Stop 1234",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9534,
+    "lng": 30.0142,
+    "area": "Kicukiro"
+  },
+  {
+    "id": 102,
+    "code": "1423",
+    "name": "Bus Stop 1423",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9551,
+    "lng": 30.0214,
+    "area": "Kicukiro"
+  },
+  {
+    "id": 103,
+    "code": "2156",
+    "name": "Bus Stop 2156",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9467,
+    "lng": 30.0521,
+    "area": "Remera"
+  },
+  {
+    "id": 104,
+    "code": "2234",
+    "name": "Bus Stop 2234",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9441,
+    "lng": 30.0619,
+    "area": "Remera"
+  },
+  {
+    "id": 105,
+    "code": "2341",
+    "name": "Bus Stop 2341",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9628,
+    "lng": 30.0751,
+    "area": "Nyabugogo"
+  },
+  {
+    "id": 106,
+    "code": "2456",
+    "name": "Bus Stop 2456",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9667,
+    "lng": 30.0689,
+    "area": "Nyabugogo"
+  },
+  {
+    "id": 107,
+    "code": "3124",
+    "name": "Bus Stop 3124",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9385,
+    "lng": 30.1067,
+    "area": "Kimironko"
+  },
+  {
+    "id": 108,
+    "code": "3245",
+    "name": "Bus Stop 3245",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9421,
+    "lng": 30.1045,
+    "area": "Kimironko"
+  },
+  {
+    "id": 109,
+    "code": "3412",
+    "name": "Bus Stop 3412",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9697,
+    "lng": 30.0035,
+    "area": "Kanombe"
+  },
+  {
+    "id": 110,
+    "code": "3567",
+    "name": "Bus Stop 3567",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9723,
+    "lng": 30.0085,
+    "area": "Kanombe"
+  },
+  {
+    "id": 111,
+    "code": "4123",
+    "name": "Bus Stop 4123",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9752,
+    "lng": 30.0512,
+    "area": "Gatenga"
+  },
+  {
+    "id": 112,
+    "code": "4234",
+    "name": "Bus Stop 4234",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9781,
+    "lng": 30.0587,
+    "area": "Gatenga"
+  },
+  {
+    "id": 113,
+    "code": "4567",
+    "name": "Bus Stop 4567",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9514,
+    "lng": 30.0606,
+    "area": "Kigali City Center"
+  },
+  {
+    "id": 114,
+    "code": "4678",
+    "name": "Bus Stop 4678",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9501,
+    "lng": 30.0638,
+    "area": "Kigali City Center"
+  },
+  {
+    "id": 115,
+    "code": "4789",
+    "name": "Bus Stop 4789",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9487,
+    "lng": 30.0672,
+    "area": "Kigali City Center"
+  },
+  {
+    "id": 116,
+    "code": "4890",
+    "name": "Bus Stop 4890",
+    "type": "roadside",
+    "city": "Kigali",
+    "lat": -1.9473,
+    "lng": 30.0704,
+    "area": "Kigali City Center"
+  },
+  {
+    "id": 200,
+    "code": null,
+    "name": "CYUSA Clever Transportation",
+    "type": "station",
+    "city": "Kigali",
+    "lat": -1.9520,
+    "lng": 30.0650,
+    "area": "Kigali City Center"
+  },
+  {
+    "id": 201,
+    "code": "2001",
+    "name": "Musanze Main Station",
+    "type": "station",
+    "city": "Musanze",
+    "lat": -1.5001,
+    "lng": 29.6333,
+    "area": "Musanze"
+  },
+  {
+    "id": 202,
+    "code": "2002",
+    "name": "Musanze Market",
+    "type": "roadside",
+    "city": "Musanze",
+    "lat": -1.5056,
+    "lng": 29.6401,
+    "area": "Musanze Town"
+  },
+  {
+    "id": 203,
+    "code": "3001",
+    "name": "Rubavu Terminal",
+    "type": "station",
+    "city": "Rubavu",
+    "lat": -1.3733,
+    "lng": 29.2584,
+    "area": "Rubavu"
+  },
+  {
+    "id": 204,
+    "code": "3002",
+    "name": "Rubavu Beach",
+    "type": "roadside",
+    "city": "Rubavu",
+    "lat": -1.3787,
+    "lng": 29.2531,
+    "area": "Rubavu Town"
+  },
+  {
+    "id": 205,
+    "code": "4001",
+    "name": "Huye Station",
+    "type": "station",
+    "city": "Huye",
+    "lat": -2.6045,
+    "lng": 29.7486,
+    "area": "Huye"
+  },
+  {
+    "id": 206,
+    "code": "4002",
+    "name": "Huye University",
+    "type": "roadside",
+    "city": "Huye",
+    "lat": -2.6123,
+    "lng": 29.7521,
+    "area": "Huye Town"
+  },
+  {
+    "id": 207,
+    "code": "5001",
+    "name": "Rusizi Terminal",
+    "type": "station",
+    "city": "Rusizi",
+    "lat": -2.5094,
+    "lng": 29.2533,
+    "area": "Rusizi"
+  },
+  {
+    "id": 208,
+    "code": "5002",
+    "name": "Kamembe Town",
+    "type": "roadside",
+    "city": "Rusizi",
+    "lat": -2.5159,
+    "lng": 29.2598,
+    "area": "Kamembe"
+  },
+  {
+    "id": 209,
+    "code": "6001",
+    "name": "Muhanga Terminal",
+    "type": "station",
+    "city": "Muhanga",
+    "lat": -1.9940,
+    "lng": 30.1807,
+    "area": "Muhanga"
+  },
+  {
+    "id": 210,
+    "code": "7001",
+    "name": "Ruhengeri Station",
+    "type": "station",
+    "city": "Ruhengeri",
+    "lat": -1.5036,
+    "lng": 29.6392,
+    "area": "Ruhengeri"
+  },
+  {
+    "id": 211,
+    "code": "8001",
+    "name": "Butare Terminal",
+    "type": "station",
+    "city": "Butare",
+    "lat": -2.6062,
+    "lng": 29.7422,
+    "area": "Butare"
+  },
+  {
+    "id": 212,
+    "code": "9001",
+    "name": "Kibuye Station",
+    "type": "station",
+    "city": "Kibuye",
+    "lat": -2.0622,
+    "lng": 29.2597,
+    "area": "Kibuye"
+  }
+]

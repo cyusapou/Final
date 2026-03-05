@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper">
+  <div class="page-wrapper" >
     <!-- Mobile: Language toggle in fixed position -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -19,17 +19,20 @@
         
         <h2 class="headline">{{ t.heroTitle }}</h2>
         <p class="subheadline">{{ t.heroSubtitle }}</p>
-        
+        <div class="landing-btn">
+          <div class="btn1">
         <button class="btn-primary btn-large" @click="goToExpress">
           {{ t.boardNow }}
           <i class="fas fa-arrow-right"></i>
         </button>
-        
+        </div>
+        <div class="btn2">
         <button class="btn-secondary btn-large" @click="goToPlanner">
           {{ t.planTrip }}
           <i class="fas fa-calendar-alt"></i>
         </button>
-        
+        </div>
+        </div>
         <p class="hint">{{ t.selectDateHint }}</p>
         
         <!-- Desktop: Feature highlights -->
@@ -75,7 +78,13 @@ const goToPlanner = () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-
+.landing-btn {
+  gap: 10px;
+  
+}
+button {
+  scale: 0.9;
+}
 .page-wrapper {
   font-family: 'Inter', sans-serif;
   min-height: 100vh;

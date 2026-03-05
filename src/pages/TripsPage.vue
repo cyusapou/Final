@@ -110,6 +110,23 @@
             </button>
           </div>
 
+          <!-- Origin Info Banner (auto-resolved from GPS) -->
+          <div v-if="store.autoResolvedOrigin && store.selectedOriginStop" class="origin-info-banner">
+            <div class="banner-content">
+              <span class="banner-icon">🚌</span>
+              <div class="banner-text">
+                <span class="banner-label">{{ t.boardingFrom || 'Departing from' }}</span>
+                <strong class="banner-name">{{ store.selectedOriginStop.name }}</strong>
+                <span v-if="store.selectedOriginStop.distanceLabel" class="banner-distance">
+                  {{ store.selectedOriginStop.distanceLabel }}
+                </span>
+              </div>
+              <button class="banner-close" @click="clearOrigin" title="Change departure point">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+
           <!-- Trip Count -->
           <p class="trips-info">
             {{ t.showingTrips.replace('{count}', filteredTrips.length).replace('{total}', busTrips.length) }}
@@ -300,6 +317,13 @@ const filteredTrips = computed(() => {
 })
 
 const goToExpress = () => {
+  router.push('/destination')
+}
+
+const clearOrigin = () => {
+  // Clear origin and go back to destination selector
+  store.selectedOriginStop = null
+  store.autoResolvedOrigin = false
   router.push('/destination')
 }
 
@@ -638,6 +662,67 @@ const selectTrip = (trip) => {
   padding: 2px 6px;
   border-radius: 10px;
   font-weight: 600;
+}
+
+.origin-info-banner {
+  background: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%);
+  border: 1.5px solid #4CAF50;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.banner-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.banner-label {
+  font-size: 0.75rem;
+  color: #558B2F;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.banner-name {
+  font-size: 0.95rem;
+  color: #1B5E20;
+  font-weight: 700;
+}
+
+.banner-distance {
+  font-size: 0.8rem;
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.banner-close {
+  background: transparent;
+  border: none;
+  color: #558B2F;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.banner-close:hover {
+  color: #1B5E20;
 }
 
 .trips-info {

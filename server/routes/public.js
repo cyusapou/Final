@@ -19,6 +19,7 @@ const {
   validateString
 } = require('../middleware/validator');
 const { asyncHandler } = require('../middleware/errorHandler');
+const { findNearestServiceableStop } = require('../services/stopFinderService');
 
 const router = express.Router();
 
@@ -141,6 +142,70 @@ router.get('/companies', asyncHandler(async (req, res) => {
     success: true,
     data: { companies }
   });
+}));
+
+/**
+ * Find nearest bus stop for a destination
+ * Smart booking endpoint — finds the nearest stop to user that services the destination
+ * GET /api/public/nearest-stop?destinationId=KGL007&userLat=-1.9344&userLng=30.0560
+ */
+router.get('/nearest-stop', asyncHandler(async (req, res) => {
+  try {
+    const { destinationId, userLat, userLng } = req.query;
+
+    // Validate inputs
+    if (!destinationId) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'destinationId is required' 
+      });
+    }
+    if (!userLat || !userLng) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'userLat and userLng are required' 
+      });
+    }
+
+    const lat = parseFloat(userLat);
+    const lng = parseFloat(userLng);
+
+    if (isNaN(lat) || isNaN(lng)) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'userLat and userLng must be valid numbers' 
+      });
+    }
+
+    // Latitude range: -90 to 90, Longitude range: -180 to 180
+    // Kigali is roughly lat: -1.9, lng: 30.0 — basic sanity check
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'Coordinates out of valid range' 
+      });
+    }
+
+    const result = findNearestServiceableStop(destinationId, lat, lng);
+
+    if (!result.found) {
+      return res.status(404).json({ 
+        success: false,
+        error: result.message 
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    console.error('nearest-stop error:', err);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to find nearest stop' 
+    });
+  }
 }));
 
 /**

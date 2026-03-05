@@ -5,267 +5,95 @@
       <LanguageToggle />
     </div>
 
-    <StepProgress />
+    <StepProgress :current="1" :total="3" />
     
     <div class="screen destination-screen">
       <div class="header">
         <button class="btn-back" @click="goBack">
           <i class="fas fa-arrow-left"></i>
         </button>
-        <h2>{{ t.selectDestination }}</h2>
+        <h2>{{ t('selectDestination') }}</h2>
       </div>
 
-      <!-- Split Layout: Departure (Left) and Destination (Right) -->
-      <div class="split-container">
-        
-        <!-- LEFT PANEL: Departure / Origin -->
-        <div class="split-panel departure-panel">
-          <div class="panel-header">
-            <div class="panel-icon departure-icon">
-              <i class="fas fa-map-marker-alt"></i>
-            </div>
-            <div class="panel-title">
-              <h3>{{ t.whereBoarding }}</h3>
-              <p v-if="store.selectedOriginStop">{{ store.selectedOriginStop.name }}</p>
-              <p v-else class="placeholder-text">{{ t.whereBoarding }}</p>
-            </div>
-            <button v-if="store.selectedOriginStop" class="btn-change" @click="clearOrigin">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-
-          <div class="panel-content" v-if="!store.selectedOriginStop">
-            <!-- City Selector for Departure -->
-            <div class="city-selector">
-              <select v-model="originCity" class="city-select">
-                <option value="Kigali">Kigali</option>
-                <option value="Musanze">Musanze</option>
-                <option value="Rubavu">Rubavu</option>
-                <option value="Huye">Huye</option>
-                <option value="Rusizi">Rusizi</option>
-                <option value="Muhanga">Muhanga</option>
-                <option value="Ruhengeri">Ruhengeri</option>
-                <option value="Butare">Butare</option>
-                <option value="Kibuye">Kibuye</option>
-              </select>
-            </div>
-
-            <!-- Search Bar for Departure -->
-            <div class="search-bar">
-              <i class="fas fa-search"></i>
-              <input 
-                type="text" 
-                v-model="originSearch" 
-                :placeholder="t.searchStop"
-                class="search-input"
-              >
-              <button v-if="originSearch" class="clear-search" @click="originSearch = ''">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-
-            <!-- Stop Type Filter -->
-            <div class="stop-type-filter">
-              <button 
-                :class="['filter-btn', { active: originTypeFilter === 'all' }]"
-                @click="originTypeFilter = 'all'"
-              >
-                All
-              </button>
-              <button 
-                :class="['filter-btn', { active: originTypeFilter === 'station' }]"
-                @click="originTypeFilter = 'station'"
-              >
-                <i class="fas fa-building"></i> {{ t.station }}
-              </button>
-              <button 
-                :class="['filter-btn', { active: originTypeFilter === 'roadside' }]"
-                @click="originTypeFilter = 'roadside'"
-              >
-                <i class="fas fa-bus"></i> {{ t.roadside }}
-              </button>
-            </div>
-
-            <!-- Stops List for Departure -->
-            <div class="stops-list">
-              <div 
-                v-for="stop in filteredOriginStops" 
-                :key="stop.id"
-                class="stop-card"
-                @click="selectOriginStop(stop)"
-              >
-                <div class="stop-icon" :class="stop.type">
-                  <i :class="stop.type === 'station' ? 'fas fa-building' : 'fas fa-bus'"></i>
-                </div>
-                <div class="stop-info">
-                  <h3>{{ stop.name }}</h3>
-                  <div class="stop-meta">
-                    <span class="stop-type-badge" :class="stop.type">
-                      {{ stop.type === 'station' ? t.station : t.roadside }}
-                    </span>
-                    <span v-if="stop.code" class="stop-code">
-                      <i class="fas fa-qrcode"></i> {{ stop.code }}
-                    </span>
-                  </div>
-                  <p v-if="stop.area" class="stop-area">{{ stop.area }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Empty State -->
-            <div v-if="filteredOriginStops.length === 0" class="empty-state">
-              <i class="fas fa-map-marker-alt"></i>
-              <p>{{ t.noResults }}</p>
-            </div>
-          </div>
-
-          <!-- Selected Origin Display -->
-          <div class="selected-stop" v-else>
-            <div class="selected-icon">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="selected-details">
-              <h4>{{ store.selectedOriginStop.name }}</h4>
-              <p v-if="store.selectedOriginStop.area">{{ store.selectedOriginStop.area }}</p>
-              <span class="stop-type-badge" :class="store.selectedOriginStop.type">
-                {{ store.selectedOriginStop.type === 'station' ? t.station : t.roadside }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- DIVIDER -->
-        <div class="split-divider">
-          <div class="divider-line"></div>
-          <div class="divider-icon">
-            <i class="fas fa-exchange-alt"></i>
-          </div>
-          <div class="divider-line"></div>
-        </div>
-
-        <!-- RIGHT PANEL: Destination -->
-        <div class="split-panel destination-panel">
-          <div class="panel-header">
-            <div class="panel-icon destination-icon">
-              <i class="fas fa-map-marker"></i>
-            </div>
-            <div class="panel-title">
-              <h3>{{ t.whereGettingOff }}</h3>
-              <p v-if="store.selectedDestinationStop">{{ store.selectedDestinationStop.name }}</p>
-              <p v-else class="placeholder-text">{{ t.whereGettingOff }}</p>
-            </div>
-            <button v-if="store.selectedDestinationStop" class="btn-change" @click="clearDestination">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-
-          <div class="panel-content" v-if="!store.selectedDestinationStop">
-            <!-- City Selector for Destination -->
-            <div class="city-selector">
-              <select v-model="destCity" class="city-select">
-                <option value="Kigali">Kigali</option>
-                <option value="Musanze">Musanze</option>
-                <option value="Rubavu">Rubavu</option>
-                <option value="Huye">Huye</option>
-                <option value="Rusizi">Rusizi</option>
-                <option value="Muhanga">Muhanga</option>
-                <option value="Ruhengeri">Ruhengeri</option>
-                <option value="Butare">Butare</option>
-                <option value="Kibuye">Kibuye</option>
-              </select>
-            </div>
-
-            <!-- Search Bar for Destination -->
-            <div class="search-bar">
-              <i class="fas fa-search"></i>
-              <input 
-                type="text" 
-                v-model="destSearch" 
-                :placeholder="t.searchStop"
-                class="search-input"
-              >
-              <button v-if="destSearch" class="clear-search" @click="destSearch = ''">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-
-            <!-- Stop Type Filter -->
-            <div class="stop-type-filter">
-              <button 
-                :class="['filter-btn', { active: destTypeFilter === 'all' }]"
-                @click="destTypeFilter = 'all'"
-              >
-                All
-              </button>
-              <button 
-                :class="['filter-btn', { active: destTypeFilter === 'station' }]"
-                @click="destTypeFilter = 'station'"
-              >
-                <i class="fas fa-building"></i> {{ t.station }}
-              </button>
-              <button 
-                :class="['filter-btn', { active: destTypeFilter === 'roadside' }]"
-                @click="destTypeFilter = 'roadside'"
-              >
-                <i class="fas fa-bus"></i> {{ t.roadside }}
-              </button>
-            </div>
-
-            <!-- Stops List for Destination -->
-            <div class="stops-list">
-              <div 
-                v-for="stop in filteredDestStops" 
-                :key="stop.id"
-                class="stop-card"
-                @click="selectDestStop(stop)"
-              >
-                <div class="stop-icon" :class="stop.type">
-                  <i :class="stop.type === 'station' ? 'fas fa-building' : 'fas fa-bus'"></i>
-                </div>
-                <div class="stop-info">
-                  <h3>{{ stop.name }}</h3>
-                  <div class="stop-meta">
-                    <span class="stop-type-badge" :class="stop.type">
-                      {{ stop.type === 'station' ? t.station : t.roadside }}
-                    </span>
-                    <span v-if="stop.code" class="stop-code">
-                      <i class="fas fa-qrcode"></i> {{ stop.code }}
-                    </span>
-                  </div>
-                  <p v-if="stop.area" class="stop-area">{{ stop.area }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Empty State -->
-            <div v-if="filteredDestStops.length === 0" class="empty-state">
-              <i class="fas fa-map-marker-alt"></i>
-              <p>{{ t.noResults }}</p>
-            </div>
-          </div>
-
-          <!-- Selected Destination Display -->
-          <div class="selected-stop" v-else>
-            <div class="selected-icon">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="selected-details">
-              <h4>{{ store.selectedDestinationStop.name }}</h4>
-              <p v-if="store.selectedDestinationStop.area">{{ store.selectedDestinationStop.area }}</p>
-              <span class="stop-type-badge" :class="store.selectedDestinationStop.type">
-                {{ store.selectedDestinationStop.type === 'station' ? t.station : t.roadside }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Continue Button -->
-      <div class="continue-section" v-if="store.selectedOriginStop && store.selectedDestinationStop">
-        <button class="btn-continue" @click="goToSummary">
-          {{ t.continue }} <i class="fas fa-arrow-right"></i>
+      <!-- Search Box -->
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="t('searchDestination')"
+          class="stop-input"
+          @input="filterStops"
+        />
+        <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">
+          <i class="fas fa-times"></i>
         </button>
       </div>
+
+      <!-- Destination stops list - shown when no destination selected yet -->
+      <div v-if="!selectedDestination && !loading && !error" class="stops-section">
+        <ul v-if="filteredStops.length" class="stop-list">
+          <li
+            v-for="stop in filteredStops"
+            :key="stop.id"
+            class="stop-item"
+            @click="selectDestination(stop)"
+          >
+            <div class="stop-icon">
+              <i :class="stop.type === 'station' ? 'fas fa-building' : 'fas fa-bus'"></i>
+            </div>
+            <div class="stop-info">
+              <span class="stop-name">{{ stop.name }}</span>
+              <span class="stop-meta">
+                <span v-if="stop.code" class="stop-code">{{ stop.code }}</span>
+                <span v-if="stop.area" class="stop-area">{{ stop.area }}</span>
+              </span>
+            </div>
+            <span class="stop-type-badge" :class="stop.type">
+              {{ stop.type === 'station' ? t('station') : t('roadside') }}
+            </span>
+          </li>
+        </ul>
+
+        <!-- Empty state when no search results -->
+        <div v-else-if="searchQuery" class="empty-state">
+          <i class="fas fa-search"></i>
+          <p>{{ t('noResults') }}</p>
+          <p class="empty-hint">Try searching with a different query</p>
+        </div>
+
+        <!-- Start typing hint -->
+        <div v-else class="empty-state">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>{{ t('searchDestination') }}</p>
+          <p class="empty-hint">Type to find your destination</p>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div v-if="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>{{ t('findingNearestStop') || 'Finding nearest stop to you...' }}</p>
+      </div>
+
+      <!-- Error state -->
+      <div v-if="error && !loading" class="error-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ error }}</p>
+        <button v-if="selectedDestination" class="btn-retry" @click="retryFindStop">
+          {{ t('tryAgain') || 'Try Again' }}
+        </button>
+      </div>
+
+      <!-- Nearest stop card - shown after selection and retrieval -->
+      <NearestStopCard
+        v-if="nearestStop && !loading && selectedDestination"
+        :stop="nearestStop"
+        :destination="selectedDestination"
+        :alternatives="alternatives"
+        @confirm="confirmAndProceed"
+        @change="clearSelection"
+      />
     </div>
   </div>
 </template>
@@ -275,116 +103,132 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { store, stops } from '../store/index.js'
 import { translations } from '../translations/index.js'
+import { useSmartStop } from '../composables/useSmartStop.js'
 import LanguageToggle from '../components/LanguageToggle.vue'
 import StepProgress from '../components/StepProgress.vue'
+import NearestStopCard from '../components/NearestStopCard.vue'
 
 const router = useRouter()
 const currentLang = computed(() => store.currentLang)
-const t = computed(() => translations[currentLang.value])
 
-// Origin (Departure) State
-const originCity = ref('Kigali')
-const originSearch = ref('')
-const originTypeFilter = ref('all')
+// Translation helper
+const t = (key) => {
+  const trans = translations[currentLang.value]
+  return trans && trans[key] ? trans[key] : translations['en'][key] || key
+}
 
-// Destination State
-const destCity = ref('Kigali')
-const destSearch = ref('')
-const destTypeFilter = ref('all')
+// Smart stop composable
+const { nearestStop, alternatives, loading, error, findNearestStop, clearSelection: clearSmartStop } = useSmartStop()
 
-// Filtered stops for origin
-const filteredOriginStops = computed(() => {
-  let result = stops.filter(s => s.city === originCity.value)
+// Local state
+const searchQuery = ref('')
+const selectedDestination = ref(null)
+const lastDestinationId = ref(null)
+
+// Filter stops based on search query
+const filteredStops = computed(() => {
+  if (!searchQuery.value) return []
   
-  if (originTypeFilter.value !== 'all') {
-    result = result.filter(s => s.type === originTypeFilter.value)
-  }
-  
-  if (originSearch.value) {
-    const query = originSearch.value.toLowerCase()
-    result = result.filter(s => 
-      s.name.toLowerCase().includes(query) || 
-      (s.area && s.area.toLowerCase().includes(query))
-    )
-  }
-  
-  return result
+  const q = searchQuery.value.toLowerCase()
+  return stops.filter(s => 
+    s.name.toLowerCase().includes(q) || 
+    (s.code && s.code.includes(q)) ||
+    (s.area && s.area.toLowerCase().includes(q))
+  ).slice(0, 12) // Limit to 12 results
 })
 
-// Filtered stops for destination
-const filteredDestStops = computed(() => {
-  let result = stops.filter(s => s.city === destCity.value)
-  
-  if (destTypeFilter.value !== 'all') {
-    result = result.filter(s => s.type === destTypeFilter.value)
+// Go back to previous page
+function goBack() {
+  router.back()
+}
+
+// Handle destination selection
+async function selectDestination(stop) {
+  selectedDestination.value = stop
+  searchQuery.value = stop.name
+  lastDestinationId.value = stop.id
+
+  // Immediately find nearest stop
+  try {
+    await findNearestStop(stop.id)
+  } catch (err) {
+    // Error is already set in the composable
+    console.error('Failed to find nearest stop:', err)
   }
-  
-  if (destSearch.value) {
-    const query = destSearch.value.toLowerCase()
-    result = result.filter(s => 
-      s.name.toLowerCase().includes(query) || 
-      (s.area && s.area.toLowerCase().includes(query))
-    )
+}
+
+// Retry finding the nearest stop
+function retryFindStop() {
+  if (lastDestinationId.value) {
+    findNearestStop(lastDestinationId.value)
   }
-  
-  return result
-})
-
-const clearOrigin = () => {
-  store.selectedOriginStop = null
 }
 
-const clearDestination = () => {
-  store.selectedDestinationStop = null
+// Clear the selection and start over
+function clearSelection() {
+  selectedDestination.value = null
+  nearestStop.value = null
+  searchQuery.value = ''
+  clearSmartStop()
 }
 
-const selectOriginStop = (stop) => {
-  store.selectedOriginStop = stop
+// Confirm and proceed to trips page
+function confirmAndProceed() {
+  if (nearestStop.value && selectedDestination.value) {
+    // Save both resolved origin and destination to store
+    store.selectedOriginStop = nearestStop.value
+    store.selectedDestinationStop = selectedDestination.value
+    
+    // Also save the auto-resolved origin flag
+    store.autoResolvedOrigin = true
+    
+    router.push('/trips')
+  }
 }
 
-const selectDestStop = (stop) => {
-  store.selectedDestinationStop = stop
-}
-
-const goBack = () => {
-  router.push('/express')
-}
-
-const goToSummary = () => {
-  router.push('/trips')
+// Watch for search input changes
+function filterStops() {
+  // The computed property handles filtering
+  // Reset selected destination when user modifies search
+  if (selectedDestination.value && selectedDestination.value.name !== searchQuery.value) {
+    selectedDestination.value = null
+    clearSmartStop()
+  }
 }
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-
 .page-wrapper {
-  font-family: 'Inter', sans-serif;
+  width: 100%;
   min-height: 100vh;
-  background: #F5F5F5;
+  background: var(--bg-secondary);
 }
 
 .mobile-lang-toggle {
-  display: block;
-}
-
-@media (min-width: 500px) {
-  .mobile-lang-toggle {
-    display: none;
-  }
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
 }
 
 .screen {
-  min-height: 100vh;
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 0;
+  margin: 0;
 }
 
-@media (min-width: 1024px) {
-  .screen {
-    padding: 24px 32px;
+.destination-screen {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .destination-screen {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 12px;
   }
 }
 
@@ -392,493 +236,330 @@ const goToSummary = () => {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
-  padding-top: 16px;
-}
-
-.header h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #212121;
-}
-
-@media (min-width: 1024px) {
-  .header h2 {
-    font-size: 22px;
-  }
+  margin-bottom: 8px;
 }
 
 .btn-back {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #E8E8E8;
-  background: #FFF;
-  color: #424242;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-primary);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
 }
 
 .btn-back:hover {
-  background: #E8F5E9;
-  color: #2E7D32;
+  background: var(--bg-tertiary);
 }
 
-/* Split Container */
-.split-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-@media (min-width: 1024px) {
-  .split-container {
-    flex-direction: row;
-    gap: 0;
-  }
-}
-
-/* Split Panels */
-.split-panel {
-  background: #FFF;
-  border-radius: 16px;
-  padding: 20px;
-  flex: 1;
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
-}
-
-@media (min-width: 1024px) {
-  .split-panel {
-    flex: 1;
-    min-height: calc(100vh - 250px);
-  }
-}
-
-.departure-panel {
-  border: 2px solid #E8E8E8;
-}
-
-.destination-panel {
-  border: 2px solid #E8E8E8;
-}
-
-/* Panel Header */
-.panel-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #E8E8E8;
-  margin-bottom: 16px;
-}
-
-.panel-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.departure-icon {
-  background: #E3F2FD;
-  color: #1976D2;
-}
-
-.destination-icon {
-  background: #FFF3E0;
-  color: #F57C00;
-}
-
-.panel-title {
-  flex: 1;
-}
-
-.panel-title h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #212121;
-  margin: 0 0 4px 0;
-}
-
-.panel-title p {
-  font-size: 14px;
-  color: #2E7D32;
+.header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
   margin: 0;
-  font-weight: 500;
+  color: var(--text-primary);
 }
 
-.panel-title .placeholder-text {
-  color: #9E9E9E;
-  font-weight: 400;
+@media (min-width: 768px) {
+  .header h2 {
+    font-size: 1.1rem;
+  }
 }
 
-.btn-change {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid #E8E8E8;
-  background: #FFF;
-  color: #757575;
-  cursor: pointer;
+.search-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+  gap: 10px;
+  background: var(--bg-primary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
 }
 
-.btn-change:hover {
-  background: #FFEBEE;
-  color: #D32F2F;
-  border-color: #D32F2F;
+@media (min-width: 768px) {
+  .search-box {
+    padding: 8px 10px;
+  }
+  
+  .search-box i {
+    font-size: 0.95rem;
+  }
+  
+  .stop-input {
+    font-size: 0.9rem;
+  }
 }
 
-/* Panel Content */
-.panel-content {
+.search-box i {
+  color: var(--text-tertiary);
+  font-size: 1.1rem;
+}
+
+.stop-input {
   flex: 1;
-  overflow-y: auto;
-}
-
-/* City Selector */
-.city-selector {
-  margin-bottom: 16px;
-}
-
-.city-selector label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #424242;
-  margin-bottom: 6px;
-}
-
-.city-select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #E8E8E8;
-  border-radius: 8px;
-  font-size: 14px;
-  background: #FFF;
-  color: #212121;
-}
-
-/* Search Bar */
-.search-bar {
-  position: relative;
-  margin-bottom: 16px;
-}
-
-.search-bar i {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #757575;
-  font-size: 14px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 14px 40px 14px 42px;
-  border: 1.5px solid #E8E8E8;
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  background: #FFF;
-  transition: all 0.2s;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #2E7D32;
-  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
-}
-
-.clear-search {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
   border: none;
-  color: #757575;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+}
+
+.stop-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1rem;
   cursor: pointer;
   padding: 4px;
+  transition: color 0.2s ease;
 }
 
-/* Stop Type Filter */
-.stop-type-filter {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: 1px solid #E8E8E8;
-  border-radius: 8px;
-  background: #FFF;
-  font-size: 12px;
-  color: #757575;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.filter-btn:hover {
-  border-color: #2E7D32;
-}
-
-.filter-btn.active {
-  background: #2E7D32;
-  color: #FFF;
-  border-color: #2E7D32;
+.clear-btn:hover {
+  color: var(--text-secondary);
 }
 
 /* Stops List */
-.stops-list {
+.stops-section {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.stop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: 350px;
-  overflow-y: auto;
+  gap: 8px;
 }
 
-.stop-card {
+.stop-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
-  padding: 14px;
-  background: #FFF;
-  border: 1.5px solid #E8E8E8;
-  border-radius: 12px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.stop-card:hover {
-  border-color: #2E7D32;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+@media (min-width: 768px) {
+  .stop-item {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .stop-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .stop-name {
+    font-size: 0.9rem;
+  }
+  
+  .stop-meta {
+    font-size: 0.75rem;
+  }
+}
+
+.stop-item:hover {
+  border-color: var(--primary-green);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--primary-green-bg) 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.stop-item:active {
+  transform: scale(0.98);
 }
 
 .stop-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.stop-icon.station {
-  background: #E3F2FD;
-  color: #1976D2;
-}
-
-.stop-icon.roadside {
-  background: #FFF3E0;
-  color: #F57C00;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  color: var(--primary-green);
 }
 
 .stop-info {
   flex: 1;
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.stop-info h3 {
-  font-size: 14px;
+.stop-name {
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #212121;
-  margin: 0 0 4px 0;
+  color: var(--text-primary);
 }
 
 .stop-meta {
   display: flex;
-  align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
-}
-
-.stop-type-badge {
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.stop-type-badge.station {
-  background: #E3F2FD;
-  color: #1976D2;
-}
-
-.stop-type-badge.roadside {
-  background: #FFF3E0;
-  color: #F57C00;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
 }
 
 .stop-code {
-  font-size: 11px;
-  color: #757575;
+  background: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #666;
 }
 
 .stop-area {
-  font-size: 12px;
-  color: #9E9E9E;
-  margin: 0;
+  color: var(--text-secondary);
 }
 
-/* Selected Stop */
-.selected-stop {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: #E8F5E9;
-  border-radius: 12px;
-  margin-top: auto;
-}
-
-.selected-icon {
-  font-size: 32px;
-  color: #2E7D32;
-}
-
-.selected-details h4 {
-  font-size: 16px;
+.stop-type-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #212121;
-  margin: 0 0 4px 0;
+  white-space: nowrap;
+  text-transform: capitalize;
 }
 
-.selected-details p {
-  font-size: 13px;
-  color: #757575;
-  margin: 0 0 8px 0;
+.stop-type-badge.station {
+  background: #e3f2fd;
+  color: #1976d2;
 }
 
-/* Split Divider */
-.split-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-  flex-shrink: 0;
-}
-
-@media (min-width: 1024px) {
-  .split-divider {
-    flex-direction: column;
-    padding: 0 20px;
-    justify-content: center;
-  }
-}
-
-.divider-line {
-  height: 2px;
-  width: 60px;
-  background: #E8E8E8;
-}
-
-@media (min-width: 1024px) {
-  .divider-line {
-    width: 2px;
-    height: 60px;
-  }
-}
-
-.divider-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #2E7D32;
-  color: #FFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0;
-}
-
-@media (min-width: 1024px) {
-  .divider-icon {
-    margin: 0;
-  }
+.stop-type-badge.roadside {
+  background: #f3e5f5;
+  color: #7b1fa2;
 }
 
 /* Empty State */
 .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
   text-align: center;
-  padding: 40px 20px;
-  color: #757575;
+  color: var(--text-tertiary);
 }
 
 .empty-state i {
-  font-size: 48px;
-  margin-bottom: 16px;
-  color: #E8E8E8;
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  opacity: 0.5;
 }
 
 .empty-state p {
-  font-size: 15px;
+  margin: 0;
+  font-size: 0.95rem;
 }
 
-/* Continue Button */
-.continue-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #E8E8E8;
+.empty-hint {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin-top: 4px;
 }
 
-.btn-continue {
-  width: 100%;
-  padding: 16px 24px;
-  background: #2E7D32;
-  color: #FFF;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
+/* Loading State */
+.loading-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
+  padding: 48px 24px;
+  gap: 16px;
 }
 
-.btn-continue:hover {
-  background: #1B5E20;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
-/* Mobile adjustments */
-@media (max-width: 499px) {
-  .mobile-lang-toggle {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 100;
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+/* Error State */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  gap: 12px;
+  background: #ffebee;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+.error-state i {
+  font-size: 2rem;
+  color: #d32f2f;
+}
+
+.error-state p {
+  color: #c62828;
+  font-size: 0.95rem;
+  margin: 0;
+  text-align: center;
+}
+
+.btn-retry {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 8px;
+}
+
+.btn-retry:hover {
+  background: #c62828;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .destination-screen {
+    padding: 12px;
   }
-  
-  .page-wrapper {
-    padding-bottom: 70px;
+
+  .header {
+    margin-bottom: 12px;
   }
-  
-  .split-panel {
-    min-height: 400px;
+
+  .header h2 {
+    font-size: 1.1rem;
+  }
+
+  .stop-item {
+    padding: 10px;
   }
 }
 </style>

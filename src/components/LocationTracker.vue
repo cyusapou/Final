@@ -263,7 +263,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import { store, coordinates } from '../store/index.js'
 import { useLocation } from '../composables/useLocation.js'
 import { translations } from '../translations/index.js'
@@ -506,6 +506,16 @@ const formatTime = (timestamp) => {
     second: '2-digit'
   })
 }
+
+// Cleanup tracking intervals when component unmounts
+onUnmounted(() => {
+  if (store.trackingIntervalId) {
+    clearInterval(store.trackingIntervalId)
+    store.trackingIntervalId = null
+  }
+  store.isTrackingBus = false
+  isTrackingBus.value = false
+})
 </script>
 
 <style scoped>

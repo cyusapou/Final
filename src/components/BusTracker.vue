@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, readonly, onMounted, onUnmounted } from 'vue'
 import { LMarker, LLayerGroup, LPopup } from '@vue-leaflet/vue-leaflet'
 import { Icon } from 'leaflet'
 

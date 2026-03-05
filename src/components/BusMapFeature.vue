@@ -425,7 +425,17 @@ onMounted(() => {
 
 onUnmounted(() => {
   // Clean up real-time tracking
-  stopRealTimeTracking()
+  try {
+    stopRealTimeTracking()
+  } catch (err) {
+    console.warn('Error stopping real-time tracking:', err)
+  }
+  
+  // Clean up store intervals
+  if (store.trackingIntervalId) {
+    clearInterval(store.trackingIntervalId)
+    store.trackingIntervalId = null
+  }
 })
 
 // Expose methods for parent component

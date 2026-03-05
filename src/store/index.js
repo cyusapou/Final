@@ -88,6 +88,7 @@ export const store = reactive({
   selectedDestination: null,
   selectedOriginStop: null,
   selectedDestinationStop: null,
+  autoResolvedOrigin: false, // Flag to indicate origin was auto-resolved from GPS
   selectedDate: new Date().toISOString().split('T')[0],
   
   // UI state
