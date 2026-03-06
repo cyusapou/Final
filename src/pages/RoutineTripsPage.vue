@@ -334,6 +334,10 @@ const bookRoutine = (routine) => {
   color: #212121;
 }
 
+.dark .page-header h1 {
+  color: #E5E5E5;
+}
+
 .section {
   margin-bottom: 32px;
 }
@@ -350,6 +354,10 @@ const bookRoutine = (routine) => {
   font-weight: 600;
   color: #424242;
   margin-bottom: 12px;
+}
+
+.dark .section-title {
+  color: #E5E5E5;
 }
 
 .section-header .section-title {
@@ -371,8 +379,16 @@ const bookRoutine = (routine) => {
   transition: all 0.2s;
 }
 
+.dark .btn-add {
+  background: #4B5563;
+}
+
 .btn-add:hover {
   background: #1B5E20;
+}
+
+.dark .btn-add:hover {
+  background: #374151;
 }
 
 .routines-list {
@@ -388,9 +404,19 @@ const bookRoutine = (routine) => {
   border: 1px solid #E8E8E8;
 }
 
+.dark .routine-card {
+  background: #1F2937;
+  border-color: #374151;
+}
+
 .routine-card.today {
   border-color: #2E7D32;
   background: #E8F5E9;
+}
+
+.dark .routine-card.today {
+  background: #374151;
+  border-color: #4B5563;
 }
 
 .routine-header {
@@ -412,9 +438,19 @@ const bookRoutine = (routine) => {
   flex-shrink: 0;
 }
 
+.dark .routine-icon {
+  background: #374151;
+  color: #9CA3AF;
+}
+
 .routine-icon.icon-school {
   background: #E3F2FD;
   color: #1976D2;
+}
+
+.dark .routine-icon.icon-school {
+  background: #1E3A5F;
+  color: #60A5FA;
 }
 
 .routine-icon.icon-work {
@@ -422,9 +458,19 @@ const bookRoutine = (routine) => {
   color: #F57C00;
 }
 
+.dark .routine-icon.icon-work {
+  background: #3E2723;
+  color: #FB923C;
+}
+
 .routine-icon.icon-home {
   background: #E8F5E9;
   color: #2E7D32;
+}
+
+.dark .routine-icon.icon-home {
+  background: #374151;
+  color: #A0AEC0;
 }
 
 .routine-info {
@@ -438,10 +484,18 @@ const bookRoutine = (routine) => {
   margin: 0 0 4px;
 }
 
+.dark .routine-info h3 {
+  color: #E5E5E5;
+}
+
 .routine-info .route {
   font-size: 13px;
   color: #757575;
   margin: 0;
+}
+
+.dark .routine-info .route {
+  color: #9CA3AF;
 }
 
 .routine-details {
@@ -454,6 +508,11 @@ const bookRoutine = (routine) => {
   border-bottom: 1px solid #F5F5F5;
 }
 
+.dark .routine-details {
+  border-top-color: #374151;
+  border-bottom-color: #374151;
+}
+
 .detail-row {
   display: flex;
   align-items: center;
@@ -462,8 +521,16 @@ const bookRoutine = (routine) => {
   color: #424242;
 }
 
+.dark .detail-row {
+  color: #E5E5E5;
+}
+
 .detail-row i {
   color: #757575;
+}
+
+.dark .detail-row i {
+  color: #9CA3AF;
 }
 
 .days-badges {
@@ -484,8 +551,18 @@ const bookRoutine = (routine) => {
   color: #757575;
 }
 
+.dark .day-badge {
+  background: #374151;
+  color: #9CA3AF;
+}
+
 .day-badge.active {
   background: #2E7D32;
+  color: #FFF;
+}
+
+.dark .day-badge.active {
+  background: #4B5563;
   color: #FFF;
 }
 
@@ -514,8 +591,16 @@ const bookRoutine = (routine) => {
   border: none;
 }
 
+.dark .btn-primary {
+  background: #4B5563;
+}
+
 .btn-primary:hover {
   background: #1B5E20;
+}
+
+.dark .btn-primary:hover {
+  background: #374151;
 }
 
 .btn-secondary {
@@ -524,8 +609,18 @@ const bookRoutine = (routine) => {
   border: 1px solid #E8E8E8;
 }
 
+.dark .btn-secondary {
+  background: #374151;
+  color: #E5E5E5;
+  border-color: #4B5563;
+}
+
 .btn-secondary:hover {
   background: #F5F5F5;
+}
+
+.dark .btn-secondary:hover {
+  background: #4B5563;
 }
 
 .btn-danger {
@@ -534,8 +629,18 @@ const bookRoutine = (routine) => {
   border: 1px solid #FFCDD2;
 }
 
+.dark .btn-danger {
+  background: #374151;
+  color: #EF4444;
+  border-color: #7F1D1D;
+}
+
 .btn-danger:hover {
   background: #FFEBEE;
+}
+
+.dark .btn-danger:hover {
+  background: #7F1D1D;
 }
 
 .btn-book-now {
@@ -550,8 +655,16 @@ const bookRoutine = (routine) => {
   transition: all 0.2s;
 }
 
+.dark .btn-book-now {
+  background: #4B5563;
+}
+
 .btn-book-now:hover {
   background: #1B5E20;
+}
+
+.dark .btn-book-now:hover {
+  background: #374151;
 }
 
 .empty-state {
@@ -600,6 +713,10 @@ const bookRoutine = (routine) => {
   overflow-y: auto;
 }
 
+.dark .modal {
+  background: #1F2937;
+}
+
 .modal-small {
   max-width: 360px;
 }
@@ -612,11 +729,19 @@ const bookRoutine = (routine) => {
   border-bottom: 1px solid #E8E8E8;
 }
 
+.dark .modal-header {
+  border-bottom-color: #374151;
+}
+
 .modal-header h2 {
   font-size: 18px;
   font-weight: 600;
   color: #212121;
   margin: 0;
+}
+
+.dark .modal-header h2 {
+  color: #E5E5E5;
 }
 
 .btn-close {
@@ -630,6 +755,11 @@ const bookRoutine = (routine) => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.dark .btn-close {
+  background: #374151;
+  color: #9CA3AF;
 }
 
 .modal-body {
@@ -648,6 +778,10 @@ const bookRoutine = (routine) => {
   margin-bottom: 6px;
 }
 
+.dark .form-group label {
+  color: #E5E5E5;
+}
+
 .form-input, .form-select {
   width: 100%;
   padding: 12px;
@@ -656,6 +790,12 @@ const bookRoutine = (routine) => {
   font-size: 14px;
   color: #212121;
   background: #FFF;
+}
+
+.dark .form-input, .dark .form-select {
+  border-color: #4B5563;
+  color: #E5E5E5;
+  background: #374151;
 }
 
 .form-input:focus, .form-select:focus {
@@ -681,10 +821,21 @@ const bookRoutine = (routine) => {
   transition: all 0.2s;
 }
 
+.dark .day-btn {
+  border-color: #4B5563;
+  background: #374151;
+  color: #9CA3AF;
+}
+
 .day-btn.active {
   background: #2E7D32;
   color: #FFF;
   border-color: #2E7D32;
+}
+
+.dark .day-btn.active {
+  background: #4B5563;
+  border-color: #4B5563;
 }
 
 .modal-footer {
@@ -692,6 +843,10 @@ const bookRoutine = (routine) => {
   gap: 12px;
   padding: 16px 20px;
   border-top: 1px solid #E8E8E8;
+}
+
+.dark .modal-footer {
+  border-top-color: #374151;
 }
 
 .modal-footer .btn-primary, .modal-footer .btn-secondary, .modal-footer .btn-danger {

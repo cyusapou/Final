@@ -1,91 +1,104 @@
 <template>
-  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
+  <div class="min-h-screen bg-white dark:bg-neutral-900 transition-colors">
     <!-- Mobile: Language toggle -->
-    <div class="mobile-lang-toggle">
+    <div class="absolute top-2 right-2 z-50">
       <LanguageToggle />
     </div>
 
     <StepProgress :current="1" :total="3" />
     
-    <div class="screen destination-screen bg-white dark:bg-neutral-900">
-      <div class="header">
-        <button class="btn-back" @click="goBack">
-          <i class="fas fa-arrow-left"></i>
+    <div class="p-4 md:p-3 md:max-w-2xl md:mx-auto flex flex-col gap-3 min-h-screen">
+      <div class="flex items-center gap-3 mb-2">
+        <button 
+          @click="goBack"
+          class="p-2 rounded-lg bg-transparent hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors"
+        >
+          <i class="fas fa-arrow-left text-lg text-gray-900 dark:text-gray-100"></i>
         </button>
-        <h2>{{ t('selectDestination') }}</h2>
+        <h2 class="text-xl md:text-lg font-bold text-gray-900 dark:text-gray-100">
+          {{ t('selectDestination') }}
+        </h2>
       </div>
 
       <!-- Search Box -->
-      <div class="search-box">
-        <i class="fas fa-search"></i>
+      <div class="flex items-center gap-2.5 bg-white dark:bg-neutral-800 border-2 border-gray-200 dark:border-neutral-700 rounded-xl p-2.5 md:p-2">
+        <i class="fas fa-search text-gray-400 dark:text-gray-500 text-lg md:text-base"></i>
         <input
           v-model="searchQuery"
           type="text"
           :placeholder="t('searchDestination')"
-          class="stop-input"
+          class="flex-1 bg-transparent border-none outline-none text-base md:text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 font-inherit"
           @input="filterStops"
         />
-        <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">
+        <button 
+          v-if="searchQuery" 
+          @click="searchQuery = ''"
+          class="p-1 bg-transparent border-none text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer transition-colors"
+        >
           <i class="fas fa-times"></i>
         </button>
       </div>
 
-      <!-- Destination stops list - shown when no destination selected yet -->
-      <div v-if="!selectedDestination && !loading && !error" class="stops-section">
-        <ul v-if="filteredStops.length" class="stop-list">
+      <!-- Destination stops list -->
+      <div v-if="!selectedDestination && !loading && !error" class="flex-1 overflow-y-auto p-0">
+        <ul v-if="filteredStops.length" class="list-none p-0 m-0 flex flex-col gap-2">
           <li
             v-for="stop in filteredStops"
             :key="stop.id"
-            class="stop-item"
+            class="flex items-center gap-3 p-3 md:p-2.5 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg cursor-pointer transition-all hover:border-green-600 hover:bg-gradient-to-r hover:from-white hover:to-green-50 dark:hover:from-neutral-800 dark:hover:to-neutral-700 hover:shadow-lg active:scale-95"
             @click="selectDestination(stop)"
           >
-            <div class="stop-icon">
-              <i :class="stop.type === 'station' ? 'fas fa-building' : 'fas fa-bus'"></i>
+            <div class="flex-shrink-0 w-10 h-10 md:w-9 md:h-9 flex items-center justify-center bg-gray-100 dark:bg-neutral-700 rounded-lg text-green-600 dark:text-green-400">
+              <i :class="stop.type === 'station' ? 'fas fa-building' : 'fas fa-bus'" class="text-lg md:text-base"></i>
             </div>
-            <div class="stop-info">
-              <span class="stop-name">{{ stop.name }}</span>
-              <span class="stop-meta">
-                <span v-if="stop.code" class="stop-code">{{ stop.code }}</span>
-                <span v-if="stop.area" class="stop-area">{{ stop.area }}</span>
+            <div class="flex-1 flex flex-col gap-1">
+              <span class="text-sm md:text-xs font-semibold text-gray-900 dark:text-gray-100">{{ stop.name }}</span>
+              <span class="flex gap-2 text-xs md:text-xs text-gray-500 dark:text-gray-400">
+                <span v-if="stop.code" class="bg-gray-100 dark:bg-neutral-700 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-300">{{ stop.code }}</span>
+                <span v-if="stop.area" class="text-gray-600 dark:text-gray-300">{{ stop.area }}</span>
               </span>
             </div>
-            <span class="stop-type-badge" :class="stop.type">
+            <span class="px-2 py-1 rounded-md text-xs font-semibold whitespace-nowrap capitalize" :class="stop.type === 'station' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'">
               {{ stop.type === 'station' ? t('station') : t('roadside') }}
             </span>
           </li>
         </ul>
 
         <!-- Empty state when no search results -->
-        <div v-else-if="searchQuery" class="empty-state">
-          <i class="fas fa-search"></i>
-          <p>{{ t('noResults') }}</p>
-          <p class="empty-hint">Try searching with a different query</p>
+        <div v-else-if="searchQuery" class="flex flex-col items-center justify-center p-12 text-center text-gray-500 dark:text-gray-400">
+          <i class="fas fa-search text-4xl mb-3 opacity-50"></i>
+          <p class="text-sm m-0">{{ t('noResults') }}</p>
+          <p class="text-xs mt-1 text-gray-400 dark:text-gray-500">Try searching with a different query</p>
         </div>
 
         <!-- Start typing hint -->
-        <div v-else class="empty-state">
-          <i class="fas fa-map-marker-alt"></i>
-          <p>{{ t('searchDestination') }}</p>
-          <p class="empty-hint">Type to find your destination</p>
+        <div v-else class="flex flex-col items-center justify-center p-12 text-center text-gray-500 dark:text-gray-400">
+          <i class="fas fa-map-marker-alt text-4xl mb-3 opacity-50"></i>
+          <p class="text-sm m-0">{{ t('searchDestination') }}</p>
+          <p class="text-xs mt-1 text-gray-400 dark:text-gray-500">Type to find your destination</p>
         </div>
       </div>
 
       <!-- Loading state -->
-      <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <p>{{ t('findingNearestStop') || 'Finding nearest stop to you...' }}</p>
+      <div v-if="loading" class="flex flex-col items-center justify-center p-12 gap-4">
+        <div class="w-10 h-10 border-3 border-gray-200 dark:border-neutral-600 border-t-green-600 rounded-full animate-spin"></div>
+        <p class="text-sm text-gray-600 dark:text-gray-300">{{ t('findingNearestStop') || 'Finding nearest stop to you...' }}</p>
       </div>
 
       <!-- Error state -->
-      <div v-if="error && !loading" class="error-state">
-        <i class="fas fa-exclamation-circle"></i>
-        <p>{{ error }}</p>
-        <button v-if="selectedDestination" class="btn-retry" @click="retryFindStop">
+      <div v-if="error && !loading" class="flex flex-col items-center justify-center p-8 gap-3 bg-red-50 dark:bg-red-900/20 rounded-xl mt-4">
+        <i class="fas fa-exclamation-circle text-2xl text-red-600 dark:text-red-400"></i>
+        <p class="text-sm text-red-700 dark:text-red-300 m-0 text-center">{{ error }}</p>
+        <button 
+          v-if="selectedDestination" 
+          @click="retryFindStop"
+          class="bg-red-600 hover:bg-red-700 text-white border-none px-4 py-2 rounded-md text-xs font-semibold cursor-pointer transition-colors mt-2"
+        >
           {{ t('tryAgain') || 'Try Again' }}
         </button>
       </div>
 
-      <!-- Nearest stop card - shown after selection and retrieval -->
+      <!-- Nearest stop card -->
       <NearestStopCard
         v-if="nearestStop && !loading && selectedDestination"
         :stop="nearestStop"
@@ -198,368 +211,16 @@ function filterStops() {
 </script>
 
 <style scoped>
-.page-wrapper {
-  width: 100%;
-  min-height: 100vh;
-  background: var(--bg-secondary);
-}
-
-.mobile-lang-toggle {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 100;
-}
-
-.screen {
-  padding: 0;
-  margin: 0;
-}
-
-.destination-screen {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 100vh;
-}
-
-@media (min-width: 768px) {
-  .destination-screen {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 12px;
-  }
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.btn-back {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-}
-
-.btn-back:hover {
-  background: var(--bg-tertiary);
-}
-
-.header h2 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--text-primary);
-}
-
-@media (min-width: 768px) {
-  .header h2 {
-    font-size: 1.1rem;
-  }
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--bg-primary);
-  border: 1.5px solid var(--border-color);
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-}
-
-@media (min-width: 768px) {
-  .search-box {
-    padding: 8px 10px;
-  }
-  
-  .search-box i {
-    font-size: 0.95rem;
-  }
-  
-  .stop-input {
-    font-size: 0.9rem;
-  }
-}
-
-.search-box i {
-  color: var(--text-tertiary);
-  font-size: 1.1rem;
-}
-
-.stop-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  font-size: 1rem;
-  color: var(--text-primary);
-  outline: none;
-  font-family: inherit;
-}
-
-.stop-input::placeholder {
-  color: var(--text-tertiary);
-}
-
-.clear-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-tertiary);
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 4px;
-  transition: color 0.2s ease;
-}
-
-.clear-btn:hover {
-  color: var(--text-secondary);
-}
-
-/* Stops List */
-.stops-section {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0;
-}
-
-.stop-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stop-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-@media (min-width: 768px) {
-  .stop-item {
-    padding: 10px;
-    gap: 10px;
-  }
-  
-  .stop-icon {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .stop-name {
-    font-size: 0.9rem;
-  }
-  
-  .stop-meta {
-    font-size: 0.75rem;
-  }
-}
-
-.stop-item:hover {
-  border-color: var(--primary-green);
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--primary-green-bg) 100%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.stop-item:active {
-  transform: scale(0.98);
-}
-
-.stop-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  color: var(--primary-green);
-}
-
-.stop-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.stop-name {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.stop-meta {
-  display: flex;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--text-tertiary);
-}
-
-.stop-code {
-  background: var(--bg-secondary);
-  padding: 2px 6px;
-  border-radius: 3px;
-  color: #666;
-}
-
-.stop-area {
-  color: var(--text-secondary);
-}
-
-.stop-type-badge {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  text-transform: capitalize;
-}
-
-.stop-type-badge.station {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.stop-type-badge.roadside {
-  background: #f3e5f5;
-  color: #7b1fa2;
-}
-
-/* Empty State */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  color: var(--text-tertiary);
-}
-
-.empty-state i {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-  opacity: 0.5;
-}
-
-.empty-state p {
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-.empty-hint {
-  font-size: 0.85rem;
-  color: var(--text-tertiary);
-  margin-top: 4px;
-}
-
-/* Loading State */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  gap: 16px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-color);
-  border-top-color: var(--primary-green);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
+/* Custom animations and any non-Tailwind specific styles */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-.loading-state p {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
+.animate-spin {
+  animation: spin 0.8s linear infinite;
 }
 
-/* Error State */
-.error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 24px;
-  gap: 12px;
-  background: #ffebee;
-  border-radius: 12px;
-  margin-top: 16px;
-}
-
-.error-state i {
-  font-size: 2rem;
-  color: #d32f2f;
-}
-
-.error-state p {
-  color: #c62828;
-  font-size: 0.95rem;
-  margin: 0;
-  text-align: center;
-}
-
-.btn-retry {
-  background: #d32f2f;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  margin-top: 8px;
-}
-
-.btn-retry:hover {
-  background: #c62828;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 640px) {
-  .destination-screen {
-    padding: 12px;
-  }
-
-  .header {
-    margin-bottom: 12px;
-  }
-
-  .header h2 {
-    font-size: 1.1rem;
-  }
-
-  .stop-item {
-    padding: 10px;
-  }
+.border-3 {
+  border-width: 3px;
 }
 </style>

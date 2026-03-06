@@ -98,6 +98,14 @@ export const store = reactive({
   isProcessing: false,
   stopCode: '',
   
+  // Computed property for dark mode
+  get isDarkMode() {
+    return this.darkMode
+  },
+  set isDarkMode(value) {
+    this.darkMode = value
+  },
+  
   // Authentication state
   user: null,
   token: null,

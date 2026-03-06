@@ -1,5 +1,5 @@
 <template>
-  <div class="app-layout dark-mode">
+  <div class="app-layout" :class="{ 'dark': isDarkMode }">
     <!-- Always show app layout -->
     <div class="app-main">
       <!-- Desktop Sidebar / Mobile Bottom Nav -->
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import BottomNav from './components/BottomNav.vue'
 import LocationTracker from './components/LocationTracker.vue'
@@ -28,11 +28,34 @@ import { store } from './store/index.js'
 const sidebarOpen = computed(() => store.sidebarOpen)
 const isAuthenticated = computed(() => store.token && store.user)
 
-// Force dark mode globally by always applying the 'dark' class
+// Dark mode state
+const isDarkMode = computed(() => store.isDarkMode)
+
+// Initialize dark mode from localStorage
 onMounted(() => {
-  document.documentElement.classList.add('dark')
-  document.documentElement.classList.add('dark-mode')
+  const savedDarkMode = localStorage.getItem('darkMode')
+  if (savedDarkMode !== null) {
+    store.isDarkMode = savedDarkMode === 'true'
+  }
+  
+  // Apply dark mode class to document
+  updateDarkModeClass()
 })
+
+// Watch for dark mode changes and update document class
+watch(isDarkMode, () => {
+  updateDarkModeClass()
+  // Save to localStorage
+  localStorage.setItem('darkMode', isDarkMode.value.toString())
+})
+
+const updateDarkModeClass = () => {
+  if (isDarkMode.value) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+}
 </script>
 
 <style>
@@ -47,10 +70,7 @@ onMounted(() => {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #app {
@@ -60,17 +80,6 @@ body {
 /* App Layout */
 .app-layout {
   min-height: 100vh;
-  background: var(--bg-secondary);
-  transition: background-color 0.3s ease;
-}
-
-/* Auth Gate Container - Full width when not authenticated */
-.auth-gate-container {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* App Main - Flex layout for authenticated users */

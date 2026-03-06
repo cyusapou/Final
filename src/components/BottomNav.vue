@@ -98,6 +98,7 @@
 
       <div class="sidebar-footer" v-if="sidebarOpen">
         <div class="footer-controls">
+          <DarkModeToggle />
           <LanguageToggle />
         </div>
       </div>
@@ -111,6 +112,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
 import LanguageToggle from './LanguageToggle.vue'
+import DarkModeToggle from './DarkModeToggle.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -158,12 +160,12 @@ const toggleSidebar = () => {
   top: 0;
   bottom: 0;
   width: 220px;
-  background: var(--bg-primary);
-  border-right: 1px solid var(--border-color);
+  background: white;
+  border-right: 1px solid #e5e7eb;
   display: none; /* hidden by default (mobile) */
   flex-direction: column;
   z-index: 200;
-  transition: width 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  transition: width 0.3s ease, transform 0.3s ease;
 }
 
 @media (min-width: 500px) {
@@ -189,7 +191,7 @@ const toggleSidebar = () => {
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #e5e7eb;
   min-height: 60px;
 }
 
@@ -218,23 +220,23 @@ const toggleSidebar = () => {
 .logo-text h1 {
   font-size: 14px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #111827;
   margin: 0;
   line-height: 1.2;
 }
 
 .logo-text span {
   font-size: 10px;
-  color: var(--text-tertiary);
+  color: #6b7280;
 }
 
 .sidebar-toggle {
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-tertiary);
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -244,7 +246,7 @@ const toggleSidebar = () => {
 }
 
 .sidebar-toggle:hover {
-  background: #E8F5E9;
+  background: #f3f4f6;
   color: #2E7D32;
 }
 
@@ -266,7 +268,7 @@ const toggleSidebar = () => {
 .nav-section-title {
   font-size: 10px;
   font-weight: 600;
-  color: var(--text-tertiary);
+  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 8px 12px 4px;
@@ -279,7 +281,7 @@ const toggleSidebar = () => {
   gap: 12px;
   padding: 12px 16px;
   border-radius: 8px;
-  color: var(--text-tertiary);
+  color: #6b7280;
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: 2px;
@@ -299,12 +301,12 @@ const toggleSidebar = () => {
 }
 
 .sidebar-item:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: #f3f4f6;
+  color: #111827;
 }
 
 .sidebar-item.active {
-  background: #E8F5E9;
+  background: #dcfce7;
   color: #2E7D32;
 }
 
@@ -315,7 +317,7 @@ const toggleSidebar = () => {
 
 .sidebar-footer {
   padding: 16px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #e5e7eb;
 }
 
 .footer-controls {
@@ -331,7 +333,7 @@ const toggleSidebar = () => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--bg-primary);
+  background: white;
   justify-content: space-around;
   padding: 8px 0;
   box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.05);
@@ -343,7 +345,7 @@ const toggleSidebar = () => {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  color: var(--text-tertiary);
+  color: #6b7280;
   cursor: pointer;
   padding: 6px 8px;
   transition: all 0.2s;
@@ -380,5 +382,64 @@ const toggleSidebar = () => {
   .bottom-nav {
     display: none;
   }
+}
+
+/* Dark mode styles */
+.dark .sidebar {
+  background: #1f2937;
+  border-right-color: #374151;
+}
+
+.dark .logo-text h1 {
+  color: #f3f4f6;
+}
+
+.dark .logo-text span {
+  color: #9ca3af;
+}
+
+.dark .sidebar-toggle {
+  background: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .sidebar-toggle:hover {
+  background: #4b5563;
+  color: #2E7D32;
+}
+
+.dark .nav-section-title {
+  color: #9ca3af;
+}
+
+.dark .sidebar-item {
+  color: #9ca3af;
+}
+
+.dark .sidebar-item:hover {
+  background: #374151;
+  color: #f3f4f6;
+}
+
+.dark .sidebar-item.active {
+  background: #1e3a28;
+  color: #2E7D32;
+}
+
+.dark .sidebar-footer {
+  border-top-color: #374151;
+}
+
+.dark .bottom-nav {
+  background: #1f2937;
+}
+
+.dark .nav-item {
+  color: #9ca3af;
+}
+
+.dark .nav-item.active {
+  color: #2E7D32;
 }
 </style>

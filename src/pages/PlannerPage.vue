@@ -305,6 +305,10 @@ const deletePlannedTrip = (id) => {
   color: #212121;
 }
 
+.dark .page-header h1 {
+  color: #E5E5E5;
+}
+
 .section {
   margin-bottom: 32px;
 }
@@ -316,6 +320,10 @@ const deletePlannedTrip = (id) => {
   margin-bottom: 16px;
 }
 
+.dark .section-title {
+  color: #E5E5E5;
+}
+
 .plan-form-card {
   background: #FFF;
   border-radius: 16px;
@@ -323,11 +331,20 @@ const deletePlannedTrip = (id) => {
   border: 1px solid #E8E8E8;
 }
 
+.dark .plan-form-card {
+  background: #1F2937;
+  border-color: #374151;
+}
+
 .plan-form-card h2 {
   font-size: 16px;
   font-weight: 600;
   color: #212121;
   margin: 0 0 16px;
+}
+
+.dark .plan-form-card h2 {
+  color: #E5E5E5;
 }
 
 .form-row {
@@ -348,6 +365,10 @@ const deletePlannedTrip = (id) => {
   margin-bottom: 6px;
 }
 
+.dark .form-group label {
+  color: #E5E5E5;
+}
+
 .form-input, .form-select {
   width: 100%;
   padding: 12px;
@@ -356,6 +377,12 @@ const deletePlannedTrip = (id) => {
   font-size: 14px;
   color: #212121;
   background: #FFF;
+}
+
+.dark .form-input, .dark .form-select {
+  border-color: #4B5563;
+  color: #E5E5E5;
+  background: #374151;
 }
 
 .form-input:focus, .form-select:focus {
@@ -385,10 +412,22 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
+.dark .type-btn {
+  border-color: #4B5563;
+  background: #374151;
+  color: #9CA3AF;
+}
+
 .type-btn.active {
   background: #E8F5E9;
   color: #2E7D32;
   border-color: #2E7D32;
+}
+
+.dark .type-btn.active {
+  background: #4B5563;
+  border-color: #4B5563;
+  color: #E5E5E5;
 }
 
 .repeat-selector {
@@ -409,10 +448,21 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
+.dark .repeat-btn {
+  border-color: #4B5563;
+  background: #374151;
+  color: #9CA3AF;
+}
+
 .repeat-btn.active {
   background: #2E7D32;
   color: #FFF;
   border-color: #2E7D32;
+}
+
+.dark .repeat-btn.active {
+  background: #4B5563;
+  border-color: #4B5563;
 }
 
 .reminder-toggle {
@@ -427,6 +477,11 @@ const deletePlannedTrip = (id) => {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  color: #424242;
+}
+
+.dark .reminder-toggle label {
+  color: #E5E5E5;
 }
 
 .reminder-toggle input[type="checkbox"] {
@@ -441,11 +496,23 @@ const deletePlannedTrip = (id) => {
   border-radius: 6px;
   font-size: 13px;
   width: auto;
+  background: #FFF;
+  color: #212121;
+}
+
+.dark .reminder-select {
+  border-color: #4B5563;
+  background: #374151;
+  color: #E5E5E5;
 }
 
 .reminder-text {
   font-size: 12px;
   color: #757575;
+}
+
+.dark .reminder-text {
+  color: #9CA3AF;
 }
 
 .btn-save-plan {
@@ -466,8 +533,16 @@ const deletePlannedTrip = (id) => {
   margin-top: 8px;
 }
 
+.dark .btn-save-plan {
+  background: #4B5563;
+}
+
 .btn-save-plan:hover {
   background: #1B5E20;
+}
+
+.dark .btn-save-plan:hover {
+  background: #374151;
 }
 
 .planned-trips-list {
@@ -486,6 +561,11 @@ const deletePlannedTrip = (id) => {
   border: 1px solid #E8E8E8;
 }
 
+.dark .planned-trip-card {
+  background: #1F2937;
+  border-color: #374151;
+}
+
 .trip-date-box {
   width: 56px;
   height: 56px;
@@ -498,6 +578,10 @@ const deletePlannedTrip = (id) => {
   flex-shrink: 0;
 }
 
+.dark .trip-date-box {
+  background: #4B5563;
+}
+
 .trip-date-box .day {
   font-size: 20px;
   font-weight: 700;
@@ -505,11 +589,19 @@ const deletePlannedTrip = (id) => {
   line-height: 1;
 }
 
+.dark .trip-date-box .day {
+  color: #E5E5E5;
+}
+
 .trip-date-box .month {
   font-size: 11px;
   font-weight: 500;
   color: #2E7D32;
   text-transform: uppercase;
+}
+
+.dark .trip-date-box .month {
+  color: #A0AEC0;
 }
 
 .trip-details {
@@ -526,14 +618,26 @@ const deletePlannedTrip = (id) => {
   gap: 6px;
 }
 
+.dark .trip-time {
+  color: #E5E5E5;
+}
+
 .trip-time i {
   color: #757575;
+}
+
+.dark .trip-time i {
+  color: #9CA3AF;
 }
 
 .trip-route {
   font-size: 13px;
   color: #757575;
   margin-bottom: 4px;
+}
+
+.dark .trip-route {
+  color: #9CA3AF;
 }
 
 .trip-status {
@@ -553,6 +657,11 @@ const deletePlannedTrip = (id) => {
 .trip-status.booked {
   background: #E8F5E9;
   color: #2E7D32;
+}
+
+.dark .trip-status.booked {
+  background: #4B5563;
+  color: #E5E5E5;
 }
 
 .trip-actions {
@@ -576,8 +685,16 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
+.dark .btn-book-now {
+  background: #4B5563;
+}
+
 .btn-book-now:hover {
   background: #1B5E20;
+}
+
+.dark .btn-book-now:hover {
+  background: #374151;
 }
 
 .btn-delete {
@@ -594,8 +711,18 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
+.dark .btn-delete {
+  border-color: #7F1D1D;
+  background: #374151;
+  color: #EF4444;
+}
+
 .btn-delete:hover {
   background: #FFEBEE;
+}
+
+.dark .btn-delete:hover {
+  background: #7F1D1D;
 }
 
 .empty-state {
@@ -604,10 +731,18 @@ const deletePlannedTrip = (id) => {
   color: #757575;
 }
 
+.dark .empty-state {
+  color: #9CA3AF;
+}
+
 .empty-state i {
   font-size: 48px;
   margin-bottom: 16px;
   color: #E0E0E0;
+}
+
+.dark .empty-state i {
+  color: #4B5563;
 }
 
 .empty-state p {
@@ -615,8 +750,16 @@ const deletePlannedTrip = (id) => {
   margin: 0 0 8px;
 }
 
+.dark .empty-state p {
+  color: #E5E5E5;
+}
+
 .empty-state .hint {
   font-size: 13px;
   color: #9E9E9E;
+}
+
+.dark .empty-state .hint {
+  color: #6B7280;
 }
 </style>
