@@ -1,5 +1,5 @@
 <template>
-  <div class="driver-dashboard">
+  <div class="driver-dashboard bg-white dark:bg-neutral-900 transition-colors">
     <div class="page-header">
       <h2>🚗 Good morning, {{ driver.firstName }} 👋</h2>
       <p class="subtitle">Here's your activity for today</p>

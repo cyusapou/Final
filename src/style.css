@@ -1,3 +1,8 @@
+/* Tailwind CSS Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* On The Go - Clean Green & White Theme */
 
 :root {
@@ -32,8 +37,13 @@
   --border-color: #E8E8E8;
 }
 
-/* Dark Mode */
-:root.dark-mode {
+/* Dark Mode - Tailwind's dark class */
+html.dark {
+  color-scheme: dark;
+}
+
+:root.dark-mode,
+html.dark {
   /* Neutrals - Dark Mode */
   --white: #121212;
   --off-white: #1E1E1E;
@@ -85,3 +95,64 @@ body {
 #app {
   min-height: 100vh;
 }
+
+/* Tailwind dark mode component utilities */
+@layer components {
+  .dark-bg-primary {
+    @apply dark:bg-neutral-900;
+  }
+  
+  .dark-bg-secondary {
+    @apply dark:bg-neutral-800;
+  }
+  
+  .dark-bg-tertiary {
+    @apply dark:bg-neutral-700;
+  }
+  
+  .dark-text-primary {
+    @apply dark:text-neutral-100;
+  }
+  
+  .dark-text-secondary {
+    @apply dark:text-neutral-300;
+  }
+  
+  .dark-text-tertiary {
+    @apply dark:text-neutral-400;
+  }
+  
+  .dark-border {
+    @apply dark:border-neutral-700;
+  }
+}
+
+/* Animation for smooth transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.slide-down {
+  animation: slideDown 0.3s ease-in;
+}
+

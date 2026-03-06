@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper">
+  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="screen summary-screen">
+    <div class="screen summary-screen bg-white dark:bg-neutral-900">
       <div class="header">
         <button class="btn-back" @click="goToDestination">
           <i class="fas fa-arrow-left"></i>

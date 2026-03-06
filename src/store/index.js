@@ -93,7 +93,7 @@ export const store = reactive({
   
   // UI state
   currentLang: 'en',
-  darkMode: typeof window !== 'undefined' && localStorage.getItem('darkMode') === 'true',
+  darkMode: typeof window !== 'undefined' ? (localStorage.getItem('darkMode') !== 'false') : true,
   showTicket: false,
   isProcessing: false,
   stopCode: '',
@@ -269,5 +269,11 @@ export const store = reactive({
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     localStorage.removeItem('userRole')
+  },
+  
+  // Toggle dark mode
+  toggleDarkMode() {
+    this.darkMode = !this.darkMode
+    localStorage.setItem('darkMode', this.darkMode.toString())
   }
 })

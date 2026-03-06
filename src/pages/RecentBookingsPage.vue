@@ -1,5 +1,5 @@
 <template>
-  <div class="recent-bookings-page">
+  <div class="recent-bookings-page bg-white dark:bg-neutral-900 transition-colors">
     <div class="container">
       <!-- Header -->
       <header class="page-header">

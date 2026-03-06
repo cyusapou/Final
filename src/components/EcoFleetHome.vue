@@ -753,9 +753,18 @@ const trackBus = () => {
   transition: all 0.2s;
 }
 
+html.dark .express-card {
+  background: #1F2937;
+  border-color: #374151;
+}
+
 .express-card:hover {
   border-color: #2E7D32;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+html.dark .express-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .express-logo {
@@ -767,6 +776,10 @@ const trackBus = () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+html.dark .express-logo {
+  background: rgba(46, 125, 50, 0.2);
 }
 
 .express-logo img {
@@ -788,10 +801,18 @@ const trackBus = () => {
   margin-bottom: 2px;
 }
 
+html.dark .express-info h3 {
+  color: #E8E8E8;
+}
+
 .express-info p {
   font-size: 12px;
   color: #757575;
   margin: 0;
+}
+
+html.dark .express-info p {
+  color: #B0B0B0;
 }
 
 /* ============ Trips ============ */

@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page bg-white dark:bg-neutral-900 transition-colors">
     <h1>📅 Schedule</h1>
     <div class="card">
       <p>Manager schedule management page - placeholder</p>

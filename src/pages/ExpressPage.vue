@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper">
+  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="screen express-screen">
+    <div class="screen express-screen bg-white dark:bg-neutral-900">
       <div class="header">
         <button class="btn-back" @click="goToLanding">
           <i class="fas fa-arrow-left"></i>
@@ -127,6 +127,10 @@ const selectExpress = (express) => {
   background: #F5F5F5;
 }
 
+html.dark .page-wrapper {
+  background: #121212;
+}
+
 .mobile-lang-toggle {
   display: block;
 }
@@ -166,6 +170,10 @@ const selectExpress = (express) => {
   color: #212121;
 }
 
+html.dark .header h2 {
+  color: #E8E8E8;
+}
+
 /* Desktop: Larger header */
 @media (min-width: 500px) {
   .header h2 {
@@ -187,6 +195,17 @@ const selectExpress = (express) => {
   transition: all 0.2s;
 }
 
+html.dark .btn-back {
+  background: #1F2937;
+  border-color: #374151;
+  color: #B0B0B0;
+}
+
+html.dark .btn-back:hover {
+  background: rgba(46, 125, 50, 0.2);
+  color: #4CAF50;
+}
+
 .btn-back:hover {
   background: #E8F5E9;
   color: #2E7D32;
@@ -196,6 +215,10 @@ const selectExpress = (express) => {
   font-size: 14px;
   color: #757575;
   margin-bottom: 20px;
+}
+
+html.dark .screen-desc {
+  color: #B0B0B0;
 }
 
 /* Search Bar */
@@ -213,6 +236,10 @@ const selectExpress = (express) => {
   font-size: 14px;
 }
 
+html.dark .search-bar i {
+  color: #B0B0B0;
+}
+
 .search-input {
   width: 100%;
   padding: 14px 40px 14px 42px;
@@ -224,10 +251,25 @@ const selectExpress = (express) => {
   transition: all 0.2s;
 }
 
+html.dark .search-input {
+  background: #1F2937;
+  border-color: #374151;
+  color: #E8E8E8;
+}
+
+html.dark .search-input::placeholder {
+  color: #808080;
+}
+
 .search-input:focus {
   outline: none;
   border-color: #2E7D32;
   box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+html.dark .search-input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
 .clear-search {
@@ -242,8 +284,16 @@ const selectExpress = (express) => {
   padding: 4px;
 }
 
+html.dark .clear-search {
+  color: #B0B0B0;
+}
+
 .clear-search:hover {
   color: #212121;
+}
+
+html.dark .clear-search:hover {
+  color: #E8E8E8;
 }
 
 .express-grid {
@@ -278,10 +328,19 @@ const selectExpress = (express) => {
   transition: all 0.2s;
 }
 
+html.dark .express-card {
+  background: #1F2937;
+  border-color: #374151;
+}
+
 .express-card:hover {
   border-color: #2E7D32;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transform: translateY(-2px);
+}
+
+html.dark .express-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .express-card:active {
@@ -297,6 +356,10 @@ const selectExpress = (express) => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+html.dark .express-logo {
+  background: rgba(46, 125, 50, 0.2);
 }
 
 .express-logo img {
@@ -318,11 +381,19 @@ const selectExpress = (express) => {
   margin-bottom: 2px;
 }
 
+html.dark .express-info h3 {
+  color: #E8E8E8;
+}
+
 .express-info p {
   font-size: 12px;
   color: #757575;
   margin: 0;
   line-height: 1.4;
+}
+
+html.dark .express-info p {
+  color: #B0B0B0;
 }
 
 /* Desktop: Larger cards */
@@ -347,10 +418,18 @@ const selectExpress = (express) => {
   color: #757575;
 }
 
+html.dark .empty-state {
+  color: #B0B0B0;
+}
+
 .empty-state i {
   font-size: 48px;
   margin-bottom: 16px;
   color: #E8E8E8;
+}
+
+html.dark .empty-state i {
+  color: #4B5563;
 }
 
 .empty-state p {

@@ -1,5 +1,5 @@
  <template>
-  <div class="track-page">
+  <div class="track-page bg-white dark:bg-neutral-900 transition-colors">
     <div class="container">
       <!-- Mobile: Language toggle -->
       <div class="mobile-lang-toggle">

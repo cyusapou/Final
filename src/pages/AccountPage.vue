@@ -1,5 +1,5 @@
 <template>
-  <div class="account-page">
+  <div class="account-page bg-white dark:bg-neutral-900 transition-colors">
     <div class="account-header">
       <button class="back-btn" @click="goBack">
         <i class="fas fa-arrow-left"></i>

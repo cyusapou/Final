@@ -1,5 +1,5 @@
 <template>
-  <div class="app-layout" :class="{ 'dark-mode': darkMode }">
+  <div class="app-layout dark-mode">
     <!-- Always show app layout -->
     <div class="app-main">
       <!-- Desktop Sidebar / Mobile Bottom Nav -->
@@ -19,32 +19,20 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import BottomNav from './components/BottomNav.vue'
 import LocationTracker from './components/LocationTracker.vue'
 import { store } from './store/index.js'
 
 const sidebarOpen = computed(() => store.sidebarOpen)
-const darkMode = computed(() => store.darkMode)
 const isAuthenticated = computed(() => store.token && store.user)
 
-// Apply dark mode to html element and watch for changes
-const applyDarkMode = (isDark) => {
-  if (isDark) {
-    document.documentElement.classList.add('dark-mode')
-  } else {
-    document.documentElement.classList.remove('dark-mode')
-  }
-}
-
-// Watch for dark mode changes
-watch(darkMode, (newVal) => {
-  applyDarkMode(newVal)
-}, { immediate: true })
-
-// Also apply on mount in case it's already set
-applyDarkMode(darkMode.value)
+// Force dark mode globally by always applying the 'dark' class
+onMounted(() => {
+  document.documentElement.classList.add('dark')
+  document.documentElement.classList.add('dark-mode')
+})
 </script>
 
 <style>

@@ -1,52 +1,52 @@
 <template>
-  <div class="page-wrapper" >
+  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
     <!-- Mobile: Language toggle in fixed position -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
     </div>
     
-    <div class="screen landing-screen">
+    <div class="screen landing-screen bg-white dark:bg-neutral-900">
       <div class="hero-section">
         <div class="logo-wrap">
           <div class="logo-icon">
             <i class="fas fa-bus"></i>
           </div>
           <div class="logo-text">
-            <h1>On The Go</h1>
-            <span>Kigali, Rwanda</span>
+            <h1 class="text-gray-900 dark:text-white">On The Go</h1>
+            <span class="text-gray-600 dark:text-gray-400">Kigali, Rwanda</span>
           </div>
         </div>
         
-        <h2 class="headline">{{ t.heroTitle }}</h2>
-        <p class="subheadline">{{ t.heroSubtitle }}</p>
+        <h2 class="headline text-gray-900 dark:text-white">{{ t.heroTitle }}</h2>
+        <p class="subheadline text-gray-700 dark:text-gray-300">{{ t.heroSubtitle }}</p>
         <div class="landing-btn">
           <div class="btn1">
-        <button class="btn-primary btn-large" @click="goToExpress">
+        <button class="btn-primary btn-large bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white" @click="goToExpress">
           {{ t.boardNow }}
           <i class="fas fa-arrow-right"></i>
         </button>
         </div>
         <div class="btn2">
-        <button class="btn-secondary btn-large" @click="goToPlanner">
+        <button class="btn-secondary btn-large bg-white dark:bg-neutral-800 text-primary-600 dark:text-primary-400 border-2 border-primary-600 dark:border-primary-400 hover:bg-primary-50 dark:hover:bg-neutral-700" @click="goToPlanner">
           {{ t.planTrip }}
           <i class="fas fa-calendar-alt"></i>
         </button>
         </div>
         </div>
-        <p class="hint">{{ t.selectDateHint }}</p>
+        <p class="hint text-gray-600 dark:text-gray-400">{{ t.selectDateHint }}</p>
         
         <!-- Desktop: Feature highlights -->
         <div class="features-grid">
-          <div class="feature-item">
-            <i class="fas fa-clock"></i>
+          <div class="feature-item text-gray-600 dark:text-gray-400">
+            <i class="fas fa-clock text-primary-600 dark:text-primary-400"></i>
             <span>Fixed Schedules</span>
           </div>
-          <div class="feature-item">
-            <i class="fas fa-mobile-alt"></i>
+          <div class="feature-item text-gray-600 dark:text-gray-400">
+            <i class="fas fa-mobile-alt text-primary-600 dark:text-primary-400"></i>
             <span>Cashless</span>
           </div>
-          <div class="feature-item">
-            <i class="fas fa-leaf"></i>
+          <div class="feature-item text-gray-600 dark:text-gray-400">
+            <i class="fas fa-leaf text-primary-600 dark:text-primary-400"></i>
             <span>Sustainable</span>
           </div>
         </div>
@@ -121,6 +121,10 @@ button {
   padding: 40px 20px;
 }
 
+html.dark .landing-screen {
+  background: linear-gradient(180deg, #1E1E1E 0%, #121212 60%);
+}
+
 .hero-section {
   text-align: center;
   max-width: 480px;
@@ -180,9 +184,17 @@ button {
   line-height: 1.2;
 }
 
+html.dark .logo-text h1 {
+  color: #FFFFFF;
+}
+
 .logo-text span {
   font-size: 13px;
   color: #757575;
+}
+
+html.dark .logo-text span {
+  color: #9CA3AF;
 }
 
 /* Desktop: Larger text */
@@ -203,6 +215,10 @@ button {
   margin-bottom: 8px;
 }
 
+html.dark .headline {
+  color: #FFFFFF;
+}
+
 /* Desktop: Larger headline */
 @media (min-width: 1024px) {
   .headline {
@@ -217,6 +233,10 @@ button {
   margin-bottom: 28px;
 }
 
+html.dark .subheadline {
+  color: #D1D5DB;
+}
+
 /* Desktop: Larger subheadline */
 @media (min-width: 1024px) {
   .subheadline {
@@ -229,6 +249,10 @@ button {
   font-size: 13px;
   color: #757575;
   margin-top: 16px;
+}
+
+html.dark .hint {
+  color: #9CA3AF;
 }
 
 .btn-primary {
@@ -253,6 +277,10 @@ button {
   box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
 }
 
+html.dark .btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+}
+
 .btn-secondary {
   background: #FFF;
   color: #2E7D32;
@@ -271,6 +299,16 @@ button {
 
 .btn-secondary:hover {
   background: #E8F5E9;
+}
+
+html.dark .btn-secondary {
+  background: #2C2C2C;
+  color: #66BB6A;
+  border-color: #66BB6A;
+}
+
+html.dark .btn-secondary:hover {
+  background: #1B5E20;
 }
 
 .btn-large {
@@ -303,9 +341,17 @@ button {
   color: #757575;
 }
 
+html.dark .feature-item {
+  color: #9CA3AF;
+}
+
 .feature-item i {
   font-size: 24px;
   color: #2E7D32;
+}
+
+html.dark .feature-item i {
+  color: #66BB6A;
 }
 
 .feature-item span {

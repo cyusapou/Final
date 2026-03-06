@@ -63,6 +63,11 @@ watch(() => route.path, () => {
   overflow-x: auto;
 }
 
+html.dark .step-progress {
+  background: #1F2937;
+  border-bottom-color: #374151;
+}
+
 .step {
   display: flex;
   align-items: center;
@@ -83,6 +88,11 @@ watch(() => route.path, () => {
   font-weight: 600;
   flex-shrink: 0;
   transition: all 0.3s ease;
+}
+
+html.dark .step-circle {
+  background: #374151;
+  color: #B0B0B0;
 }
 
 .step.active .step-circle {
@@ -107,6 +117,10 @@ watch(() => route.path, () => {
   transition: color 0.3s ease;
 }
 
+html.dark .step-label {
+  color: #B0B0B0;
+}
+
 .step.active .step-label {
   color: #2E7D32;
   font-weight: 600;
@@ -122,6 +136,10 @@ watch(() => route.path, () => {
   background: #E8E8E8;
   margin: 0 8px;
   flex-shrink: 0;
+}
+
+html.dark .step-line {
+  background: #4B5563;
 }
 
 .step.completed + .step .step-line,

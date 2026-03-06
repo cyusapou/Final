@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper">
+  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="trips-layout">
+    <div class="trips-layout bg-white dark:bg-neutral-900">
       <!-- Desktop Filters Sidebar -->
       <aside class="filters-sidebar" :class="{ open: showFilters }">
         <div class="filters-header">

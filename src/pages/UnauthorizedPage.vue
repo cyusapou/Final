@@ -1,5 +1,5 @@
 <template>
-  <div class="unauthorized-page">
+  <div class="unauthorized-page bg-white dark:bg-neutral-900 transition-colors">
     <div class="container">
       <div class="error-box">
         <div class="error-icon">🔒</div>

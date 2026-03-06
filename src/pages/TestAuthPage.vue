@@ -1,5 +1,5 @@
 <template>
-  <div class="test-auth-page">
+  <div class="test-auth-page bg-white dark:bg-neutral-900 transition-colors">
     <div class="container">
       <div class="auth-box">
         <h1>🧪 Test Admin Dashboard</h1>

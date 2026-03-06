@@ -97,7 +97,9 @@
       </div>
 
       <div class="sidebar-footer" v-if="sidebarOpen">
-        <LanguageToggle />
+        <div class="footer-controls">
+          <LanguageToggle />
+        </div>
       </div>
     </aside>
   </div>
@@ -314,6 +316,13 @@ const toggleSidebar = () => {
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid var(--border-color);
+}
+
+.footer-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
 }
 
 /* Bottom Nav Styles (for mobile < 500px) */

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper">
+  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="screen payment-screen">
+    <div class="screen payment-screen bg-white dark:bg-neutral-900">
       <div class="header">
         <button class="btn-back" @click="goToSummary" v-if="!store.showTicket">
           <i class="fas fa-arrow-left"></i>
@@ -570,6 +570,10 @@ const formatDate = (dateStr) => {
   color: #212121;
 }
 
+html.dark .header h2 {
+  color: #FFFFFF;
+}
+
 /* Desktop: Larger header */
 @media (min-width: 1024px) {
   .header h2 {
@@ -592,9 +596,20 @@ const formatDate = (dateStr) => {
   flex-shrink: 0;
 }
 
+html.dark .btn-back {
+  background: #2C2C2C;
+  border-color: #3A3A3A;
+  color: #FFFFFF;
+}
+
 .btn-back:hover {
   background: #E8F5E9;
   color: #2E7D32;
+}
+
+html.dark .btn-back:hover {
+  background: #1B5E20;
+  color: #66BB6A;
 }
 
 /* ============================================
@@ -620,15 +635,31 @@ const formatDate = (dateStr) => {
   -webkit-tap-highlight-color: transparent;
 }
 
+html.dark .payment-card {
+  background: #1E1E1E;
+  border-color: #2C2C2C;
+}
+
 .payment-card:hover {
   border-color: #BDBDBD;
   background: #FAFAFA;
+}
+
+html.dark .payment-card:hover {
+  border-color: #3A3A3A;
+  background: #262626;
 }
 
 .payment-card.selected {
   border-color: #2E7D32;
   background: #F1F8E9;
   box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+html.dark .payment-card.selected {
+  border-color: #66BB6A;
+  background: #1B5E20;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
 }
 
 .payment-icon {
@@ -642,9 +673,17 @@ const formatDate = (dateStr) => {
   flex-shrink: 0;
 }
 
+html.dark .payment-icon {
+  background: #1B5E20;
+}
+
 .payment-icon i {
   color: #2E7D32;
   font-size: 18px;
+}
+
+html.dark .payment-icon i {
+  color: #66BB6A;
 }
 
 .payment-info {

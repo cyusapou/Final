@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-gate">
+  <div class="auth-gate bg-white dark:bg-neutral-900 transition-colors">
     <!-- Background Animation -->
     <div class="auth-background">
       <div class="bg-shape shape-1"></div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page bg-white dark:bg-neutral-900 transition-colors">
     <h1>👔 Managers</h1>
     <div class="card"><p>Express admin managers page - placeholder</p></div>
   </div>

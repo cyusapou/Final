@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page bg-white dark:bg-neutral-900 transition-colors">
     <h1>🛣️ Routes</h1>
     <div class="card"><p>Express admin routes page - placeholder</p></div>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container" :class="{ 'sidebar-collapsed': !sidebarOpen }">
+  <div class="page-container bg-white dark:bg-neutral-900 transition-colors" :class="{ 'sidebar-collapsed': !sidebarOpen }">
     <div class="page-header">
       <h1>{{ t.planFutureTrip }}</h1>
     </div>

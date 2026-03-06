@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page bg-white dark:bg-neutral-900 transition-colors">
     <div class="page-header">
       <h1>💼 Express Admin Dashboard</h1>
       <p class="subtitle">Business performance and operations overview</p>

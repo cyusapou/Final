@@ -763,6 +763,10 @@ export default {
   padding: 12px;
 }
 
+html.dark .booking-page {
+  background: linear-gradient(135deg, #1E1E1E 0%, #0F0F0F 100%);
+}
+
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -772,12 +776,21 @@ export default {
   overflow: hidden;
 }
 
+html.dark .container {
+  background: #121212;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
 /* Header */
 .booking-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 24px 20px;
   text-align: center;
+}
+
+html.dark .booking-header {
+  background: linear-gradient(135deg, #2C2C2C 0%, #1A1A1A 100%);
 }
 
 .booking-header h1 {
@@ -953,6 +966,11 @@ export default {
   margin-bottom: 20px;
 }
 
+html.dark .card {
+  background: #1E1E1E;
+  border-color: #2C2C2C;
+}
+
 .card h2 {
   margin: 0 0 16px 0;
   color: #333;
@@ -961,6 +979,10 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+html.dark .card h2 {
+  color: #FFFFFF;
 }
 
 .section-icon {
@@ -982,6 +1004,13 @@ export default {
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
+}
+
+html.dark .route-select, html.dark .trip-select {
+  background-color: #2C2C2C;
+  color: #FFFFFF;
+  border-color: #3A3A3A;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
 
 .route-select:focus, .trip-select:focus {
