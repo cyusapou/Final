@@ -7,7 +7,6 @@
     aria-label="Toggle dark mode"
   >
     <i :class="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
-    <span v-if="showLabel">{{ isDarkMode ? 'Light' : 'Dark' }}</span>
   </button>
 </template>
 
@@ -16,7 +15,6 @@ import { computed } from 'vue'
 import { store } from '../store/index.js'
 
 const isDarkMode = computed(() => store.isDarkMode)
-const showLabel = computed(() => store.sidebarOpen)
 
 const toggleDarkMode = () => {
   store.toggleDarkMode()

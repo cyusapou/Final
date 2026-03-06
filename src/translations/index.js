@@ -340,6 +340,12 @@ export const translations = {
         fridayFull: 'Friday',
         saturdayFull: 'Saturday',
         sundayFull: 'Sunday',
+        
+        // Step Progress
+        step1: 'Company',
+        step2: 'Destination',
+        step3: 'Summary',
+        step4: 'Payment',
     },
     rw: {
         // Navigation
@@ -676,6 +682,12 @@ export const translations = {
         fridayFull: 'Kuwa Gatanu',
         saturdayFull: 'Kuwa Gatandatu',
         sundayFull: 'Kuwa Cyumweru',
+        
+        // Step Progress
+        step1: 'Company',
+        step2: 'Aho Ugana',
+        step3: 'Incamake',
+        step4: 'Ishyura',
     },
     fr: {
         // Navigation
@@ -1017,5 +1029,11 @@ export const translations = {
         fridayFull: 'Vendredi',
         saturdayFull: 'Samedi',
         sundayFull: 'Dimanche',
+        
+        // Step Progress
+        step1: 'Compagnie',
+        step2: 'Destination',
+        step3: 'Résumé',
+        step4: 'Paiement',
     }
 };

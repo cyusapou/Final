@@ -147,12 +147,13 @@ html.dark .page-wrapper {
   padding: 20px;
   max-width: 960px;
   margin: 0 auto;
+  padding-bottom: 20px;
 }
 
 /* Desktop: Add padding */
 @media (min-width: 500px) {
   .screen {
-    padding: 24px 32px;
+    padding: 24px;
   }
 }
 
@@ -224,7 +225,7 @@ html.dark .screen-desc {
 /* Search Bar */
 .search-bar {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .search-bar i {
@@ -299,7 +300,8 @@ html.dark .clear-search:hover {
 .express-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 16px;
+  margin-bottom: 0;
 }
 
 @media (min-width: 768px) {

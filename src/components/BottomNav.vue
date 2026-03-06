@@ -161,7 +161,7 @@ const toggleSidebar = () => {
   bottom: 0;
   width: 220px;
   background: white;
-  border-right: 1px solid #e5e7eb;
+  border: 1px solid #22c55e;
   display: none; /* hidden by default (mobile) */
   flex-direction: column;
   z-index: 200;
@@ -191,7 +191,7 @@ const toggleSidebar = () => {
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #22c55e;
   min-height: 60px;
 }
 
@@ -387,7 +387,7 @@ const toggleSidebar = () => {
 /* Dark mode styles */
 .dark .sidebar {
   background: #1f2937;
-  border-right-color: #374151;
+  border-color: #22c55e;
 }
 
 .dark .logo-text h1 {
@@ -396,6 +396,10 @@ const toggleSidebar = () => {
 
 .dark .logo-text span {
   color: #9ca3af;
+}
+
+.dark .sidebar-header {
+  border-bottom-color: #22c55e;
 }
 
 .dark .sidebar-toggle {
