@@ -1,11 +1,14 @@
 <template>
   <div class="stats-card">
-    <div class="card-icon">{{ icon }}</div>
+    <div class="card-icon">
+      <i v-if="icon && icon.startsWith('fa')" :class="icon"></i>
+      <span v-else>{{ icon }}</span>
+    </div>
     <div class="card-body">
       <p class="card-label">{{ label }}</p>
       <p class="card-value">{{ value }}</p>
       <span v-if="trend" class="card-trend" :class="trendPositive ? 'up' : 'down'">
-        {{ trendPositive ? '📈' : '📉' }} {{ trend }}
+        <i :class="trendPositive ? 'fas fa-chart-line' : 'fas fa-chart-line'" style="margin-right: 4px;"></i> {{ trend }}
       </span>
     </div>
   </div>
@@ -103,5 +106,36 @@ const trendPositive = computed(() => {
   .card-value {
     font-size: 20px;
   }
+}
+
+/* Dark mode */
+html.dark .stats-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+html.dark .stats-card:hover {
+  box-shadow: var(--glow);
+}
+
+html.dark .card-icon {
+  background: var(--bg);
+}
+
+html.dark .card-label {
+  color: var(--text-muted);
+}
+
+html.dark .card-value {
+  color: var(--text);
+}
+
+html.dark .card-trend {
+  color: var(--green);
+}
+
+html.dark .card-trend.down {
+  color: #ef4444;
 }
 </style>

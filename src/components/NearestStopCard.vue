@@ -8,7 +8,7 @@
 
     <!-- Main stop info -->
     <div class="stop-main">
-      <div class="stop-icon">🚌</div>
+      <div class="stop-icon"><i class="fas fa-bus"></i></div>
       <div class="stop-info">
         <p class="stop-label">Your nearest boarding stop</p>
         <h3 class="stop-name">{{ stop.name }}</h3>
@@ -25,7 +25,7 @@
 
     <!-- Destination info -->
     <div class="destination-info">
-      <div class="dest-icon">🎯</div>
+      <div class="dest-icon"><i class="fas fa-crosshairs"></i></div>
       <div class="dest-details">
         <h3 class="dest-name">{{ destination.name }}</h3>
         <span v-if="destination.code" class="dest-code">Code: {{ destination.code }}</span>
@@ -384,4 +384,7 @@ defineEmits(['confirm', 'change'])
     font-size: 0.9rem;
   }
 }
+
+/* Dark mode overrides */
+html.dark .verified-badge { background: rgba(26,115,232,0.15); color: #64B5F6; }
 </style>

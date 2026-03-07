@@ -13,17 +13,17 @@
         class="nav-item"
         active-class="nav-item--active"
       >
-        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-icon"><i :class="item.icon"></i></span>
         <span class="nav-label" v-if="!collapsed">{{ item.label }}</span>
       </router-link>
     </nav>
 
     <div class="sidebar-footer">
       <button class="toggle-btn" @click="$emit('toggle')" :title="collapsed ? 'Expand' : 'Collapse'">
-        {{ collapsed ? '➡️' : '⬅️' }}
+        <i :class="collapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'"></i>
       </button>
       <button class="logout-btn" @click="logout" :title="collapsed ? 'Logout' : ''">
-        <span>🚪</span>
+        <span><i class="fas fa-sign-out-alt"></i></span>
         <span v-if="!collapsed">Logout</span>
       </button>
     </div>
@@ -35,7 +35,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '../../store/index.js'
 
-defineProps({
+const props = defineProps({
   role: String,
   collapsed: Boolean
 })
@@ -44,42 +44,41 @@ defineEmits(['toggle'])
 
 const router = useRouter()
 
-// NAV ITEMS PER ROLE
 const navMap = {
   Driver: [
-    { path: '/driver', icon: '🏠', label: 'Dashboard' },
-    { path: '/driver/trip', icon: '🚌', label: 'My Trip' },
-    { path: '/driver/history', icon: '📋', label: 'History' },
-    { path: '/driver/profile', icon: '👤', label: 'Profile' },
+    { path: '/driver', icon: 'fas fa-home', label: 'Dashboard' },
+    { path: '/driver/trip', icon: 'fas fa-bus', label: 'My Trip' },
+    { path: '/driver/history', icon: 'fas fa-clipboard-list', label: 'History' },
+    { path: '/driver/profile', icon: 'fas fa-user', label: 'Profile' },
   ],
   Manager: [
-    { path: '/manager', icon: '🏠', label: 'Dashboard' },
-    { path: '/manager/drivers', icon: '🧑‍✈️', label: 'Drivers' },
-    { path: '/manager/trips', icon: '🗺️', label: 'Trips' },
-    { path: '/manager/schedule', icon: '📅', label: 'Schedule' },
-    { path: '/manager/reports', icon: '📊', label: 'Reports' },
+    { path: '/manager', icon: 'fas fa-home', label: 'Dashboard' },
+    { path: '/manager/drivers', icon: 'fas fa-user-shield', label: 'Drivers' },
+    { path: '/manager/trips', icon: 'fas fa-map', label: 'Trips' },
+    { path: '/manager/schedule', icon: 'fas fa-calendar-alt', label: 'Schedule' },
+    { path: '/manager/reports', icon: 'fas fa-chart-bar', label: 'Reports' },
   ],
   Admin: [
-    { path: '/admin', icon: '🏠', label: 'Dashboard' },
-    { path: '/admin/managers', icon: '👔', label: 'Managers' },
-    { path: '/admin/fleet', icon: '🚍', label: 'Fleet' },
-    { path: '/admin/finance', icon: '💰', label: 'Finance' },
-    { path: '/admin/routes', icon: '🛣️', label: 'Routes' },
-    { path: '/admin/complaints', icon: '📣', label: 'Complaints' },
+    { path: '/admin', icon: 'fas fa-home', label: 'Dashboard' },
+    { path: '/admin/managers', icon: 'fas fa-user-tie', label: 'Managers' },
+    { path: '/admin/fleet', icon: 'fas fa-bus-alt', label: 'Fleet' },
+    { path: '/admin/finance', icon: 'fas fa-coins', label: 'Finance' },
+    { path: '/admin/routes', icon: 'fas fa-road', label: 'Routes' },
+    { path: '/admin/complaints', icon: 'fas fa-bullhorn', label: 'Complaints' },
   ],
   SuperAdmin: [
-    { path: '/rura', icon: '🏛️', label: 'Overview' },
-    { path: '/rura/expresses', icon: '🏢', label: 'Expresses' },
-    { path: '/rura/compliance', icon: '📋', label: 'Compliance' },
-    { path: '/rura/feedback', icon: '💬', label: 'Feedback' },
-    { path: '/rura/analytics', icon: '📈', label: 'Analytics' },
-    { path: '/rura/announcements', icon: '📢', label: 'Announcements' },
-    { path: '/rura/users', icon: '👥', label: 'Users' },
+    { path: '/rura', icon: 'fas fa-landmark', label: 'Overview' },
+    { path: '/rura/expresses', icon: 'fas fa-building', label: 'Expresses' },
+    { path: '/rura/compliance', icon: 'fas fa-clipboard-list', label: 'Compliance' },
+    { path: '/rura/feedback', icon: 'fas fa-comment', label: 'Feedback' },
+    { path: '/rura/analytics', icon: 'fas fa-chart-line', label: 'Analytics' },
+    { path: '/rura/announcements', icon: 'fas fa-bullhorn', label: 'Announcements' },
+    { path: '/rura/users', icon: 'fas fa-users', label: 'Users' },
   ],
 }
 
 const navItems = computed(() => {
-  const roleKey = role || localStorage.getItem('userRole') || 'Driver'
+  const roleKey = props.role || localStorage.getItem('userRole') || 'Driver'
   return navMap[roleKey] || []
 })
 
@@ -267,5 +266,71 @@ function logout() {
     transform: translateX(0);
     width: 280px;
   }
+}
+
+/* Dark mode */
+html.dark .sidebar {
+  background: var(--bg);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+html.dark .sidebar-logo {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html.dark .logo-mark {
+  background: var(--green);
+}
+
+html.dark .logo-text {
+  color: var(--text);
+}
+
+html.dark .nav-item {
+  color: var(--text-muted);
+}
+
+html.dark .nav-item:hover {
+  background: var(--hover);
+  color: var(--green);
+}
+
+html.dark .nav-item--active {
+  background: var(--green-muted);
+  color: var(--green);
+}
+
+html.dark .sidebar-footer {
+  border-color: var(--border);
+}
+
+html.dark .toggle-btn {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+html.dark .toggle-btn:hover {
+  background: var(--hover);
+}
+
+html.dark .logout-btn {
+  background: var(--surface);
+  border-color: var(--border);
+  color: #ef4444;
+}
+
+html.dark .logout-btn:hover {
+  background: var(--hover);
+}
+
+html.dark .sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+html.dark .sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 </style>

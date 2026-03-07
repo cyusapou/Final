@@ -2,8 +2,8 @@
   <div class="modal-overlay" @click.self="$emit('cancel')">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3 class="modal-title">⚠️ Confirm Action</h3>
-        <button class="close-btn" @click="$emit('cancel')">✕</button>
+        <h3 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Confirm Action</h3>
+        <button class="close-btn" @click="$emit('cancel')"><i class="fas fa-times"></i></button>
       </div>
 
       <div class="modal-body">
@@ -151,5 +151,49 @@ defineEmits(['confirm', 'cancel'])
 
 .btn-danger:hover {
   background: #dc2626;
+}
+
+/* Dark mode */
+html.dark .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+html.dark .modal-dialog {
+  background: var(--surface);
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .modal-header {
+  border-color: var(--border);
+}
+
+html.dark .modal-title {
+  color: var(--text);
+}
+
+html.dark .close-btn {
+  color: var(--text-muted);
+}
+
+html.dark .close-btn:hover {
+  color: var(--text);
+}
+
+html.dark .modal-body p {
+  color: var(--text-muted);
+}
+
+html.dark .modal-footer {
+  border-color: var(--border);
+}
+
+html.dark .btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+html.dark .btn-secondary:hover {
+  background: var(--hover);
 }
 </style>

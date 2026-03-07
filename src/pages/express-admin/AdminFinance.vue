@@ -1,6 +1,6 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
-    <h1>💰 Finance</h1>
+  <div class="page bg-white dark:bg-neutral-950 transition-colors">
+    <h1><i class="fas fa-coins"></i> Finance</h1>
     <div class="card"><p>Express admin finance page - placeholder</p></div>
   </div>
 </template>

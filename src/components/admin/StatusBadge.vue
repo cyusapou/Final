@@ -15,21 +15,21 @@ const props = defineProps({
 })
 
 const statusMap = {
-  Active: { label: '🟢 Active', class: 'active' },
-  Inactive: { label: '⚫ Inactive', class: 'inactive' },
-  Suspended: { label: '🔴 Suspended', class: 'suspended' },
-  Pending: { label: '🟡 Pending', class: 'pending' },
-  Offline: { label: '⚫ Offline', class: 'offline' },
-  Online: { label: '🟢 Online', class: 'active' },
-  OnBreak: { label: '🟡 On Break', class: 'pending' },
-  'On Break': { label: '🟡 On Break', class: 'pending' },
-  Licensed: { label: '✅ Licensed', class: 'active' },
-  Provisional: { label: '⏳ Provisional', class: 'pending' },
-  Compliant: { label: '✅ Compliant', class: 'active' },
-  NonCompliant: { label: '❌ Non-Compliant', class: 'suspended' },
-  Resolved: { label: '✅ Resolved', class: 'active' },
-  Open: { label: '🔴 Open', class: 'suspended' },
-  'In Review': { label: '⏳ In Review', class: 'pending' },
+  Active: { label: 'Active', class: 'active' },
+  Inactive: { label: 'Inactive', class: 'inactive' },
+  Suspended: { label: 'Suspended', class: 'suspended' },
+  Pending: { label: 'Pending', class: 'pending' },
+  Offline: { label: 'Offline', class: 'offline' },
+  Online: { label: 'Online', class: 'active' },
+  OnBreak: { label: 'On Break', class: 'pending' },
+  'On Break': { label: 'On Break', class: 'pending' },
+  Licensed: { label: 'Licensed', class: 'active' },
+  Provisional: { label: 'Provisional', class: 'pending' },
+  Compliant: { label: 'Compliant', class: 'active' },
+  NonCompliant: { label: 'Non-Compliant', class: 'suspended' },
+  Resolved: { label: 'Resolved', class: 'active' },
+  Open: { label: 'Open', class: 'suspended' },
+  'In Review': { label: 'In Review', class: 'pending' },
 }
 
 const statusData = computed(() => statusMap[props.status] || { label: props.status, class: 'default' })

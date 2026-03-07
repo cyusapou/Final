@@ -1,6 +1,6 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
-    <h1>📋 Compliance</h1>
+  <div class="page bg-white dark:bg-neutral-950 transition-colors">
+    <h1><i class="fas fa-clipboard-list"></i> Compliance</h1>
     <div class="card"><p>RURA compliance page - placeholder</p></div>
   </div>
 </template>

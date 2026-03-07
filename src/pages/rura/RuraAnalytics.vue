@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <h1>📈 Analytics</h1>
+    <h1><i class="fas fa-chart-line"></i> Analytics</h1>
     <div class="card"><p>RURA analytics page - placeholder</p></div>
   </div>
 </template>

@@ -325,4 +325,42 @@ defineExpose({
 :global(.leaflet-popup-content) {
   margin: 12px 16px;
 }
+
+/* Dark mode */
+html.dark .bus-popup h4 {
+  color: var(--green);
+}
+
+html.dark .bus-popup p {
+  color: var(--text-muted);
+}
+
+html.dark .bus-route {
+  color: var(--text);
+}
+
+html.dark .bus-status {
+  color: var(--green);
+}
+
+html.dark .track-btn {
+  background: var(--green);
+}
+
+html.dark .track-btn:hover {
+  background: #16a34a;
+}
+
+html.dark .user-popup h4 {
+  color: #ef4444;
+}
+
+html.dark .user-popup p {
+  color: var(--text-muted);
+}
+
+html.dark .user-coords {
+  background: var(--surface);
+  color: var(--text);
+}
 </style>

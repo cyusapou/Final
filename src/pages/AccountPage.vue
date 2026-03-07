@@ -1,5 +1,5 @@
 <template>
-  <div class="account-page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="account-page bg-white dark:bg-neutral-950 transition-colors">
     <div class="account-header">
       <button class="back-btn" @click="goBack">
         <i class="fas fa-arrow-left"></i>
@@ -1819,4 +1819,90 @@ const selectLanguage = (langCode) => {
   flex: 1;
   font-weight: 500;
 }
+
+/* Dark mode overrides */
+html.dark .account-page { background: var(--bg, #0a0a0a); }
+html.dark .account-header { background: var(--surface, #141414); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .back-btn { background: var(--surface, #141414); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .account-header h1 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .notification-menu-btn { background: var(--green, #22c55e); }
+html.dark .notification-menu-btn:hover { background: #16a34a; }
+html.dark .profile-card { background: var(--surface, #141414); box-shadow: none; }
+html.dark .avatar-large { background: linear-gradient(135deg, var(--green, #22c55e), #16a34a); }
+html.dark .user-info h2 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .user-info p { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .member-since { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .edit-profile-btn { background: var(--green, #22c55e); }
+html.dark .wallet-section h3,
+html.dark .settings-section h3 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .wallet-card { background: var(--surface, #141414); box-shadow: none; }
+html.dark .wallet-balance .label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .balance-amount { color: var(--green, #22c55e); }
+html.dark .deposit-btn { background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
+html.dark .deposit-btn:active { background: rgba(34,197,94,0.15); }
+html.dark .withdraw-btn { background: rgba(239,68,68,0.08); color: #f87171; }
+html.dark .withdraw-btn:active { background: rgba(239,68,68,0.15); }
+html.dark .transactions-section h4 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .transactions-list { background: var(--surface, #141414); box-shadow: none; }
+html.dark .transaction-item { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .tx-icon.deposit { background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
+html.dark .tx-icon.expense,
+html.dark .tx-icon.withdrawal { background: rgba(239,68,68,0.08); color: #f87171; }
+html.dark .tx-description { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .tx-date { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .tx-amount.deposit { color: var(--green, #22c55e); }
+html.dark .tx-amount.expense,
+html.dark .tx-amount.withdrawal { color: #f87171; }
+html.dark .no-transactions { background: var(--surface, #141414); color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .no-transactions i { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .settings-options { background: var(--surface, #141414); box-shadow: none; }
+html.dark .settings-option { border-color: var(--border, rgba(255,255,255,0.07)); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .settings-option:active { background: var(--hover, rgba(255,255,255,0.03)); }
+html.dark .option-icon { background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .settings-option.logout-option .option-icon { background: rgba(239,68,68,0.08); color: #f87171; }
+html.dark .option-content span { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .settings-option > i { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .modal-content { background: var(--surface, #141414); }
+html.dark .modal-header { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .modal-header h2 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .close-btn { background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .instruction { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .amount-btn { border-color: var(--border, rgba(255,255,255,0.07)); background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .amount-btn.active { border-color: var(--green, #22c55e); background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
+html.dark .custom-amount label,
+html.dark .payment-method label,
+html.dark .form-group label { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .amount-input-wrapper { border-color: var(--border, rgba(255,255,255,0.07)); background: var(--bg, #0a0a0a); }
+html.dark .amount-input-wrapper span { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .amount-input,
+html.dark .form-input { color: var(--text, rgba(255,255,255,0.85)); background: transparent; }
+html.dark .amount-input::placeholder,
+html.dark .form-input::placeholder { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .helper-text { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .method-btn { border-color: var(--border, rgba(255,255,255,0.07)); background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .method-btn.active { border-color: var(--green, #22c55e); background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
+html.dark .available-balance { background: var(--bg, #0a0a0a); }
+html.dark .available-balance span { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .available-balance p { color: var(--green, #22c55e); }
+html.dark .error-message { background: rgba(211,47,47,0.1); border-color: #ef4444; color: #f87171; }
+html.dark .success-message { background: var(--green-muted, rgba(34,197,94,0.08)); border-color: var(--green, #22c55e); color: var(--green, #22c55e); }
+html.dark .modal-footer { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .btn-cancel { background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .btn-cancel:active:not(:disabled) { background: var(--hover, rgba(255,255,255,0.03)); }
+html.dark .btn-confirm { background: var(--green, #22c55e); }
+html.dark .btn-confirm:active:not(:disabled) { background: #16a34a; }
+html.dark .notification-item { background: var(--bg, #0a0a0a); }
+html.dark .toggle-label { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .toggle-slider { background: rgba(255,255,255,0.1); }
+html.dark .toggle-input:checked + .toggle-slider { background: var(--green, #22c55e); }
+html.dark .sample-notifications { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .sample-notifications h4 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .sample-item { background: var(--bg, #0a0a0a); border-color: var(--green, #22c55e); }
+html.dark .sample-icon { background: var(--green, #22c55e); }
+html.dark .sample-title { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .sample-desc { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .sample-time { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .language-btn { border-color: var(--border, rgba(255,255,255,0.07)); background: var(--surface, #141414); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .language-btn:hover { background: var(--hover, rgba(255,255,255,0.03)); }
+html.dark .language-btn.active { border-color: var(--green, #22c55e); background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
 </style>

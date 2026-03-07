@@ -1,8 +1,8 @@
 <template>
-  <div class="unauthorized-page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="unauthorized-page bg-white dark:bg-neutral-950 transition-colors">
     <div class="container">
       <div class="error-box">
-        <div class="error-icon">🔒</div>
+        <div class="error-icon"><i class="fas fa-lock"></i></div>
         <h1>Access Denied</h1>
         <p>You don't have permission to access this page.</p>
         <p class="error-detail">Your role: <strong>{{ userRole }}</strong></p>
@@ -87,5 +87,35 @@ function goBack() {
 .btn-back:hover {
   background: #764ba2;
   transform: translateY(-2px);
+}
+
+/* Dark mode overrides */
+html.dark .unauthorized-page {
+  background: var(--bg);
+}
+
+html.dark .error-box {
+  background: var(--surface);
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .error-box h1 {
+  color: var(--text);
+}
+
+html.dark .error-box p {
+  color: var(--text-muted);
+}
+
+html.dark .error-detail {
+  background: var(--bg);
+}
+
+html.dark .btn-back {
+  background: var(--green);
+}
+
+html.dark .btn-back:hover {
+  background: #16a34a;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-gate bg-white dark:bg-neutral-900 transition-colors">
+  <div class="auth-gate bg-white dark:bg-neutral-950 transition-colors">
     <!-- Background Animation -->
     <div class="auth-background">
       <div class="bg-shape shape-1"></div>
@@ -741,4 +741,27 @@ const handleSignUp = async () => {
     grid-template-columns: 1fr;
   }
 }
+
+/* Dark mode overrides */
+html.dark .auth-gate { background: var(--bg-primary); }
+html.dark .auth-content { background: var(--card-bg); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4); }
+html.dark .auth-form-wrapper h2 { color: var(--green, #22c55e); }
+html.dark .auth-form-wrapper p { color: var(--text-secondary); }
+html.dark .form-group label { color: var(--text-secondary); }
+html.dark .form-input { background: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-primary); }
+html.dark .form-input:focus { background: var(--bg-secondary); }
+html.dark .form-input::placeholder { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .toggle-password { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .form-checkbox label { color: var(--text-secondary); }
+html.dark .auth-footer { border-color: var(--border-color); }
+html.dark .auth-footer p { color: var(--text-secondary); }
+html.dark .error-message { background: rgba(211,47,47,0.1); }
+html.dark .submit-btn { background: var(--green, #22c55e); }
+html.dark .submit-btn:hover:not(:disabled) { background: #16a34a; box-shadow: var(--glow, 0 0 20px rgba(34,197,94,0.10)); }
+html.dark .link-btn { color: var(--green, #22c55e); }
+html.dark .form-group label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .form-checkbox label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .logo-section { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .feature { background: rgba(255,255,255,0.05); }
+html.dark .feature:hover { background: rgba(255,255,255,0.08); }
 </style>

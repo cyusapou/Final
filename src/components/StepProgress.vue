@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
@@ -45,10 +45,7 @@ const steps = computed(() => [
   t.value.step4
 ])
 
-// Watch for route changes to update step
-watch(() => route.path, () => {
-  // Force reactivity update
-})
+watch(() => route.path, () => {})
 </script>
 
 <style scoped>
@@ -66,8 +63,8 @@ watch(() => route.path, () => {
 }
 
 html.dark .step-progress {
-  background: #1F2937;
-  border-bottom-color: #374151;
+  background: var(--bg);
+  border-bottom-color: var(--border);
 }
 
 .step {
@@ -93,8 +90,8 @@ html.dark .step-progress {
 }
 
 html.dark .step-circle {
-  background: #374151;
-  color: #B0B0B0;
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .step.active .step-circle {
@@ -102,14 +99,22 @@ html.dark .step-circle {
   color: #FFF;
 }
 
+html.dark .step.active .step-circle {
+  background: var(--green);
+  color: #fff;
+}
+
 .step.completed .step-circle {
   background: #2E7D32;
   color: #FFF;
 }
 
-.checkmark {
-  font-size: 14px;
+html.dark .step.completed .step-circle {
+  background: var(--green);
+  color: #fff;
 }
+
+.checkmark { font-size: 14px; }
 
 .step-label {
   font-size: 11px;
@@ -120,7 +125,7 @@ html.dark .step-circle {
 }
 
 html.dark .step-label {
-  color: #B0B0B0;
+  color: var(--text-muted);
 }
 
 .step.active .step-label {
@@ -128,8 +133,17 @@ html.dark .step-label {
   font-weight: 600;
 }
 
+html.dark .step.active .step-label {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .step.completed .step-label {
   color: #2E7D32;
+}
+
+html.dark .step.completed .step-label {
+  color: var(--text);
 }
 
 .step-line {
@@ -138,10 +152,11 @@ html.dark .step-label {
   background: #E8E8E8;
   margin: 0 8px;
   flex-shrink: 0;
+  transition: background 0.4s ease;
 }
 
 html.dark .step-line {
-  background: #4B5563;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .step.completed + .step .step-line,
@@ -149,24 +164,15 @@ html.dark .step-line {
   background: #2E7D32;
 }
 
-/* Desktop styles */
+html.dark .step.completed + .step .step-line,
+html.dark .step.completed .step-line {
+  background: var(--green);
+}
+
 @media (min-width: 1024px) {
-  .step-progress {
-    padding: 20px 24px;
-  }
-  
-  .step-circle {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
-  
-  .step-label {
-    font-size: 13px;
-  }
-  
-  .step-line {
-    width: 40px;
-  }
+  .step-progress { padding: 20px 24px; }
+  .step-circle { width: 32px; height: 32px; font-size: 14px; }
+  .step-label { font-size: 13px; }
+  .step-line { width: 40px; }
 }
 </style>

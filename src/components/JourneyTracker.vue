@@ -1387,4 +1387,39 @@ onUnmounted(() => {
     max-height: 300px;
   }
 }
+
+/* Dark mode overrides */
+html.dark .from-location-section { background: rgba(46,125,50,0.1); }
+html.dark .from-location-section .label { color: #81C784; }
+html.dark .from-location-section .location-name { color: #81C784; }
+html.dark .destination-card { background: rgba(255,111,0,0.08); }
+html.dark .destination-info .label { color: #FFB74D; }
+html.dark .destination-name { color: #FFB74D; }
+html.dark .destination-city { color: #FFB74D; }
+html.dark .change-btn { background: var(--bg-tertiary); }
+html.dark .change-btn:hover { background: rgba(255,224,178,0.15); }
+html.dark .spinner-small { border-color: var(--border-color); border-top-color: #4CAF50; }
+html.dark .stops-container::-webkit-scrollbar-thumb { background: var(--border-color); }
+html.dark .stop-card.selected { background: rgba(46,125,50,0.1); }
+html.dark .stop-icon { background: rgba(46,125,50,0.15); }
+html.dark .stop-icon.roadside { background: rgba(255,111,0,0.15); }
+html.dark .stop-icon.station { background: rgba(25,118,210,0.15); }
+html.dark .stop-footer { border-color: var(--border-color); }
+html.dark .stop-tracking-btn:hover { background: rgba(211,47,47,0.1); }
+html.dark .live-tracking, html.dark .tracking-control { border-color: rgba(46,125,50,0.2); }
+html.dark .continue-btn:disabled { background: var(--border-color); }
+html.dark .step-number { background: var(--green); }
+html.dark .stop-card:hover { border-color: var(--green); }
+html.dark .stop-card.selected { border-color: var(--green); }
+html.dark .book-btn { background: var(--green); border-color: var(--green); }
+html.dark .book-btn:hover { background: #16a34a; border-color: #16a34a; }
+html.dark .start-tracking-btn { background: var(--green); }
+html.dark .start-tracking-btn:hover { background: #16a34a; }
+html.dark .continue-btn { background: var(--green); }
+html.dark .continue-btn:hover { background: #16a34a; }
+html.dark .progress-fill { background: var(--green); }
+html.dark .tracking-badge { color: var(--green); }
+html.dark .selected-badge { color: var(--green); }
+html.dark .distance-value { color: var(--green); }
+html.dark .distance-unit { color: var(--green); }
 </style>

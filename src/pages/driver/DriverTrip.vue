@@ -1,7 +1,7 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page bg-white dark:bg-neutral-950 transition-colors">
     <div class="page-header">
-      <h1>🚌 My Active Trip</h1>
+      <h1><i class="fas fa-bus"></i> My Active Trip</h1>
       <p class="subtitle">Real-time trip tracking and management</p>
     </div>
 
@@ -54,7 +54,7 @@
 
       <!-- Route Info -->
       <div class="card">
-        <h3>🗒️ Route Information</h3>
+        <h3><i class="fas fa-sticky-note"></i> Route Information</h3>
         <div class="route-info">
           <div class="route-stop">
             <span class="stop-number">1</span>
@@ -84,7 +84,7 @@
 
       <!-- Actions -->
       <div class="card actions-card">
-        <h3>💫 Emergency Actions</h3>
+        <h3><i class="fas fa-bolt"></i> Emergency Actions</h3>
         <div class="action-buttons">
           <button class="btn btn-primary">Report Issue</button>
           <button class="btn btn-warning">Request Assistance</button>

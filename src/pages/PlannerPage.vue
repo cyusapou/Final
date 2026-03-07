@@ -1,7 +1,20 @@
 <template>
-  <div class="page-container bg-white dark:bg-neutral-900 transition-colors" :class="{ 'sidebar-collapsed': !sidebarOpen }">
+  <div class="page-container bg-white dark:bg-neutral-950 transition-colors" :class="{ 'sidebar-collapsed': !sidebarOpen }">
     <div class="page-header">
       <h1>{{ t.planFutureTrip }}</h1>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="empty-state">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-if="error" class="error-banner">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+      <button @click="loadData">Retry</button>
     </div>
 
     <!-- Create New Plan -->
@@ -164,17 +177,24 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { store, stops } from '../store/index.js'
+import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
+import { stopService } from '../services/stopService.js'
+import { plannedTripService } from '../services/plannedTripService.js'
 
+const USER_ID = 'u001'
 const router = useRouter()
 
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 const sidebarOpen = computed(() => store.sidebarOpen)
-const upcomingTrips = computed(() => store.getUpcomingPlannedTrips())
+
+const stops = ref([])
+const upcomingTrips = ref([])
+const isLoading = ref(false)
+const error = ref(null)
 
 const today = new Date().toISOString().split('T')[0]
 
@@ -188,6 +208,26 @@ const formData = ref({
   reminderEnabled: false,
   reminderMinutes: 30,
 })
+
+const loadData = async () => {
+  isLoading.value = true
+  error.value = null
+  try {
+    const [stopsData, tripsData] = await Promise.all([
+      stopService.getAll(),
+      plannedTripService.getUpcoming(USER_ID),
+    ])
+    stops.value = stopsData
+    upcomingTrips.value = tripsData
+  } catch (e) {
+    error.value = 'Failed to load data. Please try again.'
+    console.error('Error loading planner data:', e)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(loadData)
 
 const repeatOptions = computed(() => [
   { value: 'daily', label: t.value.daily },
@@ -213,29 +253,36 @@ const getStatusLabel = (status) => {
   return labels[status] || status
 }
 
-const savePlan = () => {
-  const originStop = stops.find(s => s.id === parseInt(formData.value.originStopId))
-  const destinationStop = stops.find(s => s.id === parseInt(formData.value.destinationStopId))
+const savePlan = async () => {
+  const originStop = stops.value.find(s => s.id === formData.value.originStopId || s.id === parseInt(formData.value.originStopId))
+  const destinationStop = stops.value.find(s => s.id === formData.value.destinationStopId || s.id === parseInt(formData.value.destinationStopId))
   
   if (!originStop || !destinationStop) return
 
   const planData = {
+    userId: USER_ID,
     date: formData.value.date,
     time: formData.value.time,
     originStop,
     destinationStop,
     reminderEnabled: formData.value.reminderEnabled,
     reminderMinutes: formData.value.reminderMinutes,
+    status: 'upcoming',
   }
 
-  if (formData.value.tripType === 'repeating') {
-    // Generate multiple planned trips based on repeat pattern
-    generateRepeatingTrips(planData)
-  } else {
-    store.addPlannedTrip(planData)
+  try {
+    if (formData.value.tripType === 'repeating') {
+      await generateRepeatingTrips(planData)
+    } else {
+      await plannedTripService.create(planData)
+    }
+    const tripsData = await plannedTripService.getUpcoming(USER_ID)
+    upcomingTrips.value = tripsData
+  } catch (e) {
+    error.value = 'Failed to save trip. Please try again.'
+    console.error('Error saving planned trip:', e)
   }
 
-  // Reset form
   formData.value = {
     date: today,
     time: '08:00',
@@ -248,11 +295,11 @@ const savePlan = () => {
   }
 }
 
-const generateRepeatingTrips = (planData) => {
+const generateRepeatingTrips = async (planData) => {
   const startDate = new Date(planData.date)
-  const days = []
+  const promises = []
   
-  for (let i = 0; i < 14; i++) { // Generate for next 2 weeks
+  for (let i = 0; i < 14; i++) {
     const currentDate = new Date(startDate)
     currentDate.setDate(startDate.getDate() + i)
     const dayOfWeek = currentDate.getDay()
@@ -267,24 +314,35 @@ const generateRepeatingTrips = (planData) => {
     }
     
     if (shouldAdd) {
-      store.addPlannedTrip({
+      promises.push(plannedTripService.create({
         ...planData,
         date: currentDate.toISOString().split('T')[0],
-      })
+      }))
     }
   }
+  await Promise.all(promises)
 }
 
-const bookPlannedTrip = (trip) => {
+const bookPlannedTrip = async (trip) => {
   store.selectedOriginStop = trip.originStop
   store.selectedDestinationStop = trip.destinationStop
   store.selectedDate = trip.date
-  store.updatePlannedTripStatus(trip.id, 'booked')
+  try {
+    await plannedTripService.patch(trip.id, { status: 'booked' })
+  } catch (e) {
+    console.error('Error updating trip status:', e)
+  }
   router.push('/express')
 }
 
-const deletePlannedTrip = (id) => {
-  store.deletePlannedTrip(id)
+const deletePlannedTrip = async (id) => {
+  try {
+    await plannedTripService.remove(id)
+    upcomingTrips.value = upcomingTrips.value.filter(t => t.id !== id)
+  } catch (e) {
+    error.value = 'Failed to delete trip.'
+    console.error('Error deleting planned trip:', e)
+  }
 }
 </script>
 
@@ -305,8 +363,8 @@ const deletePlannedTrip = (id) => {
   color: #212121;
 }
 
-.dark .page-header h1 {
-  color: #E5E5E5;
+html.dark .page-header h1 {
+  color: var(--text);
 }
 
 .section {
@@ -320,8 +378,8 @@ const deletePlannedTrip = (id) => {
   margin-bottom: 16px;
 }
 
-.dark .section-title {
-  color: #E5E5E5;
+html.dark .section-title {
+  color: var(--text);
 }
 
 .plan-form-card {
@@ -331,9 +389,9 @@ const deletePlannedTrip = (id) => {
   border: 1px solid #E8E8E8;
 }
 
-.dark .plan-form-card {
-  background: #1F2937;
-  border-color: #374151;
+html.dark .plan-form-card {
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 .plan-form-card h2 {
@@ -343,8 +401,8 @@ const deletePlannedTrip = (id) => {
   margin: 0 0 16px;
 }
 
-.dark .plan-form-card h2 {
-  color: #E5E5E5;
+html.dark .plan-form-card h2 {
+  color: var(--text);
 }
 
 .form-row {
@@ -365,8 +423,8 @@ const deletePlannedTrip = (id) => {
   margin-bottom: 6px;
 }
 
-.dark .form-group label {
-  color: #E5E5E5;
+html.dark .form-group label {
+  color: var(--text);
 }
 
 .form-input, .form-select {
@@ -379,10 +437,15 @@ const deletePlannedTrip = (id) => {
   background: #FFF;
 }
 
-.dark .form-input, .dark .form-select {
-  border-color: #4B5563;
-  color: #E5E5E5;
-  background: #374151;
+html.dark .form-input, html.dark .form-select {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--bg);
+}
+
+html.dark .form-input:focus, html.dark .form-select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .form-input:focus, .form-select:focus {
@@ -412,10 +475,10 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
-.dark .type-btn {
-  border-color: #4B5563;
-  background: #374151;
-  color: #9CA3AF;
+html.dark .type-btn {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .type-btn.active {
@@ -424,10 +487,10 @@ const deletePlannedTrip = (id) => {
   border-color: #2E7D32;
 }
 
-.dark .type-btn.active {
-  background: #4B5563;
-  border-color: #4B5563;
-  color: #E5E5E5;
+html.dark .type-btn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
 }
 
 .repeat-selector {
@@ -448,10 +511,10 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
-.dark .repeat-btn {
-  border-color: #4B5563;
-  background: #374151;
-  color: #9CA3AF;
+html.dark .repeat-btn {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .repeat-btn.active {
@@ -460,9 +523,10 @@ const deletePlannedTrip = (id) => {
   border-color: #2E7D32;
 }
 
-.dark .repeat-btn.active {
-  background: #4B5563;
-  border-color: #4B5563;
+html.dark .repeat-btn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
 }
 
 .reminder-toggle {
@@ -480,8 +544,12 @@ const deletePlannedTrip = (id) => {
   color: #424242;
 }
 
-.dark .reminder-toggle label {
-  color: #E5E5E5;
+html.dark .reminder-toggle label {
+  color: var(--text);
+}
+
+html.dark .reminder-toggle input[type="checkbox"] {
+  accent-color: var(--green);
 }
 
 .reminder-toggle input[type="checkbox"] {
@@ -500,10 +568,10 @@ const deletePlannedTrip = (id) => {
   color: #212121;
 }
 
-.dark .reminder-select {
-  border-color: #4B5563;
-  background: #374151;
-  color: #E5E5E5;
+html.dark .reminder-select {
+  border-color: var(--border);
+  background: var(--bg);
+  color: var(--text);
 }
 
 .reminder-text {
@@ -511,8 +579,8 @@ const deletePlannedTrip = (id) => {
   color: #757575;
 }
 
-.dark .reminder-text {
-  color: #9CA3AF;
+html.dark .reminder-text {
+  color: var(--text-muted);
 }
 
 .btn-save-plan {
@@ -533,16 +601,17 @@ const deletePlannedTrip = (id) => {
   margin-top: 8px;
 }
 
-.dark .btn-save-plan {
-  background: #4B5563;
+html.dark .btn-save-plan {
+  background: var(--green);
+  color: #fff;
 }
 
 .btn-save-plan:hover {
   background: #1B5E20;
 }
 
-.dark .btn-save-plan:hover {
-  background: #374151;
+html.dark .btn-save-plan:hover {
+  background: var(--green-dark);
 }
 
 .planned-trips-list {
@@ -561,9 +630,9 @@ const deletePlannedTrip = (id) => {
   border: 1px solid #E8E8E8;
 }
 
-.dark .planned-trip-card {
-  background: #1F2937;
-  border-color: #374151;
+html.dark .planned-trip-card {
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 .trip-date-box {
@@ -578,8 +647,8 @@ const deletePlannedTrip = (id) => {
   flex-shrink: 0;
 }
 
-.dark .trip-date-box {
-  background: #4B5563;
+html.dark .trip-date-box {
+  background: var(--green-muted);
 }
 
 .trip-date-box .day {
@@ -589,8 +658,8 @@ const deletePlannedTrip = (id) => {
   line-height: 1;
 }
 
-.dark .trip-date-box .day {
-  color: #E5E5E5;
+html.dark .trip-date-box .day {
+  color: var(--green);
 }
 
 .trip-date-box .month {
@@ -600,8 +669,8 @@ const deletePlannedTrip = (id) => {
   text-transform: uppercase;
 }
 
-.dark .trip-date-box .month {
-  color: #A0AEC0;
+html.dark .trip-date-box .month {
+  color: var(--green);
 }
 
 .trip-details {
@@ -618,16 +687,16 @@ const deletePlannedTrip = (id) => {
   gap: 6px;
 }
 
-.dark .trip-time {
-  color: #E5E5E5;
+html.dark .trip-time {
+  color: var(--text);
 }
 
 .trip-time i {
   color: #757575;
 }
 
-.dark .trip-time i {
-  color: #9CA3AF;
+html.dark .trip-time i {
+  color: var(--green);
 }
 
 .trip-route {
@@ -636,8 +705,8 @@ const deletePlannedTrip = (id) => {
   margin-bottom: 4px;
 }
 
-.dark .trip-route {
-  color: #9CA3AF;
+html.dark .trip-route {
+  color: var(--text-muted);
 }
 
 .trip-status {
@@ -659,9 +728,14 @@ const deletePlannedTrip = (id) => {
   color: #2E7D32;
 }
 
-.dark .trip-status.booked {
-  background: #4B5563;
-  color: #E5E5E5;
+html.dark .trip-status.planned {
+  background: rgba(245, 124, 0, 0.15);
+  color: #FB923C;
+}
+
+html.dark .trip-status.booked {
+  background: var(--green-muted);
+  color: var(--green);
 }
 
 .trip-actions {
@@ -685,16 +759,17 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
-.dark .btn-book-now {
-  background: #4B5563;
+html.dark .btn-book-now {
+  background: var(--green);
+  color: #fff;
 }
 
 .btn-book-now:hover {
   background: #1B5E20;
 }
 
-.dark .btn-book-now:hover {
-  background: #374151;
+html.dark .btn-book-now:hover {
+  background: var(--green-dark);
 }
 
 .btn-delete {
@@ -711,9 +786,9 @@ const deletePlannedTrip = (id) => {
   transition: all 0.2s;
 }
 
-.dark .btn-delete {
-  border-color: #7F1D1D;
-  background: #374151;
+html.dark .btn-delete {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: var(--surface);
   color: #EF4444;
 }
 
@@ -721,8 +796,8 @@ const deletePlannedTrip = (id) => {
   background: #FFEBEE;
 }
 
-.dark .btn-delete:hover {
-  background: #7F1D1D;
+html.dark .btn-delete:hover {
+  background: rgba(239, 68, 68, 0.15);
 }
 
 .empty-state {
@@ -731,8 +806,8 @@ const deletePlannedTrip = (id) => {
   color: #757575;
 }
 
-.dark .empty-state {
-  color: #9CA3AF;
+html.dark .empty-state {
+  color: var(--text-muted);
 }
 
 .empty-state i {
@@ -741,8 +816,8 @@ const deletePlannedTrip = (id) => {
   color: #E0E0E0;
 }
 
-.dark .empty-state i {
-  color: #4B5563;
+html.dark .empty-state i {
+  color: var(--green);
 }
 
 .empty-state p {
@@ -750,8 +825,8 @@ const deletePlannedTrip = (id) => {
   margin: 0 0 8px;
 }
 
-.dark .empty-state p {
-  color: #E5E5E5;
+html.dark .empty-state p {
+  color: var(--text);
 }
 
 .empty-state .hint {
@@ -759,7 +834,61 @@ const deletePlannedTrip = (id) => {
   color: #9E9E9E;
 }
 
-.dark .empty-state .hint {
-  color: #6B7280;
+html.dark .empty-state .hint {
+  color: var(--text-muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #E8E8E8;
+  border-top-color: #2E7D32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+html.dark .spinner {
+  border-color: var(--border);
+  border-top-color: var(--green);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #FFEBEE;
+  border: 1px solid #FFCDD2;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #C62828;
+}
+
+html.dark .error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #EF4444;
+}
+
+.error-banner button {
+  margin-left: auto;
+  padding: 6px 14px;
+  background: #D32F2F;
+  color: #FFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+html.dark .error-banner button {
+  background: #EF4444;
 }
 </style>

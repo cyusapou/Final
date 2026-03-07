@@ -1,222 +1,182 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
-    <div class="page-header">
-      <h1>👨‍✊️ Driver Management</h1>
-      <p class="subtitle">Manage and monitor driver performance</p>
-    </div>
+  <PortalLayout
+    :nav-items="navItems"
+    role-label="Manager"
+    page-title="Drivers"
+    :user-name="userName"
+    :company-name="companyName"
+    :unread-count="unreadCount"
+    @logout="handleLogout"
+    @notifications="() => {}"
+  >
+    <DataTable
+      :columns="columns"
+      :rows="rows"
+      :loading="loading"
+      :error="error"
+      empty-icon="fas fa-id-card"
+      empty-title="No drivers yet"
+      empty-subtitle="Add your first driver to get started"
+      @retry="loadDrivers"
+    >
+      <template #empty-action>
+        <router-link to="/manager/drivers/new" class="btn-add">
+          <i class="fas fa-plus"></i> Add Driver
+        </router-link>
+      </template>
 
-    <div class="filters">
-      <input type="text" placeholder="Search driver name or ID..." class="search-input" v-model="searchQuery" />
-      <select v-model="filterStatus" class="filter-select">
-        <option value="">All Status</option>
-        <option value="online">Online</option>
-        <option value="on-break">On Break</option>
-        <option value="offline">Offline</option>
-      </select>
-    </div>
+      <template #cell-name="{ row }">
+        <span class="driver-name">{{ row.name }}</span>
+      </template>
 
-    <div class="card">
-      <h3>👨‍🚕 All Drivers</h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>ID</th>
-            <th>Status</th>
-            <th>Today's Trips</th>
-            <th>Rating</th>
-            <th>Incidents</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>DRV001</td>
-            <td><span class="badge badge-online">Online</span></td>
-            <td>3/4</td>
-            <td>4.8⭐</td>
-            <td><span class="incident-badge">0</span></td>
-            <td><button class="action-btn">View</button></td>
-          </tr>
-          <tr>
-            <td>Jane Smith</td>
-            <td>DRV002</td>
-            <td><span class="badge badge-online">Online</span></td>
-            <td>2/3</td>
-            <td>4.6⭐</td>
-            <td><span class="incident-badge">1</span></td>
-            <td><button class="action-btn">View</button></td>
-          </tr>
-          <tr>
-            <td>Peter Johnson</td>
-            <td>DRV003</td>
-            <td><span class="badge badge-break">On Break</span></td>
-            <td>1/3</td>
-            <td>4.5⭐</td>
-            <td><span class="incident-badge">0</span></td>
-            <td><button class="action-btn">View</button></td>
-          </tr>
-          <tr>
-            <td>Sarah Williams</td>
-            <td>DRV004</td>
-            <td><span class="badge badge-online">Online</span></td>
-            <td>4/4</td>
-            <td>4.9⭐</td>
-            <td><span class="incident-badge">0</span></td>
-            <td><button class="action-btn">View</button></td>
-          </tr>
-          <tr>
-            <td>Michael Brown</td>
-            <td>DRV005</td>
-            <td><span class="badge badge-offline">Offline</span></td>
-            <td>0/2</td>
-            <td>4.2⭐</td>
-            <td><span class="incident-badge warn">2</span></td>
-            <td><button class="action-btn">View</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+      <template #cell-status="{ row }">
+        <StatusBadge :status="row.status" />
+      </template>
+
+      <template #cell-licenseExpiry="{ row }">
+        <span :class="{ 'expiry-warn': isExpiringSoon(row.licenseExpiry) }">
+          {{ row.licenseExpiry || '—' }}
+        </span>
+      </template>
+    </DataTable>
+
+    <router-link to="/manager/drivers/new" class="fab">
+      <i class="fas fa-plus"></i>
+    </router-link>
+  </PortalLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import PortalLayout from '../../components/shared/PortalLayout.vue'
+import DataTable from '../../components/shared/DataTable.vue'
+import StatusBadge from '../../components/shared/StatusBadge.vue'
+import { useAuth } from '../../composables/useAuth.js'
+import { userService } from '../../services/userService.js'
+import { driverService } from '../../services/driverService.js'
+import { notificationService } from '../../services/notificationService.js'
 
-const searchQuery = ref('')
-const filterStatus = ref('')
+const auth = useAuth()
+
+const navItems = [
+  { path: '/manager', icon: 'fas fa-chart-pie', label: 'Dashboard', exact: true },
+  { path: '/manager/drivers', icon: 'fas fa-id-card', label: 'Drivers' },
+  { path: '/manager/workers', icon: 'fas fa-hard-hat', label: 'Workers' },
+  { path: '/manager/trips', icon: 'fas fa-route', label: 'Trips' },
+  { path: '/manager/buses', icon: 'fas fa-bus', label: 'Buses' },
+  { path: '/manager/expenses', icon: 'fas fa-receipt', label: 'Expenses' },
+  { path: '/manager/salaries', icon: 'fas fa-money-bill-wave', label: 'Salaries' },
+  { path: '/manager/incidents', icon: 'fas fa-exclamation-triangle', label: 'Incidents' },
+]
+
+const columns = [
+  { key: 'name', label: 'Name' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'licenseNumber', label: 'License #' },
+  { key: 'licenseExpiry', label: 'License Expiry' },
+  { key: 'busPlate', label: 'Bus' },
+  { key: 'status', label: 'Status' },
+]
+
+const loading = ref(true)
+const error = ref('')
+const rows = ref([])
+const unreadCount = ref(0)
+const companyName = ref('')
+
+const userName = computed(() => {
+  const u = auth.currentUser.value
+  return u ? `${u.firstName} ${u.lastName}` : ''
+})
+
+function isExpiringSoon(dateStr) {
+  if (!dateStr) return false
+  const exp = new Date(dateStr)
+  const now = new Date()
+  const diff = (exp - now) / (1000 * 60 * 60 * 24)
+  return diff < 30 && diff > 0
+}
+
+async function loadDrivers() {
+  loading.value = true
+  error.value = ''
+  try {
+    const depotId = auth.depotId.value
+    const companyId = auth.companyId.value
+
+    const [driverUsers, driverRecords, notifications] = await Promise.all([
+      userService.getAll({ role: 'driver', depotId }),
+      driverService.getAll({ companyId }),
+      notificationService.getUnread(auth.userId.value),
+    ])
+
+    unreadCount.value = notifications.length
+
+    const driverMap = {}
+    driverRecords.forEach(d => { driverMap[d.userId] = d })
+
+    rows.value = driverUsers.map(u => {
+      const rec = driverMap[u.id] || {}
+      return {
+        id: u.id,
+        name: `${u.firstName} ${u.lastName}`,
+        phone: u.phone || '—',
+        licenseNumber: rec.licenseNumber || '—',
+        licenseExpiry: rec.licenseExpiry || null,
+        busPlate: rec.busPlate || '—',
+        status: u.status || 'active',
+      }
+    })
+  } catch (e) {
+    error.value = 'Failed to load drivers. Please try again.'
+  } finally {
+    loading.value = false
+  }
+}
+
+function handleLogout() {
+  auth.logout('/manager/login')
+}
+
+onMounted(loadDrivers)
 </script>
 
 <style scoped>
-.page {
-  padding: 0;
-}
+.driver-name { font-weight: 600; }
+.expiry-warn { color: #eab308; font-weight: 500; }
 
-.page-header {
-  margin-bottom: 24px;
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #22c55e;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
 }
+.btn-add:hover { background: #16a34a; }
 
-.page-header h1 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-}
-
-.subtitle {
-  margin: 0;
-  color: #757575;
-  font-size: 13px;
-}
-
-.filters {
+.fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #22c55e;
+  color: #fff;
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(34,197,94,0.35);
+  transition: background 0.2s, transform 0.15s;
+  z-index: 30;
 }
-
-.search-input, .filter-select {
-  padding: 10px 12px;
-  border: 1px solid #e8ecf1;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.search-input {
-  flex: 1;
-}
-
-.filter-select {
-  min-width: 150px;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  border: 1px solid #e8ecf1;
-}
-
-.card h3 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.data-table th {
-  background: #f5f6fa;
-  padding: 12px;
-  text-align: left;
-  font-size: 12px;
-  font-weight: 600;
-  color: #424242;
-  border-bottom: 1px solid #e8ecf1;
-}
-
-.data-table td {
-  padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.data-table tbody tr:hover {
-  background: #fafafa;
-}
-
-.badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.badge-online {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.badge-break {
-  background: #fff3e0;
-  color: #f57c00;
-}
-
-.badge-offline {
-  background: #f5f6fa;
-  color: #757575;
-}
-
-.incident-badge {
-  display: inline-block;
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.incident-badge.warn {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.action-btn {
-  padding: 6px 12px;
-  background: #2e7d32;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.action-btn:hover {
-  background: #1b5e20;
-}
+.fab:hover { background: #16a34a; transform: scale(1.05); }
 </style>

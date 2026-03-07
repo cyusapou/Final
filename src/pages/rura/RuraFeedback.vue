@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <h1>💬 Feedback</h1>
+    <h1><i class="fas fa-comment"></i> Feedback</h1>
     <div class="card"><p>RURA feedback page - placeholder</p></div>
   </div>
 </template>

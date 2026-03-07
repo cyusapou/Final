@@ -194,3 +194,31 @@ watch(routePath, (newPath) => {
   margin: 12px 16px;
 }
 </style>
+
+<style>
+/* Dark mode overrides */
+html.dark .route-popup h4:first-child {
+  color: var(--green);
+}
+
+html.dark .route-popup p {
+  color: var(--text-muted);
+}
+
+html.dark .route-coords {
+  background: var(--surface);
+  color: var(--text);
+}
+
+html.dark .station-name {
+  color: var(--text);
+}
+
+html.dark .station-area {
+  color: var(--text-muted);
+}
+
+html.dark .route-accuracy {
+  color: var(--text-muted);
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="recent-bookings-page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="recent-bookings-page bg-white dark:bg-neutral-950 transition-colors">
     <div class="container">
       <!-- Header -->
       <header class="page-header">
@@ -1082,4 +1082,43 @@ export default {
     margin: 20px;
   }
 }
+
+/* Dark mode overrides */
+html.dark .recent-bookings-page { background: linear-gradient(135deg, #141414 0%, #0a0a0a 100%); }
+html.dark .container { background: var(--bg-primary); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+html.dark .bookings-content { color: var(--text-primary); }
+html.dark .search-section { background: var(--bg-secondary); }
+html.dark .form-group label { color: var(--text-secondary); }
+html.dark .search-input, html.dark .filter-select { background: var(--card-bg); border-color: var(--border-color); color: var(--text-primary); }
+html.dark .booking-card { border-color: var(--border-color); background: var(--bg-secondary); }
+html.dark .booking-header { background: var(--card-bg); }
+html.dark .booking-reference .label, html.dark .booking-status .label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .booking-reference .value { color: var(--text-primary); }
+html.dark .booking-route, html.dark .booking-passenger, html.dark .booking-seats, html.dark .booking-price, html.dark .booking-actions { border-color: var(--border-color); }
+html.dark .booking-route h3, html.dark .booking-passenger h4, html.dark .booking-seats h4, html.dark .booking-price h4, html.dark .booking-actions h4 { color: var(--text-primary); }
+html.dark .label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .value { color: var(--text-primary); }
+html.dark .route-item, html.dark .passenger-item, html.dark .seats-item, html.dark .price-item { border-color: var(--border-color); }
+html.dark .empty-state h3 { color: var(--text-primary); }
+html.dark .empty-state p { color: var(--text-secondary); }
+html.dark .empty-icon { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .loading p { color: var(--text-primary); }
+html.dark .spinner { border-color: var(--border-color); border-top-color: #667eea; }
+html.dark .modal-content { background: var(--bg-primary); }
+html.dark .modal-header { border-color: var(--border-color); }
+html.dark .modal-header h2 { color: var(--text-primary); }
+html.dark .close-btn { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .detail-section h3 { color: var(--text-primary); border-color: var(--border-color); }
+html.dark .detail-item { border-color: var(--border-color); }
+html.dark .cancel-confirmation h3 { color: #EF5350; }
+html.dark .cancel-confirmation p { color: var(--text-secondary); }
+html.dark .reason-textarea { background: var(--card-bg); border-color: var(--border-color); color: var(--text-primary); }
+html.dark .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); }
+html.dark .price-item.total { border-color: var(--border-color); }
+html.dark .page-header { background: linear-gradient(135deg, #141414 0%, #0a0a0a 100%); }
+html.dark .loading p { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .spinner { border-color: var(--border, rgba(255,255,255,0.07)); border-top-color: var(--green, #22c55e); }
+html.dark .btn-primary { background: var(--green, #22c55e); color: #fff; }
+html.dark .btn-primary:hover { background: #16a34a; }
+html.dark .reason-textarea { background: var(--bg, #0a0a0a); border-color: var(--border, rgba(255,255,255,0.07)); color: var(--text, rgba(255,255,255,0.85)); }
 </style>

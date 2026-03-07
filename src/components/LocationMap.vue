@@ -452,3 +452,64 @@ onUnmounted(() => {
   }
 }
 </style>
+
+<style>
+/* Dark mode overrides */
+html.dark .map-wrapper {
+  background: var(--surface);
+}
+
+html.dark .map-loading {
+  background: rgba(10, 10, 10, 0.95);
+  color: var(--text);
+}
+
+html.dark .map-loading p {
+  color: var(--text-muted);
+}
+
+html.dark .spinner {
+  border-color: var(--surface);
+  border-top-color: var(--green);
+}
+
+html.dark .map-control-btn {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .map-control-btn:hover {
+  background: var(--hover);
+}
+
+html.dark .user-location-marker {
+  background: var(--green) !important;
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3) !important;
+}
+
+html.dark .bus-stop-marker.station {
+  background: var(--green) !important;
+}
+
+html.dark .marker-popup strong {
+  color: var(--text);
+}
+
+html.dark .marker-popup .stop-type {
+  color: var(--text-muted);
+}
+
+html.dark .marker-popup .stop-area {
+  color: var(--text-muted);
+}
+
+html.dark .marker-popup .stop-code {
+  color: var(--green);
+}
+
+html.dark .leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page bg-white dark:bg-neutral-950 transition-colors">
     <div class="page-header">
-      <h1>🚍 Fleet Management</h1>
+      <h1><i class="fas fa-bus-alt"></i> Fleet Management</h1>
       <p class="subtitle">Monitor and manage all vehicles in your fleet</p>
     </div>
 
@@ -25,7 +25,7 @@
     </div>
 
     <div class="card">
-      <h3>🚍 Fleet Inventory</h3>
+      <h3><i class="fas fa-bus-alt"></i> Fleet Inventory</h3>
       <table class="data-table">
         <thead>
           <tr>
@@ -44,7 +44,7 @@
             <td>KCA 123A</td>
             <td>Luxury Coach</td>
             <td>50</td>
-            <td><span class="badge green">🟢 Active</span></td>
+            <td><span class="badge green">Active</span></td>
             <td>Feb 28</td>
             <td>124,567 km</td>
           </tr>
@@ -53,7 +53,7 @@
             <td>KCA 124A</td>
             <td>Standard Coach</td>
             <td>50</td>
-            <td><span class="badge green">🟢 Active</span></td>
+            <td><span class="badge green">Active</span></td>
             <td>Feb 25</td>
             <td>98,234 km</td>
           </tr>
@@ -62,7 +62,7 @@
             <td>KCA 125A</td>
             <td>Mini Bus</td>
             <td>14</td>
-            <td><span class="badge orange">🟨 Maintenance</span></td>
+            <td><span class="badge orange">Maintenance</span></td>
             <td>Feb 20</td>
             <td>145,678 km</td>
           </tr>
@@ -71,7 +71,7 @@
             <td>KCA 126A</td>
             <td>Standard Coach</td>
             <td>50</td>
-            <td><span class="badge green">🟢 Active</span></td>
+            <td><span class="badge green">Active</span></td>
             <td>Mar 1</td>
             <td>102,456 km</td>
           </tr>

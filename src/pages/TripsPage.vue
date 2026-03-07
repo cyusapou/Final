@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page-wrapper bg-white dark:bg-neutral-950 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="trips-layout bg-white dark:bg-neutral-900">
+    <div class="trips-layout bg-white dark:bg-neutral-950">
       <!-- Desktop Filters Sidebar -->
       <aside class="filters-sidebar" :class="{ open: showFilters }">
         <div class="filters-header">
@@ -113,7 +113,7 @@
           <!-- Origin Info Banner (auto-resolved from GPS) -->
           <div v-if="store.autoResolvedOrigin && store.selectedOriginStop" class="origin-info-banner">
             <div class="banner-content">
-              <span class="banner-icon">🚌</span>
+              <span class="banner-icon"><i class="fas fa-bus"></i></span>
               <div class="banner-text">
                 <span class="banner-label">{{ t.boardingFrom || 'Departing from' }}</span>
                 <strong class="banner-name">{{ store.selectedOriginStop.name }}</strong>
@@ -954,5 +954,68 @@ const selectTrip = (trip) => {
   .page-wrapper {
     padding-bottom: 70px;
   }
+}
+
+/* Dark mode overrides */
+html.dark .page-wrapper { background: var(--bg-primary); }
+html.dark .header h2 { color: var(--text-primary); }
+html.dark .btn-back { background: var(--card-bg); border-color: var(--border-color); color: var(--text-secondary); }
+html.dark .btn-back:hover { background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
+html.dark .screen-desc { color: var(--text-secondary); }
+html.dark .picker-label { color: var(--text-secondary); }
+html.dark .picker-wrap i { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .picker-input { background: var(--card-bg); border-color: var(--border-color); color: var(--text-primary); }
+html.dark .picker-input:focus { border-color: var(--green, #22c55e); }
+html.dark .filter-toggle-btn { background: var(--card-bg); border-color: var(--border-color); color: var(--text-secondary); }
+html.dark .filters-sidebar { background: var(--card-bg); border-color: var(--border-color); }
+html.dark .filters-header h3 { color: var(--text-primary); }
+html.dark .filter-label { color: var(--text-secondary); }
+html.dark .pill { background: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-secondary); }
+html.dark .pill:hover { border-color: var(--green, #22c55e); }
+html.dark .chip { background: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-secondary); }
+html.dark .chip:hover { border-color: var(--green, #22c55e); }
+html.dark .chip.active { background: var(--green-muted, rgba(34,197,94,0.08)); }
+html.dark .seat-select { background: var(--card-bg); border-color: var(--border-color); color: var(--text-primary); }
+html.dark .trip-card { background: var(--card-bg); border-color: var(--border-color); }
+html.dark .trip-card:hover { border-color: var(--green, #22c55e); }
+html.dark .trip-header h3 { color: var(--text-primary); }
+html.dark .trip-seat-count { color: var(--text-secondary); }
+html.dark .trip-info-row span { color: var(--text-secondary); }
+html.dark .trip-amenities span { background: var(--bg-tertiary); color: var(--text-secondary); }
+html.dark .trip-price { color: var(--text-primary); }
+html.dark .origin-info-banner { background: var(--green-muted, rgba(34,197,94,0.08)); border-color: rgba(34,197,94,0.2); }
+html.dark .origin-banner-text strong { color: var(--text-primary); }
+html.dark .origin-banner-text span { color: var(--text-secondary); }
+html.dark .empty-state { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .empty-state i { color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .trip-count { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .trips-info { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .trip-express span { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .express-logo-sm { background: var(--green-muted, rgba(34,197,94,0.08)); }
+html.dark .express-logo-sm i { color: var(--green, #22c55e); }
+html.dark .trip-time { color: var(--green, #22c55e); }
+html.dark .trip-time .arrow { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .trip-details { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .bus-plate { color: var(--text, rgba(255,255,255,0.85)); background: var(--bg, #0a0a0a); }
+html.dark .feature { color: var(--text-muted, rgba(255,255,255,0.4)); background: var(--bg, #0a0a0a); }
+html.dark .feature i { color: var(--green, #22c55e); }
+html.dark .driver-contact { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .driver-contact i { color: var(--green, #22c55e); }
+html.dark .seats-bar-container .available { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .seats-bar { background: var(--border, rgba(255,255,255,0.07)); }
+html.dark .seats-fill.green { background: var(--green, #22c55e); }
+html.dark .seats-info .price { color: var(--green, #22c55e); }
+html.dark .btn-select-trip { background: var(--green, #22c55e); }
+html.dark .btn-select-trip:hover { background: #16a34a; }
+html.dark .banner-label { color: var(--green, #22c55e); }
+html.dark .banner-name { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .banner-distance { color: var(--green, #22c55e); }
+html.dark .banner-close { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .banner-close:hover { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .pill.active { background: var(--green, #22c55e); border-color: var(--green, #22c55e); }
+html.dark .chip.active { color: var(--green, #22c55e); border-color: var(--green, #22c55e); }
+html.dark .filter-badge { background: var(--green, #22c55e); }
+@media (max-width: 1023px) {
+  html.dark .filters-sidebar { box-shadow: 0 -4px 12px rgba(0,0,0,0.4); border-color: var(--border, rgba(255,255,255,0.07)); }
 }
 </style>

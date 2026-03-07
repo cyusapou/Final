@@ -1,8 +1,8 @@
 <template>
-  <div class="test-auth-page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="test-auth-page bg-white dark:bg-neutral-950 transition-colors">
     <div class="container">
       <div class="auth-box">
-        <h1>🧪 Test Admin Dashboard</h1>
+        <h1><i class="fas fa-flask"></i> Test Admin Dashboard</h1>
         <p>Select a role to log in with test credentials</p>
 
         <div class="roles-grid">
@@ -12,7 +12,7 @@
             @click="loginAsRole(role.value)"
             :class="['role-btn', { active: selectedRole === role.value }]"
           >
-            <span class="role-emoji">{{ role.emoji }}</span>
+            <span class="role-emoji"><i :class="role.icon"></i></span>
             <span class="role-name">{{ role.label }}</span>
             <span class="role-desc">{{ role.description }}</span>
           </button>
@@ -40,21 +40,22 @@
           </div>
 
           <button @click="handleLogin" class="btn-login" :disabled="isLoading">
-            {{ isLoading ? 'Logging in...' : `✅ Login as ${selectedRole}` }}
+            <template v-if="isLoading">Logging in...</template>
+            <template v-else><i class="fas fa-check-circle"></i> Login as {{ selectedRole }}</template>
           </button>
 
           <p class="warning">
-            ⚠️ Backend should be running: npm run dev in the /server folder
+            <i class="fas fa-exclamation-triangle"></i> Backend should be running: npm run dev in the /server folder
           </p>
         </div>
 
         <div class="available-roles">
           <h3>Available Test Roles:</h3>
           <ul>
-            <li>🚌 <strong>Driver</strong> - Can view trip details and history</li>
-            <li>👔 <strong>Manager</strong> - Can manage drivers and trips</li>
-            <li>🏢 <strong>Express Admin</strong> - Can manage fleet and finance</li>
-            <li>🏛️ <strong>RURA Admin</strong> - Can manage all expresses nationwide</li>
+            <li><i class="fas fa-bus"></i> <strong>Driver</strong> - Can view trip details and history</li>
+            <li><i class="fas fa-user-tie"></i> <strong>Manager</strong> - Can manage drivers and trips</li>
+            <li><i class="fas fa-building"></i> <strong>Express Admin</strong> - Can manage fleet and finance</li>
+            <li><i class="fas fa-landmark"></i> <strong>RURA Admin</strong> - Can manage all expresses nationwide</li>
           </ul>
         </div>
       </div>
@@ -75,28 +76,28 @@ const roles = [
   {
     value: 'Driver',
     label: 'Driver',
-    emoji: '🚌',
+    icon: 'fas fa-bus',
     description: 'View trips & history',
     email: 'driver@test.com'
   },
   {
     value: 'Manager',
     label: 'Manager',
-    emoji: '👔',
+    icon: 'fas fa-user-tie',
     description: 'Manage drivers & trips',
     email: 'manager@test.com'
   },
   {
     value: 'Admin',
     label: 'Express Admin',
-    emoji: '🏢',
+    icon: 'fas fa-building',
     description: 'Manage express company',
     email: 'admin@test.com'
   },
   {
     value: 'SuperAdmin',
     label: 'RURA Admin',
-    emoji: '🏛️',
+    icon: 'fas fa-landmark',
     description: 'National oversight',
     email: 'rura@test.com'
   }
@@ -151,7 +152,7 @@ async function handleLogin() {
     router.push(redirectMap[data.role] || '/')
   } catch (err) {
     console.error('Login error:', err)
-    alert(`❌ Login failed: ${err.message}\n\nMake sure:\n1. Backend is running (npm run dev in /server)\n2. Backend is on port 5000\n3. Check browser console for more details`)
+    alert(`Login failed: ${err.message}\n\nMake sure:\n1. Backend is running (npm run dev in /server)\n2. Backend is on port 5000\n3. Check browser console for more details`)
   } finally {
     isLoading.value = false
   }

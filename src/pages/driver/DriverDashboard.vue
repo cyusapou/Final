@@ -1,16 +1,16 @@
 <template>
-  <div class="driver-dashboard bg-white dark:bg-neutral-900 transition-colors">
+  <div class="driver-dashboard bg-white dark:bg-neutral-950 transition-colors">
     <div class="page-header">
-      <h2>🚗 Good morning, {{ driver.firstName }} 👋</h2>
+      <h2><i class="fas fa-car"></i> Good morning, {{ driver.firstName }}</h2>
       <p class="subtitle">Here's your activity for today</p>
     </div>
 
     <!-- Stats -->
     <div class="stats-grid">
-      <StatsCard icon="🚌" label="Today's Trips" value="4" trend="2 completed" />
-      <StatsCard icon="⭐" label="Rating" value="4.8" trend="Excellent" />
-      <StatsCard icon="💰" label="Earnings Today" value="KES 3,240" trend="+12% vs avg" />
-      <StatsCard icon="📍" label="Distance Covered" value="245 km" trend="On track" />
+      <StatsCard icon="fas fa-bus" label="Today's Trips" value="4" trend="2 completed" />
+      <StatsCard icon="fas fa-star" label="Rating" value="4.8" trend="Excellent" />
+      <StatsCard icon="fas fa-coins" label="Earnings Today" value="KES 3,240" trend="+12% vs avg" />
+      <StatsCard icon="fas fa-map-marker-alt" label="Distance Covered" value="245 km" trend="On track" />
     </div>
 
     <!-- Status Toggle -->
@@ -31,7 +31,7 @@
     <!-- Today's Trip -->
     <div class="card trip-card" v-if="todayTrip">
       <div class="trip-header">
-        <h3>🚀 Current Trip</h3>
+        <h3><i class="fas fa-rocket"></i> Current Trip</h3>
         <span class="status-badge">In Progress</span>
       </div>
       <div class="trip-info">
@@ -45,7 +45,7 @@
         :class="tripActive ? 'btn-end' : 'btn-start'"
         @click="toggleTrip"
       >
-        {{ tripActive ? '🛑 End Trip' : '🚀 Start Trip' }}
+        <i :class="tripActive ? 'fas fa-stop-circle' : 'fas fa-rocket'"></i> {{ tripActive ? 'End Trip' : 'Start Trip' }}
       </button>
     </div>
 
@@ -55,7 +55,7 @@
 
     <!-- Recent Trips Summary -->
     <div class="card">
-      <h3>📋 Last 5 Trips Summary</h3>
+      <h3><i class="fas fa-clipboard-list"></i> Last 5 Trips Summary</h3>
       <table class="data-table">
         <thead>
           <tr>
@@ -71,35 +71,35 @@
             <td>Today</td>
             <td>Kigali → Muhanga</td>
             <td>45</td>
-            <td>⭐⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td>KES 800</td>
           </tr>
           <tr>
             <td>Yesterday</td>
             <td>Muhanga → Kigali</td>
             <td>48</td>
-            <td>⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td>KES 850</td>
           </tr>
           <tr>
             <td>2 days ago</td>
             <td>Kigali → Butare</td>
             <td>50</td>
-            <td>⭐⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td>KES 1,200</td>
           </tr>
           <tr>
             <td>3 days ago</td>
             <td>Butare → Kigali</td>
             <td>42</td>
-            <td>⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td>KES 900</td>
           </tr>
           <tr>
             <td>4 days ago</td>
             <td>Kigali → Musanze</td>
             <td>46</td>
-            <td>⭐⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td>KES 950</td>
           </tr>
         </tbody>

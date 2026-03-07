@@ -1,12 +1,12 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h1>🏢 Express Companies Registry</h1>
+      <h1><i class="fas fa-building"></i> Express Companies Registry</h1>
       <p class="subtitle">Manage and monitor all registered express operators</p>
     </div>
 
     <div class="card">
-      <h3>🏢 Active Express Companies</h3>
+      <h3><i class="fas fa-building"></i> Active Express Companies</h3>
       <table class="data-table">
         <thead>
           <tr>
@@ -26,8 +26,8 @@
             <td>Nairobi</td>
             <td>28</td>
             <td>142</td>
-            <td>⭐⭐⭐⭐⭐</td>
-            <td><span class="badge green">✓ Compliant</span></td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
+            <td><span class="badge green"><i class="fas fa-check"></i> Compliant</span></td>
           </tr>
           <tr>
             <td><strong>Safaris East</strong></td>
@@ -35,8 +35,8 @@
             <td>Mombasa</td>
             <td>22</td>
             <td>95</td>
-            <td>⭐⭐⭐⭐</td>
-            <td><span class="badge green">✓ Compliant</span></td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
+            <td><span class="badge green"><i class="fas fa-check"></i> Compliant</span></td>
           </tr>
           <tr>
             <td><strong>Crown Coaches</strong></td>
@@ -44,8 +44,8 @@
             <td>Kisumu</td>
             <td>18</td>
             <td>78</td>
-            <td>⭐⭐⭐⭐½</td>
-            <td><span class="badge orange">⚠ Under Review</span></td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></td>
+            <td><span class="badge orange"><i class="fas fa-exclamation-triangle"></i> Under Review</span></td>
           </tr>
           <tr>
             <td><strong>Nyambera Travels</strong></td>
@@ -53,8 +53,8 @@
             <td>Nakuru</td>
             <td>15</td>
             <td>64</td>
-            <td>⭐⭐⭐⭐</td>
-            <td><span class="badge green">✓ Compliant</span></td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
+            <td><span class="badge green"><i class="fas fa-check"></i> Compliant</span></td>
           </tr>
           <tr>
             <td><strong>Swift Transit</strong></td>
@@ -62,8 +62,8 @@
             <td>Nairobi</td>
             <td>12</td>
             <td>52</td>
-            <td>⭐⭐⭐½</td>
-            <td><span class="badge red">✗ Non-Compliant</span></td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></td>
+            <td><span class="badge red"><i class="fas fa-times"></i> Non-Compliant</span></td>
           </tr>
         </tbody>
       </table>

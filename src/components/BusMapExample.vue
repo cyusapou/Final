@@ -126,3 +126,40 @@ ul li strong {
   color: #2E7D32;
 }
 </style>
+
+<style>
+/* Dark mode overrides */
+html.dark .bus-map-example {
+  color: var(--text);
+}
+
+html.dark .bus-map-example h2 {
+  color: var(--green);
+}
+
+html.dark .example-section {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+html.dark .example-section h3 {
+  color: var(--green);
+}
+
+html.dark .bus-map-example pre {
+  background: var(--bg);
+  color: var(--text);
+}
+
+html.dark .bus-map-example code {
+  color: var(--text);
+}
+
+html.dark .bus-map-example ul li {
+  border-bottom-color: var(--border);
+}
+
+html.dark .bus-map-example ul li strong {
+  color: var(--green);
+}
+</style>

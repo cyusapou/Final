@@ -849,60 +849,57 @@ defineExpose({
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .control-panel {
-    background: #2d3748;
-    border-color: #4a5568;
-  }
-  
-  .control-btn {
-    background: #4a5568;
-    color: #e2e8f0;
-    border-color: #718096;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .control-btn:hover:not(:disabled) {
-    background: #718096;
-    border-color: #a0aec0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-  
-  .nearest-btn {
-    background: #38a169;
-    border-color: #38a169;
-    box-shadow: 0 2px 4px rgba(56, 161, 105, 0.3);
-  }
-  
-  .nearest-btn:hover:not(:disabled) {
-    background: #2f855a;
-    border-color: #2f855a;
-    box-shadow: 0 4px 8px rgba(56, 161, 105, 0.4);
-  }
-  
-  .center-btn {
-    background: #3182ce;
-    border-color: #3182ce;
-    box-shadow: 0 2px 4px rgba(49, 130, 206, 0.3);
-  }
-  
-  .center-btn:hover:not(:disabled) {
-    background: #2b6cb0;
-    border-color: #2b6cb0;
-    box-shadow: 0 4px 8px rgba(49, 130, 206, 0.4);
-  }
-  
-  .info-display {
-    background: #4a5568;
-    border-color: #718096;
-    color: #e2e8f0;
-  }
-  
-  .selected-station {
-    background: #2c5282;
-    border-color: #2b6cb0;
-    color: #e2e8f0;
-  }
+/* Dark mode support using .dark class */
+html.dark .control-panel {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
 }
+
+html.dark .search-input {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+html.dark .search-results {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+html.dark .search-result-item:hover {
+  background: var(--bg-tertiary);
+}
+
+html.dark .result-info h4 { color: var(--text-primary); }
+html.dark .result-info p { color: var(--text-secondary); }
+html.dark .no-results { background: var(--bg-secondary); border-color: var(--border-color); color: var(--text-secondary); }
+
+html.dark .control-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+html.dark .control-btn:hover:not(:disabled) {
+  background: var(--border-color);
+}
+
+html.dark .info-display {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+html.dark .station-name { color: var(--text-primary); }
+html.dark .station-distance { color: var(--text-secondary); }
+
+html.dark .selected-station {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html.dark .selected-station h4 { color: var(--green); }
+html.dark .selected-station .station-name { color: var(--green); }
+html.dark .selected-station .station-type { color: var(--text-muted); }
 </style>

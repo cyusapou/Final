@@ -1,7 +1,20 @@
 <template>
-  <div class="page-container bg-white dark:bg-neutral-900 transition-colors" :class="{ 'sidebar-collapsed': !sidebarOpen }">
+  <div class="page-container bg-white dark:bg-neutral-950 transition-colors" :class="{ 'sidebar-collapsed': !sidebarOpen }">
     <div class="page-header">
       <h1>{{ t.myRoutineTrips }}</h1>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="empty-state">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-if="error" class="error-banner">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+      <button @click="loadData">Retry</button>
     </div>
 
     <!-- Today's Routines -->
@@ -171,18 +184,51 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { store, stops } from '../store/index.js'
+import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
+import { routineTripService } from '../services/routineTripService.js'
+import { stopService } from '../services/stopService.js'
 
+const USER_ID = 'u001'
 const router = useRouter()
 
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 const sidebarOpen = computed(() => store.sidebarOpen)
-const routineTrips = computed(() => store.routineTrips)
-const todaysRoutines = computed(() => store.getTodaysRoutines())
+
+const stops = ref([])
+const routineTrips = ref([])
+const isLoading = ref(false)
+const error = ref(null)
+
+const todaysRoutines = computed(() => {
+  const today = new Date().getDay()
+  return routineTrips.value.filter(trip => 
+    trip.daysOfWeek && trip.daysOfWeek.includes(today)
+  )
+})
+
+const loadData = async () => {
+  isLoading.value = true
+  error.value = null
+  try {
+    const [stopsData, tripsData] = await Promise.all([
+      stopService.getAll(),
+      routineTripService.getByUser(USER_ID),
+    ])
+    stops.value = stopsData
+    routineTrips.value = tripsData
+  } catch (e) {
+    error.value = 'Failed to load data. Please try again.'
+    console.error('Error loading routine trips:', e)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(loadData)
 
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
@@ -202,7 +248,7 @@ const formData = ref({
   originStopId: '',
   destinationStopId: '',
   usualDepartureTime: '08:00',
-  daysOfWeek: [1, 2, 3, 4, 5], // Mon-Fri default
+  daysOfWeek: [1, 2, 3, 4, 5],
 })
 
 const getDayLabel = (day) => {
@@ -217,7 +263,7 @@ const isToday = (day) => {
 }
 
 const getIcon = (name) => {
-  const nameLower = name.toLowerCase()
+  const nameLower = (name || '').toLowerCase()
   if (nameLower.includes('school')) return 'fas fa-graduation-cap'
   if (nameLower.includes('work')) return 'fas fa-briefcase'
   if (nameLower.includes('home')) return 'fas fa-home'
@@ -226,7 +272,7 @@ const getIcon = (name) => {
 }
 
 const getIconClass = (name) => {
-  const nameLower = name.toLowerCase()
+  const nameLower = (name || '').toLowerCase()
   if (nameLower.includes('school')) return 'icon-school'
   if (nameLower.includes('work')) return 'icon-work'
   if (nameLower.includes('home')) return 'icon-home'
@@ -258,24 +304,34 @@ const resetForm = () => {
   }
 }
 
-const saveRoutine = () => {
-  const originStop = stops.find(s => s.id === parseInt(formData.value.originStopId))
-  const destinationStop = stops.find(s => s.id === parseInt(formData.value.destinationStopId))
+const saveRoutine = async () => {
+  const originStop = stops.value.find(s => s.id === formData.value.originStopId || s.id === parseInt(formData.value.originStopId))
+  const destinationStop = stops.value.find(s => s.id === formData.value.destinationStopId || s.id === parseInt(formData.value.destinationStopId))
   
   if (!originStop || !destinationStop) return
 
   const routineData = {
+    userId: USER_ID,
     name: formData.value.name,
     originStop,
     destinationStop,
     usualDepartureTime: formData.value.usualDepartureTime,
     daysOfWeek: formData.value.daysOfWeek,
+    isActive: true,
   }
 
-  if (showEditModal.value && routineToEdit.value) {
-    store.updateRoutineTrip(routineToEdit.value.id, routineData)
-  } else {
-    store.addRoutineTrip(routineData)
+  try {
+    if (showEditModal.value && routineToEdit.value) {
+      await routineTripService.update(routineToEdit.value.id, { ...routineToEdit.value, ...routineData })
+      const idx = routineTrips.value.findIndex(rt => rt.id === routineToEdit.value.id)
+      if (idx !== -1) routineTrips.value[idx] = { ...routineTrips.value[idx], ...routineData }
+    } else {
+      const created = await routineTripService.create(routineData)
+      routineTrips.value.push(created)
+    }
+  } catch (e) {
+    error.value = 'Failed to save routine trip.'
+    console.error('Error saving routine trip:', e)
   }
 
   closeModal()
@@ -298,21 +354,24 @@ const confirmDelete = (routine) => {
   showDeleteConfirm.value = true
 }
 
-const deleteRoutine = () => {
+const deleteRoutine = async () => {
   if (routineToDelete.value) {
-    store.deleteRoutineTrip(routineToDelete.value.id)
+    try {
+      await routineTripService.remove(routineToDelete.value.id)
+      routineTrips.value = routineTrips.value.filter(t => t.id !== routineToDelete.value.id)
+    } catch (e) {
+      error.value = 'Failed to delete routine trip.'
+      console.error('Error deleting routine trip:', e)
+    }
   }
   showDeleteConfirm.value = false
   routineToDelete.value = null
 }
 
 const bookRoutine = (routine) => {
-  // Pre-fill booking flow
   store.selectedOriginStop = routine.originStop
   store.selectedDestinationStop = routine.destinationStop
   store.selectedDate = new Date().toISOString().split('T')[0]
-  
-  // Navigate to express selection
   router.push('/express')
 }
 </script>
@@ -334,8 +393,8 @@ const bookRoutine = (routine) => {
   color: #212121;
 }
 
-.dark .page-header h1 {
-  color: #E5E5E5;
+html.dark .page-header h1 {
+  color: var(--text);
 }
 
 .section {
@@ -356,8 +415,8 @@ const bookRoutine = (routine) => {
   margin-bottom: 12px;
 }
 
-.dark .section-title {
-  color: #E5E5E5;
+html.dark .section-title {
+  color: var(--text);
 }
 
 .section-header .section-title {
@@ -379,16 +438,17 @@ const bookRoutine = (routine) => {
   transition: all 0.2s;
 }
 
-.dark .btn-add {
-  background: #4B5563;
+html.dark .btn-add {
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 .btn-add:hover {
   background: #1B5E20;
 }
 
-.dark .btn-add:hover {
-  background: #374151;
+html.dark .btn-add:hover {
+  background: var(--hover);
 }
 
 .routines-list {
@@ -404,9 +464,9 @@ const bookRoutine = (routine) => {
   border: 1px solid #E8E8E8;
 }
 
-.dark .routine-card {
-  background: #1F2937;
-  border-color: #374151;
+html.dark .routine-card {
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 .routine-card.today {
@@ -414,9 +474,9 @@ const bookRoutine = (routine) => {
   background: #E8F5E9;
 }
 
-.dark .routine-card.today {
-  background: #374151;
-  border-color: #4B5563;
+html.dark .routine-card.today {
+  background: var(--green-muted);
+  border-color: var(--green);
 }
 
 .routine-header {
@@ -438,9 +498,9 @@ const bookRoutine = (routine) => {
   flex-shrink: 0;
 }
 
-.dark .routine-icon {
-  background: #374151;
-  color: #9CA3AF;
+html.dark .routine-icon {
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .routine-icon.icon-school {
@@ -448,8 +508,8 @@ const bookRoutine = (routine) => {
   color: #1976D2;
 }
 
-.dark .routine-icon.icon-school {
-  background: #1E3A5F;
+html.dark .routine-icon.icon-school {
+  background: rgba(59, 130, 246, 0.15);
   color: #60A5FA;
 }
 
@@ -458,8 +518,8 @@ const bookRoutine = (routine) => {
   color: #F57C00;
 }
 
-.dark .routine-icon.icon-work {
-  background: #3E2723;
+html.dark .routine-icon.icon-work {
+  background: rgba(251, 146, 60, 0.15);
   color: #FB923C;
 }
 
@@ -468,9 +528,9 @@ const bookRoutine = (routine) => {
   color: #2E7D32;
 }
 
-.dark .routine-icon.icon-home {
-  background: #374151;
-  color: #A0AEC0;
+html.dark .routine-icon.icon-home {
+  background: var(--green-muted);
+  color: var(--green);
 }
 
 .routine-info {
@@ -484,8 +544,8 @@ const bookRoutine = (routine) => {
   margin: 0 0 4px;
 }
 
-.dark .routine-info h3 {
-  color: #E5E5E5;
+html.dark .routine-info h3 {
+  color: var(--text);
 }
 
 .routine-info .route {
@@ -494,8 +554,8 @@ const bookRoutine = (routine) => {
   margin: 0;
 }
 
-.dark .routine-info .route {
-  color: #9CA3AF;
+html.dark .routine-info .route {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .routine-details {
@@ -508,9 +568,9 @@ const bookRoutine = (routine) => {
   border-bottom: 1px solid #F5F5F5;
 }
 
-.dark .routine-details {
-  border-top-color: #374151;
-  border-bottom-color: #374151;
+html.dark .routine-details {
+  border-top-color: var(--border);
+  border-bottom-color: var(--border);
 }
 
 .detail-row {
@@ -521,16 +581,16 @@ const bookRoutine = (routine) => {
   color: #424242;
 }
 
-.dark .detail-row {
-  color: #E5E5E5;
+html.dark .detail-row {
+  color: var(--text);
 }
 
 .detail-row i {
   color: #757575;
 }
 
-.dark .detail-row i {
-  color: #9CA3AF;
+html.dark .detail-row i {
+  color: var(--green);
 }
 
 .days-badges {
@@ -551,9 +611,9 @@ const bookRoutine = (routine) => {
   color: #757575;
 }
 
-.dark .day-badge {
-  background: #374151;
-  color: #9CA3AF;
+html.dark .day-badge {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
 }
 
 .day-badge.active {
@@ -561,9 +621,9 @@ const bookRoutine = (routine) => {
   color: #FFF;
 }
 
-.dark .day-badge.active {
-  background: #4B5563;
-  color: #FFF;
+html.dark .day-badge.active {
+  background: var(--green);
+  color: #fff;
 }
 
 .routine-actions {
@@ -591,16 +651,17 @@ const bookRoutine = (routine) => {
   border: none;
 }
 
-.dark .btn-primary {
-  background: #4B5563;
+html.dark .btn-primary {
+  background: var(--green);
+  color: #fff;
 }
 
 .btn-primary:hover {
   background: #1B5E20;
 }
 
-.dark .btn-primary:hover {
-  background: #374151;
+html.dark .btn-primary:hover {
+  background: var(--green-dark);
 }
 
 .btn-secondary {
@@ -609,18 +670,18 @@ const bookRoutine = (routine) => {
   border: 1px solid #E8E8E8;
 }
 
-.dark .btn-secondary {
-  background: #374151;
-  color: #E5E5E5;
-  border-color: #4B5563;
+html.dark .btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
 }
 
 .btn-secondary:hover {
   background: #F5F5F5;
 }
 
-.dark .btn-secondary:hover {
-  background: #4B5563;
+html.dark .btn-secondary:hover {
+  background: var(--hover);
 }
 
 .btn-danger {
@@ -629,18 +690,18 @@ const bookRoutine = (routine) => {
   border: 1px solid #FFCDD2;
 }
 
-.dark .btn-danger {
-  background: #374151;
+html.dark .btn-danger {
+  background: rgba(239, 68, 68, 0.15);
   color: #EF4444;
-  border-color: #7F1D1D;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .btn-danger:hover {
   background: #FFEBEE;
 }
 
-.dark .btn-danger:hover {
-  background: #7F1D1D;
+html.dark .btn-danger:hover {
+  background: rgba(239, 68, 68, 0.25);
 }
 
 .btn-book-now {
@@ -655,16 +716,17 @@ const bookRoutine = (routine) => {
   transition: all 0.2s;
 }
 
-.dark .btn-book-now {
-  background: #4B5563;
+html.dark .btn-book-now {
+  background: var(--green);
+  color: #fff;
 }
 
 .btn-book-now:hover {
   background: #1B5E20;
 }
 
-.dark .btn-book-now:hover {
-  background: #374151;
+html.dark .btn-book-now:hover {
+  background: var(--green-dark);
 }
 
 .empty-state {
@@ -713,8 +775,8 @@ const bookRoutine = (routine) => {
   overflow-y: auto;
 }
 
-.dark .modal {
-  background: #1F2937;
+html.dark .modal {
+  background: var(--surface);
 }
 
 .modal-small {
@@ -729,8 +791,8 @@ const bookRoutine = (routine) => {
   border-bottom: 1px solid #E8E8E8;
 }
 
-.dark .modal-header {
-  border-bottom-color: #374151;
+html.dark .modal-header {
+  border-bottom-color: var(--border);
 }
 
 .modal-header h2 {
@@ -740,8 +802,8 @@ const bookRoutine = (routine) => {
   margin: 0;
 }
 
-.dark .modal-header h2 {
-  color: #E5E5E5;
+html.dark .modal-header h2 {
+  color: var(--text);
 }
 
 .btn-close {
@@ -757,9 +819,9 @@ const bookRoutine = (routine) => {
   justify-content: center;
 }
 
-.dark .btn-close {
-  background: #374151;
-  color: #9CA3AF;
+html.dark .btn-close {
+  background: var(--bg);
+  color: var(--text-muted);
 }
 
 .modal-body {
@@ -778,8 +840,8 @@ const bookRoutine = (routine) => {
   margin-bottom: 6px;
 }
 
-.dark .form-group label {
-  color: #E5E5E5;
+html.dark .form-group label {
+  color: var(--text);
 }
 
 .form-input, .form-select {
@@ -792,10 +854,15 @@ const bookRoutine = (routine) => {
   background: #FFF;
 }
 
-.dark .form-input, .dark .form-select {
-  border-color: #4B5563;
-  color: #E5E5E5;
-  background: #374151;
+html.dark .form-input, html.dark .form-select {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--bg);
+}
+
+html.dark .form-input:focus, html.dark .form-select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .form-input:focus, .form-select:focus {
@@ -821,10 +888,10 @@ const bookRoutine = (routine) => {
   transition: all 0.2s;
 }
 
-.dark .day-btn {
-  border-color: #4B5563;
-  background: #374151;
-  color: #9CA3AF;
+html.dark .day-btn {
+  border-color: var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
 }
 
 .day-btn.active {
@@ -833,9 +900,10 @@ const bookRoutine = (routine) => {
   border-color: #2E7D32;
 }
 
-.dark .day-btn.active {
-  background: #4B5563;
-  border-color: #4B5563;
+html.dark .day-btn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
 }
 
 .modal-footer {
@@ -845,11 +913,81 @@ const bookRoutine = (routine) => {
   border-top: 1px solid #E8E8E8;
 }
 
-.dark .modal-footer {
-  border-top-color: #374151;
+html.dark .modal-footer {
+  border-top-color: var(--border);
+}
+
+html.dark .empty-state {
+  color: var(--text-muted);
+}
+
+html.dark .empty-state i {
+  color: var(--green);
+}
+
+html.dark .empty-state p {
+  color: var(--text);
+}
+
+html.dark .empty-state .hint {
+  color: var(--text-muted);
 }
 
 .modal-footer .btn-primary, .modal-footer .btn-secondary, .modal-footer .btn-danger {
   flex: 1;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #E8E8E8;
+  border-top-color: #2E7D32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+html.dark .spinner {
+  border-color: var(--border);
+  border-top-color: var(--green);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #FFEBEE;
+  border: 1px solid #FFCDD2;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #C62828;
+}
+
+html.dark .error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #EF4444;
+}
+
+.error-banner button {
+  margin-left: auto;
+  padding: 6px 14px;
+  background: #D32F2F;
+  color: #FFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+html.dark .error-banner button {
+  background: #EF4444;
 }
 </style>

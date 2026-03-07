@@ -61,9 +61,9 @@
 
     <!-- Pagination -->
     <div v-if="pageable && totalPages > 1" class="table-pagination">
-      <button :disabled="currentPage === 1" @click="currentPage--">← Prev</button>
+      <button :disabled="currentPage === 1" @click="currentPage--"><i class="fas fa-chevron-left"></i> Prev</button>
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button :disabled="currentPage === totalPages" @click="currentPage++">Next →</button>
+      <button :disabled="currentPage === totalPages" @click="currentPage++">Next <i class="fas fa-chevron-right"></i></button>
     </div>
   </div>
 </template>

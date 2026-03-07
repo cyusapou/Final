@@ -7,6 +7,7 @@
  */
 
 import { ref } from 'vue'
+import { BASE_URL } from '../services/api.js'
 
 export function useSmartStop() {
   const nearestStop = ref(null)
@@ -56,7 +57,7 @@ export function useSmartStop() {
         userLng: userLocation.lng,
       })
 
-      const response = await fetch(`/api/v1/public/nearest-stop?${params}`)
+      const response = await fetch(`${BASE_URL}/api/v1/public/nearest-stop?${params}`)
 
       if (!response.ok) {
         const text = await response.text()

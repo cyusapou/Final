@@ -850,3 +850,91 @@ const openMap = () => {
   }
 }
 </style>
+
+<style>
+/* Dark mode overrides */
+html.dark .search-box:focus-within {
+  border-color: var(--green);
+}
+
+html.dark .quick-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+html.dark .quick-btn.current-location {
+  background: var(--green-muted);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+html.dark .result-item {
+  background: var(--bg);
+}
+
+html.dark .result-item:hover {
+  background: var(--green-muted);
+}
+
+html.dark .result-icon.station {
+  background: var(--green);
+}
+
+html.dark .spinner-small {
+  border-color: var(--surface);
+  border-top-color: var(--green);
+}
+
+html.dark .stops-count {
+  background: var(--green);
+}
+
+html.dark .location-card {
+  border-left-color: var(--green);
+}
+
+html.dark .location-icon {
+  background: var(--green-muted);
+  color: var(--green);
+}
+
+html.dark .nearest-stop-item:hover {
+  background: var(--green-muted);
+}
+
+html.dark .rank-number {
+  background: var(--green);
+}
+
+html.dark .stop-code {
+  background: var(--surface);
+  color: var(--green);
+}
+
+html.dark .select-stop-btn {
+  background: var(--surface);
+  color: var(--green);
+  border-color: var(--border);
+}
+
+html.dark .select-stop-btn:hover {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+html.dark .btn-primary {
+  background: var(--green);
+}
+
+html.dark .btn-primary:hover {
+  background: var(--green);
+  filter: brightness(1.15);
+}
+
+html.dark .change-btn:hover {
+  background: var(--green-muted);
+  border-color: var(--green);
+  color: var(--green);
+}
+</style>

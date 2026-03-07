@@ -70,18 +70,10 @@ export const searchStops = (query, city = null) => {
   return results
 }
 
-// Coordinates variable for storing stations with their coordinates
-// You can add stations and their names willingly here
-export const coordinates = reactive([
-  // Add your stations here in the format:
-  // { name: 'Station Name', lat: -1.9473, lng: 30.0567 }
-  // Example:
-  // { name: 'Nyabugogo Station', lat: -1.9645, lng: 30.0723 },
-  // { name: 'Remera Station', lat: -1.9433, lng: 30.0589 },
-])
-
-// Shared state for passing data between pages
 export const store = reactive({
+  // Tracked station coordinates
+  coordinates: [],
+
   // Selected data
   selectedExpress: null,
   selectedTrip: null,

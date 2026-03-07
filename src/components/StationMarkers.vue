@@ -133,3 +133,37 @@ const zoomToStation = (station: Station) => {
   margin: 12px 16px;
 }
 </style>
+
+<style>
+/* Dark mode overrides */
+html.dark .station-popup h4 {
+  color: var(--green);
+}
+
+html.dark .station-popup p {
+  color: var(--text-muted);
+}
+
+html.dark .station-area {
+  color: var(--text-muted);
+}
+
+html.dark .zoom-btn {
+  background: var(--green);
+  color: #fff;
+}
+
+html.dark .zoom-btn:hover {
+  background: var(--green);
+  filter: brightness(1.15);
+}
+
+html.dark .leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text);
+}
+
+html.dark .leaflet-popup-tip {
+  background: var(--surface);
+}
+</style>

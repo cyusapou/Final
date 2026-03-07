@@ -764,7 +764,7 @@ export default {
 }
 
 html.dark .booking-page {
-  background: linear-gradient(135deg, #1E1E1E 0%, #0F0F0F 100%);
+  background: linear-gradient(135deg, #141414 0%, #0a0a0a 100%);
 }
 
 .container {
@@ -777,7 +777,7 @@ html.dark .booking-page {
 }
 
 html.dark .container {
-  background: #121212;
+  background: var(--bg-primary);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
@@ -790,7 +790,7 @@ html.dark .container {
 }
 
 html.dark .booking-header {
-  background: linear-gradient(135deg, #2C2C2C 0%, #1A1A1A 100%);
+  background: linear-gradient(135deg, #141414 0%, #0a0a0a 100%);
 }
 
 .booking-header h1 {
@@ -967,8 +967,8 @@ html.dark .booking-header {
 }
 
 html.dark .card {
-  background: #1E1E1E;
-  border-color: #2C2C2C;
+  background: var(--card-bg);
+  border-color: var(--border-color);
 }
 
 .card h2 {
@@ -982,7 +982,7 @@ html.dark .card {
 }
 
 html.dark .card h2 {
-  color: #FFFFFF;
+  color: var(--text, rgba(255,255,255,0.85));
 }
 
 .section-icon {
@@ -1007,9 +1007,9 @@ html.dark .card h2 {
 }
 
 html.dark .route-select, html.dark .trip-select {
-  background-color: #2C2C2C;
-  color: #FFFFFF;
-  border-color: #3A3A3A;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
 
@@ -1872,4 +1872,67 @@ html.dark .route-select, html.dark .trip-select {
     font-size: 0.6rem;
   }
 }
+
+/* Additional dark mode overrides */
+html.dark .loading p { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .spinner { border-color: var(--border, rgba(255,255,255,0.07)); border-top-color: var(--green, #22c55e); }
+html.dark .spinner-small { border-color: var(--border, rgba(255,255,255,0.07)); border-top-color: var(--green, #22c55e); }
+html.dark .section-loading { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .form-group label { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .form-input { background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .form-input:focus { border-color: var(--green, #22c55e); box-shadow: 0 0 0 3px rgba(34,197,94,0.1); }
+html.dark .route-info { background: var(--surface, #141414); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .route-details h3 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .duration, html.dark .distance { background: var(--bg, #0a0a0a); color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .trip-info { background: var(--surface, #141414); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .time-item .label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .time-item .value { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .trip-vehicle { background: var(--bg, #0a0a0a); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .no-trips-message { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .seat-instruction { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .seat { background: var(--surface, #141414); color: var(--text, rgba(255,255,255,0.85)); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .seat.selected { background: var(--green, #22c55e); color: #fff; border-color: var(--green, #22c55e); box-shadow: var(--glow); }
+html.dark .seat.occupied { background: var(--bg, #0a0a0a); color: rgba(255,255,255,0.15); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .legend-item { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .legend-item.available::before { background: var(--surface, #141414); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .legend-item.selected::before { background: var(--green, #22c55e); border-color: var(--green, #22c55e); }
+html.dark .legend-item.occupied::before { background: var(--bg, #0a0a0a); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .price-summary { background: var(--surface, #141414); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .price-item { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .price-item .label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .price-item .value { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .price-item.total { border-color: var(--green, #22c55e); color: var(--green, #22c55e); }
+html.dark .price-item.total .label,
+html.dark .price-item.total .value { color: var(--green, #22c55e); }
+html.dark .payment-option { background: var(--surface, #141414); border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .payment-option:hover { border-color: var(--green, #22c55e); background: var(--hover, rgba(255,255,255,0.03)); }
+html.dark .payment-option.payment-selected { border-color: var(--green, #22c55e); background: var(--green-muted, rgba(34,197,94,0.08)); }
+html.dark .payment-icon-emoji { background: var(--bg, #0a0a0a); }
+html.dark .payment-name { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .payment-desc { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .btn-primary { background: var(--green, #22c55e); box-shadow: var(--glow); }
+html.dark .btn-primary:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(34,197,94,0.3); }
+html.dark .btn-primary:disabled { background: rgba(255,255,255,0.1); }
+html.dark .btn-secondary { background: var(--surface, #141414); color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .btn-secondary:hover { background: var(--hover, rgba(255,255,255,0.03)); }
+html.dark .modal-content { background: var(--surface, #141414); }
+html.dark .modal-header { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .modal-header h2 { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .close-btn { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .close-btn:hover { background: var(--hover, rgba(255,255,255,0.03)); }
+html.dark .detail-row { border-color: var(--border, rgba(255,255,255,0.07)); }
+html.dark .detail-label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .detail-value { color: var(--text, rgba(255,255,255,0.85)); }
+html.dark .total-paid { color: var(--green, #22c55e); }
+html.dark .error-text { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .step-number { background: var(--surface, #141414); color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .progress-step.completed .step-number { background: var(--green, #22c55e); color: #fff; }
+html.dark .step-label { color: var(--text-muted, rgba(255,255,255,0.4)); }
+html.dark .progress-line { background: var(--border, rgba(255,255,255,0.07)); }
+html.dark .progress-line.filled { background: var(--green, #22c55e); }
+html.dark .error-banner { background: rgba(211,47,47,0.1); border-color: #ef4444; color: #f87171; }
+html.dark .discount-tag { background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
+html.dark .zone-badge { background: var(--green, #22c55e); }
+html.dark .capacity { background: var(--green, #22c55e); }
+html.dark .status-badge { background: var(--green-muted, rgba(34,197,94,0.08)); color: var(--green, #22c55e); }
 </style>

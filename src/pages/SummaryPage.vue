@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page-wrapper bg-white dark:bg-neutral-950 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="screen summary-screen bg-white dark:bg-neutral-900">
+    <div class="screen summary-screen bg-white dark:bg-neutral-950">
       <div class="header">
         <button class="btn-back" @click="goToDestination">
           <i class="fas fa-arrow-left"></i>
@@ -423,4 +423,27 @@ const formatDate = (dateStr) => {
     padding-bottom: 70px;
   }
 }
+
+/* Dark mode overrides */
+html.dark .page-wrapper { background: var(--bg); }
+html.dark .header h2 { color: var(--text); }
+html.dark .btn-back { background: var(--surface); border-color: var(--border); color: var(--text); }
+html.dark .btn-back:hover { background: var(--green-muted); color: var(--green); }
+html.dark .summary-card { background: var(--surface); border-color: var(--border); box-shadow: none; }
+html.dark .summary-route { border-color: var(--border); }
+html.dark .route-express span { color: var(--text); }
+html.dark .express-logo-sm { background: var(--green-muted); }
+html.dark .express-logo-sm i { color: var(--green); }
+html.dark .route-time { color: var(--green); }
+html.dark .detail-row { border-color: var(--border); }
+html.dark .detail-row .label { color: var(--text-muted); }
+html.dark .detail-row .label i { color: var(--green); }
+html.dark .detail-row .value { color: var(--text); }
+html.dark .price-row { background: var(--green-muted); }
+html.dark .price-row .label { color: var(--text); }
+html.dark .price-row .price { color: var(--green); }
+html.dark .btn-primary { background: var(--green); color: #fff; }
+html.dark .btn-primary:hover { background: var(--green-dark); }
+html.dark .action-btn { background: var(--surface); border-color: var(--border); color: var(--text-muted); }
+html.dark .action-btn:hover { border-color: var(--green); color: var(--green); }
 </style>

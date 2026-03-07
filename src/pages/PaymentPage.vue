@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page-wrapper bg-white dark:bg-neutral-950 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="screen payment-screen bg-white dark:bg-neutral-900">
+    <div class="screen payment-screen bg-white dark:bg-neutral-950">
       <div class="header">
         <button class="btn-back" @click="goToSummary" v-if="!store.showTicket">
           <i class="fas fa-arrow-left"></i>
@@ -157,6 +157,12 @@
           </div>
         </div>
 
+        <!-- Payment Error -->
+        <div v-if="paymentError" class="payment-error">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ paymentError }}
+        </div>
+
         <!-- Pay Button -->
         <button 
           class="btn-pay" 
@@ -194,9 +200,7 @@
         </div>
 
         <div class="ticket-card">
-          <div class="qr-box">
-            <i class="fas fa-qrcode"></i>
-          </div>
+          <div class="qr-box" ref="qrContainer"></div>
           
           <div class="ticket-info">
             <div class="info-row">
@@ -252,17 +256,25 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
+import { paymentService } from '../services/paymentService.js'
+import { bookingService } from '../services/bookingService.js'
+import { useQRCode } from '../composables/useQRCode.js'
 import LanguageToggle from '../components/LanguageToggle.vue'
 import StepProgress from '../components/StepProgress.vue'
 
+const USER_ID = 'u001'
 const router = useRouter()
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 const isAuthenticated = computed(() => store.token && store.user)
+
+const { generateQRCode } = useQRCode()
+const qrContainer = ref(null)
+const paymentError = ref(null)
 
 const paymentMethods = [
   { 
@@ -299,7 +311,6 @@ const creditCardForm = ref({
   cvv: ''
 })
 
-// Validation errors
 const momoErrors = reactive({
   phone: '',
   password: ''
@@ -326,14 +337,12 @@ const validateMomoPassword = () => {
   }
 }
 
-// Card number formatting
 const formatCardNumber = () => {
   let value = creditCardForm.value.cardNumber.replace(/\D/g, '')
   value = value.replace(/(.{4})/g, '$1 ').trim()
   creditCardForm.value.cardNumber = value.substring(0, 19)
 }
 
-// Expiry date formatting
 const formatExpiryDate = () => {
   let value = creditCardForm.value.expiryDate.replace(/\D/g, '')
   if (value.length >= 2) {
@@ -375,40 +384,110 @@ const goToLanding = () => {
 
 const selectMethod = (method) => {
   selectedMethod.value = method
-  // Clear errors when switching methods
   momoErrors.phone = ''
   momoErrors.password = ''
 }
 
-const processPayment = () => {
+const renderQR = async (qrData) => {
+  await nextTick()
+  if (qrContainer.value) {
+    qrContainer.value.innerHTML = ''
+    generateQRCode(qrData, qrContainer.value)
+  }
+}
+
+const processPayment = async () => {
   if (!isFormValid()) return
   
   store.isProcessing = true
-  setTimeout(() => {
+  paymentError.value = null
+  const stopCode = Math.floor(1000 + Math.random() * 9000).toString()
+
+  try {
+    const methodNames = { 1: 'mobileMoney', 2: 'card', 3: 'wallet' }
+
+    const paymentPayload = {
+      userId: USER_ID,
+      amount: store.selectedTrip?.price || 0,
+      currency: 'RWF',
+      method: methodNames[selectedMethod.value.id] || 'mobileMoney',
+      status: 'completed',
+      paidAt: new Date().toISOString(),
+    }
+
+    const payment = await paymentService.create(paymentPayload)
+
+    const qrData = {
+      type: 'bus_ticket',
+      bookingId: null,
+      userId: USER_ID,
+      express: store.selectedExpress?.name,
+      route: `Kigali → ${store.selectedDestination?.name || ''}`,
+      departure: store.selectedTrip?.departure,
+      date: store.selectedDate,
+      plate: store.selectedTrip?.plate,
+      price: store.selectedTrip?.price,
+      stopCode,
+      paymentId: payment.id,
+      issuedAt: new Date().toISOString(),
+    }
+
+    const bookingPayload = {
+      userId: USER_ID,
+      companyId: store.selectedExpress?.id,
+      scheduleId: store.selectedTrip?.id || null,
+      date: store.selectedDate,
+      originStop: store.selectedOriginStop?.name || 'Kigali',
+      destinationStop: store.selectedDestination?.name || store.selectedDestinationStop?.name || '',
+      departure: store.selectedTrip?.departure,
+      plate: store.selectedTrip?.plate,
+      price: store.selectedTrip?.price || 0,
+      paymentId: payment.id,
+      stopCode,
+      qrData,
+      status: 'confirmed',
+      bookedAt: new Date().toISOString(),
+    }
+
+    const booking = await bookingService.create(bookingPayload)
+    qrData.bookingId = booking.id
+
     store.isProcessing = false
     store.showTicket = true
-    store.stopCode = Math.floor(1000 + Math.random() * 9000).toString()
-  }, 3000)
+    store.stopCode = stopCode
+
+    await renderQR(qrData)
+  } catch (e) {
+    store.isProcessing = false
+    paymentError.value = 'Payment failed. Please try again.'
+    console.error('Payment error:', e)
+  }
 }
 
+watch(() => store.showTicket, async (val) => {
+  if (val && qrContainer.value) {
+    await renderQR({
+      type: 'bus_ticket',
+      userId: USER_ID,
+      express: store.selectedExpress?.name,
+      stopCode: store.stopCode,
+    })
+  }
+})
+
 const downloadTicket = () => {
-  // Create a canvas to draw the ticket
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   
-  // Set canvas size (ticket dimensions)
   canvas.width = 400
   canvas.height = 600
   
-  // Background
   ctx.fillStyle = '#FFFFFF'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
   
-  // Header background
   ctx.fillStyle = '#2E7D32'
   ctx.fillRect(0, 0, canvas.width, 100)
   
-  // Header text
   ctx.fillStyle = '#FFFFFF'
   ctx.font = 'bold 24px Inter, Arial, sans-serif'
   ctx.textAlign = 'center'
@@ -416,7 +495,6 @@ const downloadTicket = () => {
   ctx.font = '14px Inter, Arial, sans-serif'
   ctx.fillText('Bus Ticket', canvas.width / 2, 60)
   
-  // Success checkmark
   ctx.fillStyle = '#4CAF50'
   ctx.beginPath()
   ctx.arc(canvas.width / 2, 130, 25, 0, Math.PI * 2)
@@ -425,7 +503,6 @@ const downloadTicket = () => {
   ctx.font = 'bold 20px Arial'
   ctx.fillText('✓', canvas.width / 2, 138)
   
-  // Success message
   ctx.fillStyle = '#212121'
   ctx.font = 'bold 18px Inter, Arial, sans-serif'
   ctx.fillText('Payment Successful!', canvas.width / 2, 180)
@@ -433,7 +510,6 @@ const downloadTicket = () => {
   ctx.fillStyle = '#757575'
   ctx.fillText('Your booking is confirmed', canvas.width / 2, 200)
   
-  // Divider
   ctx.strokeStyle = '#E8E8E8'
   ctx.lineWidth = 1
   ctx.beginPath()
@@ -441,7 +517,6 @@ const downloadTicket = () => {
   ctx.lineTo(canvas.width - 20, 220)
   ctx.stroke()
   
-  // Ticket details
   const drawRow = (label, value, y) => {
     ctx.fillStyle = '#757575'
     ctx.font = '12px Inter, Arial, sans-serif'
@@ -458,7 +533,6 @@ const downloadTicket = () => {
   drawRow('DATE', formatDate(store.selectedDate), 360)
   drawRow('BUS PLATE', store.selectedTrip?.plate || 'N/A', 400)
   
-  // Price
   ctx.fillStyle = '#E8F5E9'
   ctx.fillRect(20, 440, canvas.width - 40, 50)
   ctx.fillStyle = '#2E7D32'
@@ -468,7 +542,6 @@ const downloadTicket = () => {
   ctx.font = 'bold 24px Inter, Arial, sans-serif'
   ctx.fillText(`RWF ${store.selectedTrip?.price || '0'}`, canvas.width / 2, 480)
   
-  // Stop code box
   ctx.strokeStyle = '#2E7D32'
   ctx.lineWidth = 2
   ctx.strokeRect(30, 500, canvas.width - 60, 60)
@@ -479,13 +552,11 @@ const downloadTicket = () => {
   ctx.font = 'bold 28px Inter, Arial, sans-serif'
   ctx.fillText(store.stopCode || '----', canvas.width / 2, 545)
   
-  // Footer
   ctx.fillStyle = '#757575'
   ctx.font = '10px Inter, Arial, sans-serif'
   ctx.textAlign = 'center'
   ctx.fillText('Present this code at the bus stop', canvas.width / 2, 580)
   
-  // Generate and download
   const link = document.createElement('a')
   link.download = `OnTheGo-Ticket-${store.stopCode}.png`
   link.href = canvas.toDataURL('image/png')
@@ -597,9 +668,9 @@ html.dark .header h2 {
 }
 
 html.dark .btn-back {
-  background: #2C2C2C;
-  border-color: #3A3A3A;
-  color: #FFFFFF;
+  background: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
 .btn-back:hover {
@@ -636,8 +707,8 @@ html.dark .btn-back:hover {
 }
 
 html.dark .payment-card {
-  background: #1E1E1E;
-  border-color: #2C2C2C;
+  background: var(--card-bg);
+  border-color: var(--border-color);
 }
 
 .payment-card:hover {
@@ -1158,19 +1229,33 @@ html.dark .payment-icon i {
 }
 
 .qr-box {
-  width: 120px;
-  height: 120px;
-  background: #F5F5F5;
+  width: 280px;
+  height: 280px;
+  background: #141414;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 24px;
+  overflow: hidden;
 }
 
 .qr-box i {
   font-size: 60px;
   color: #212121;
+}
+
+.payment-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #FFEBEE;
+  border: 1px solid #FFCDD2;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #C62828;
 }
 
 .ticket-info {
@@ -1289,7 +1374,7 @@ html.dark .payment-icon i {
 }
 
 .btn-new-booking {
-  background: #1976D2;
+  background: #2E7D32;
   color: #FFF;
   border: none;
   padding: 14px 24px;
@@ -1305,7 +1390,7 @@ html.dark .payment-icon i {
 }
 
 .btn-new-booking:hover {
-  background: #1565C0;
+  background: #1B5E20;
   transform: translateY(-2px);
 }
 
@@ -1347,4 +1432,71 @@ html.dark .payment-icon i {
     padding-bottom: 70px;
   }
 }
+
+/* Dark mode overrides — strict 4-color palette */
+html.dark .page-wrapper { background: var(--bg); }
+html.dark .header h2 { color: var(--text); }
+html.dark .btn-back { background: var(--surface); border-color: var(--border); color: var(--text); }
+html.dark .btn-back:hover { background: var(--green-muted); color: var(--green); }
+
+html.dark .payment-card { background: var(--surface); border-color: var(--border); }
+html.dark .payment-card:hover { border-color: rgba(255,255,255,0.15); background: var(--hover); }
+html.dark .payment-card.selected { border-color: var(--green); background: var(--green-muted); box-shadow: var(--glow); }
+html.dark .payment-icon { background: var(--green-muted); }
+html.dark .payment-icon i { color: var(--green); }
+html.dark .payment-name { color: var(--text); }
+html.dark .payment-desc { color: var(--text-muted); }
+html.dark .selected-check { color: var(--green); }
+
+html.dark .payment-form { background: var(--surface); border-color: var(--border); }
+html.dark .payment-form h3 { color: var(--text); }
+html.dark .form-group label { color: var(--text-muted); }
+html.dark .form-input { background: var(--bg); border-color: var(--border); color: var(--text); }
+html.dark .form-input::placeholder { color: var(--text-muted); }
+html.dark .form-input:focus { border-color: var(--green); box-shadow: 0 0 0 2px rgba(34,197,94,0.15); }
+
+html.dark .order-summary { background: var(--surface); border-color: var(--border); }
+html.dark .order-summary h3 { color: var(--text); }
+html.dark .summary-row { color: var(--text-muted); border-color: var(--border); }
+html.dark .summary-row.total-row { color: var(--text); border-color: var(--border); }
+html.dark .total-amount { color: var(--green); }
+
+html.dark .auth-warning { background: rgba(255,152,0,0.08); border-color: rgba(255,183,77,0.2); }
+html.dark .warning-icon { background: rgba(255,249,196,0.1); }
+html.dark .warning-content h4 { color: #FFB74D; }
+html.dark .warning-content p { color: #FFCC80; }
+html.dark .wallet-info { background: var(--green-muted); }
+html.dark .wallet-balance-display .label { color: var(--text-muted); }
+html.dark .wallet-balance-display .amount { color: var(--green); }
+
+html.dark .btn-pay { background: var(--green); box-shadow: 0 4px 16px rgba(34,197,94,0.25); }
+html.dark .btn-pay:hover:not(:disabled) { box-shadow: 0 6px 24px rgba(34,197,94,0.35); }
+html.dark .btn-pay:disabled { background: rgba(255,255,255,0.1); color: var(--text-muted); }
+html.dark .security-note { color: var(--text-muted); }
+html.dark .security-note i { color: var(--green); }
+
+html.dark .loading p { color: var(--text); }
+html.dark .processing-detail { color: var(--text-muted) !important; }
+html.dark .spinner { border-color: var(--border); border-top-color: var(--green); }
+
+html.dark .success-box h2 { color: var(--green); }
+html.dark .success-box p { color: rgba(255,255,255,0.6); }
+html.dark .checkmark { background: var(--green); box-shadow: 0 4px 16px rgba(34,197,94,0.3); }
+
+html.dark .ticket-card { background: var(--surface); border-color: var(--border); box-shadow: none; }
+html.dark .qr-box { background: var(--bg); }
+html.dark .qr-box i { color: var(--text); }
+html.dark .info-row { border-color: var(--border); }
+html.dark .info-row .label { color: var(--text-muted); }
+html.dark .info-row .value { color: var(--text); }
+html.dark .stop-code-box { background: var(--green-muted); }
+html.dark .code-label { color: var(--text-muted); }
+html.dark .code-value { color: var(--green); }
+html.dark .code-note { color: var(--text-muted); }
+
+html.dark .btn-primary-action { background: var(--green); box-shadow: 0 4px 12px rgba(34,197,94,0.2); }
+html.dark .btn-outline { border-color: var(--green); color: var(--green); }
+html.dark .btn-outline:hover { background: var(--green-muted); }
+html.dark .btn-new-booking { background: var(--surface); border: 1px solid var(--border); }
+html.dark .btn-new-booking:hover { background: var(--hover); }
 </style>

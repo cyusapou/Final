@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-neutral-900 transition-colors">
+  <div class="min-h-screen bg-white dark:bg-neutral-950 transition-colors">
     <StepProgress :current="1" :total="3" />
     
     <div class="p-4 md:p-3 md:max-w-2xl md:mx-auto flex flex-col gap-3 min-h-screen">

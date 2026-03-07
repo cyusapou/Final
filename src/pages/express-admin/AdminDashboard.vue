@@ -1,20 +1,20 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page bg-white dark:bg-neutral-950 transition-colors">
     <div class="page-header">
-      <h1>💼 Express Admin Dashboard</h1>
+      <h1><i class="fas fa-briefcase"></i> Express Admin Dashboard</h1>
       <p class="subtitle">Business performance and operations overview</p>
     </div>
 
     <div class="stats-grid">
-      <StatsCard icon="💰" label="Monthly Revenue" value="450,000 RWF" trend="+12%" />
-      <StatsCard icon="🚌" label="Total Trips" value="1,234" trend="+5%" />
-      <StatsCard icon="👔" label="Active Managers" value="5" trend="No change" />
-      <StatsCard icon="🚍" label="Fleet Size" value="28" trend="-1 maintenance" />
+      <StatsCard icon="fas fa-coins" label="Monthly Revenue" value="450,000 RWF" trend="+12%" />
+      <StatsCard icon="fas fa-bus" label="Total Trips" value="1,234" trend="+5%" />
+      <StatsCard icon="fas fa-user-tie" label="Active Managers" value="5" trend="No change" />
+      <StatsCard icon="fas fa-bus-alt" label="Fleet Size" value="28" trend="-1 maintenance" />
     </div>
 
     <div class="cards-row">
       <div class="card card-full">
-        <h3>📊 Revenue By Manager</h3>
+        <h3><i class="fas fa-chart-bar"></i> Revenue By Manager</h3>
         <table class="data-table">
           <thead>
             <tr>
@@ -30,28 +30,28 @@
               <td>Jane Smith</td>
               <td>324</td>
               <td>125,400 RWF</td>
-              <td>4.8⭐</td>
+              <td>4.8 <i class="fas fa-star"></i></td>
               <td><span class="badge badge-success">Excellent</span></td>
             </tr>
             <tr>
               <td>Peter Johnson</td>
               <td>298</td>
               <td>112,300 RWF</td>
-              <td>4.6⭐</td>
+              <td>4.6 <i class="fas fa-star"></i></td>
               <td><span class="badge badge-success">Good</span></td>
             </tr>
             <tr>
               <td>Sarah Williams</td>
               <td>276</td>
               <td>105,200 RWF</td>
-              <td>4.5⭐</td>
+              <td>4.5 <i class="fas fa-star"></i></td>
               <td><span class="badge badge-success">Good</span></td>
             </tr>
             <tr>
               <td>Michael Brown</td>
               <td>198</td>
               <td>78,900 RWF</td>
-              <td>4.3⭐</td>
+              <td>4.3 <i class="fas fa-star"></i></td>
               <td><span class="badge badge-warning">Fair</span></td>
             </tr>
           </tbody>
@@ -61,7 +61,7 @@
 
     <div class="cards-row">
       <div class="card">
-        <h3>🚗 Fleet Status</h3>
+        <h3><i class="fas fa-car"></i> Fleet Status</h3>
         <div class="fleet-stat">
           <span>Active</span>
           <span class="value active">24</span>
@@ -76,7 +76,7 @@
         </div>
       </div>
       <div class="card">
-        <h3>⚠️ System Health</h3>
+        <h3><i class="fas fa-exclamation-triangle"></i> System Health</h3>
         <div class="health-stat">
           <span>API Uptime</span>
           <div class="progress-bar"><div class="progress" style="width: 99%"></div></div>

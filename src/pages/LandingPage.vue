@@ -1,52 +1,48 @@
 <template>
-  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
-    <!-- Mobile: Language toggle in fixed position -->
+  <div class="landing-page">
     <div class="mobile-lang-toggle">
       <LanguageToggle />
     </div>
-    
-    <div class="screen landing-screen bg-white dark:bg-neutral-900">
+
+    <div class="hero-wrapper">
       <div class="hero-section">
         <div class="logo-wrap">
           <div class="logo-icon">
             <i class="fas fa-bus"></i>
           </div>
           <div class="logo-text">
-            <h1 class="text-gray-900 dark:text-white">On The Go</h1>
-            <span class="text-gray-600 dark:text-gray-400">Kigali, Rwanda</span>
+            <h1>On The Go</h1>
+            <span>Kigali, Rwanda</span>
           </div>
         </div>
-        
-        <h2 class="headline text-gray-900 dark:text-white">{{ t.heroTitle }}</h2>
-        <p class="subheadline text-gray-700 dark:text-gray-300">{{ t.heroSubtitle }}</p>
-        <div class="landing-btn">
-          <div class="btn1">
-        <button class="btn-primary btn-large bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white" @click="goToExpress">
-          {{ t.boardNow }}
-          <i class="fas fa-arrow-right"></i>
-        </button>
+
+        <h2 class="headline">{{ t.heroTitle }}</h2>
+        <p class="subheadline">{{ t.heroSubtitle }}</p>
+
+        <div class="hero-actions">
+          <button class="btn-primary" @click="goToExpress">
+            {{ t.boardNow }}
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="btn-secondary" @click="goToPlanner">
+            {{ t.planTrip }}
+            <i class="fas fa-calendar-alt"></i>
+          </button>
         </div>
-        <div class="btn2">
-        <button class="btn-secondary btn-large bg-white dark:bg-neutral-800 text-primary-600 dark:text-primary-400 border-2 border-primary-600 dark:border-primary-400 hover:bg-primary-50 dark:hover:bg-neutral-700" @click="goToPlanner">
-          {{ t.planTrip }}
-          <i class="fas fa-calendar-alt"></i>
-        </button>
-        </div>
-        </div>
-        <p class="hint text-gray-600 dark:text-gray-400">{{ t.selectDateHint }}</p>
-        
-        <!-- Desktop: Feature highlights -->
+
+        <p class="hint">{{ t.selectDateHint }}</p>
+
         <div class="features-grid">
-          <div class="feature-item text-gray-600 dark:text-gray-400">
-            <i class="fas fa-clock text-primary-600 dark:text-primary-400"></i>
+          <div class="feature-item">
+            <i class="fas fa-clock"></i>
             <span>Fixed Schedules</span>
           </div>
-          <div class="feature-item text-gray-600 dark:text-gray-400">
-            <i class="fas fa-mobile-alt text-primary-600 dark:text-primary-400"></i>
+          <div class="feature-item">
+            <i class="fas fa-mobile-alt"></i>
             <span>Cashless</span>
           </div>
-          <div class="feature-item text-gray-600 dark:text-gray-400">
-            <i class="fas fa-leaf text-primary-600 dark:text-primary-400"></i>
+          <div class="feature-item">
+            <i class="fas fa-leaf"></i>
             <span>Sustainable</span>
           </div>
         </div>
@@ -66,75 +62,46 @@ const router = useRouter()
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 
-const goToExpress = () => {
-  router.push('/express')
-}
-
-const goToPlanner = () => {
-  router.push('/planner')
-}
+const goToExpress = () => router.push('/express')
+const goToPlanner = () => router.push('/planner')
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-.landing-btn {
-  gap: 10px;
-  
-}
-button {
-  scale: 0.9;
-}
-.page-wrapper {
-  font-family: 'Inter', sans-serif;
+.landing-page {
   min-height: 100vh;
-  /* Let the landing gradient own the background instead of a flat gray */
   background: transparent;
 }
 
 .mobile-lang-toggle {
   display: block;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
 }
 
-/* Desktop sidebar spacing */
 @media (min-width: 500px) {
-  .page-wrapper {
-    margin-left: 0;
-  }
-  
-  .mobile-lang-toggle {
-    display: none;
-  }
+  .mobile-lang-toggle { display: none; }
 }
 
-.screen {
-  min-height: 100vh;
-}
-
-.landing-screen {
+.hero-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(180deg, #E8F5E9 0%, #FFF 60%);
+  background: var(--gradient-hero);
   padding: 40px 20px;
-}
-
-html.dark .landing-screen {
-  background: linear-gradient(180deg, #1E1E1E 0%, #121212 60%);
 }
 
 .hero-section {
   text-align: center;
   max-width: 480px;
+  width: 100%;
 }
 
-/* Desktop: Larger hero */
 @media (min-width: 1024px) {
-  .hero-section {
-    max-width: 640px;
-  }
+  .hero-section { max-width: 640px; }
 }
 
 .logo-wrap {
@@ -148,188 +115,136 @@ html.dark .landing-screen {
 .logo-icon {
   width: 52px;
   height: 52px;
-  background: #2E7D32;
-  border-radius: 12px;
+  background: var(--primary-green);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.logo-icon i {
-  color: #FFF;
-  font-size: 24px;
-}
+.logo-icon i { color: #FFF; font-size: 24px; }
 
-/* Desktop: Larger logo */
 @media (min-width: 1024px) {
-  .logo-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-  }
-  
-  .logo-icon i {
-    font-size: 28px;
-  }
+  .logo-icon { width: 64px; height: 64px; border-radius: 16px; }
+  .logo-icon i { font-size: 28px; }
 }
 
-.logo-text {
-  text-align: left;
-}
+.logo-text { text-align: left; }
 
 .logo-text h1 {
   font-size: 26px;
   font-weight: 700;
-  color: #212121;
+  color: var(--text-primary);
   line-height: 1.2;
-}
-
-html.dark .logo-text h1 {
-  color: #FFFFFF;
 }
 
 .logo-text span {
   font-size: 13px;
-  color: #757575;
+  color: var(--text-tertiary);
 }
 
-html.dark .logo-text span {
-  color: #9CA3AF;
-}
-
-/* Desktop: Larger text */
 @media (min-width: 1024px) {
-  .logo-text h1 {
-    font-size: 32px;
-  }
-  
-  .logo-text span {
-    font-size: 15px;
-  }
+  .logo-text h1 { font-size: 32px; }
+  .logo-text span { font-size: 15px; }
 }
 
 .headline {
   font-size: 32px;
   font-weight: 700;
-  color: #212121;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
-html.dark .headline {
-  color: #FFFFFF;
+@media (min-width: 1024px) {
+  .headline { font-size: 48px; margin-bottom: 16px; }
 }
 
-/* Desktop: Larger headline */
-@media (min-width: 1024px) {
-  .headline {
-    font-size: 48px;
-    margin-bottom: 16px;
-  }
+@media (max-width: 500px) {
+  .headline { font-size: 26px; }
 }
 
 .subheadline {
   font-size: 16px;
-  color: #424242;
+  color: var(--text-secondary);
   margin-bottom: 28px;
 }
 
-html.dark .subheadline {
-  color: #D1D5DB;
+@media (min-width: 1024px) {
+  .subheadline { font-size: 20px; margin-bottom: 36px; }
 }
 
-/* Desktop: Larger subheadline */
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (min-width: 500px) {
+  .hero-actions { flex-direction: row; justify-content: center; }
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 14px 36px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.25s;
+  border: 2px solid transparent;
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 500px) {
+  .btn-primary, .btn-secondary { width: auto; }
+}
+
 @media (min-width: 1024px) {
-  .subheadline {
-    font-size: 20px;
-    margin-bottom: 36px;
-  }
+  .btn-primary, .btn-secondary { padding: 18px 44px; font-size: 17px; }
+}
+
+.btn-primary {
+  background: var(--primary-green);
+  color: #FFF;
+  border-color: var(--primary-green);
+}
+
+.btn-primary:hover {
+  background: var(--primary-green-dark);
+  border-color: var(--primary-green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35);
+}
+
+.btn-secondary {
+  background: var(--card-bg);
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-green-bg);
+}
+
+html.dark .btn-secondary:hover {
+  background: rgba(46, 125, 50, 0.15);
 }
 
 .hint {
   font-size: 13px;
-  color: #757575;
+  color: var(--text-tertiary);
   margin-top: 16px;
 }
 
-html.dark .hint {
-  color: #9CA3AF;
-}
-
-.btn-primary {
-  background: #2E7D32;
-  color: #FFF;
-  border: none;
-  padding: 14px 36px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s;
-  margin-bottom: 12px;
-}
-
-.btn-primary:hover {
-  background: #1B5E20;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
-}
-
-html.dark .btn-primary:hover {
-  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
-}
-
-.btn-secondary {
-  background: #FFF;
-  color: #2E7D32;
-  border: 2px solid #2E7D32;
-  padding: 14px 36px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s;
-  margin-bottom: 12px;
-}
-
-.btn-secondary:hover {
-  background: #E8F5E9;
-}
-
-html.dark .btn-secondary {
-  background: #2C2C2C;
-  color: #66BB6A;
-  border-color: #66BB6A;
-}
-
-html.dark .btn-secondary:hover {
-  background: #1B5E20;
-}
-
-.btn-large {
-  padding: 16px 40px;
-  font-size: 17px;
-}
-
-/* Desktop: Larger button */
-@media (min-width: 1024px) {
-  .btn-large {
-    padding: 20px 48px;
-    font-size: 18px;
-    border-radius: 12px;
-  }
-}
-
-/* Feature highlights */
 .features-grid {
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: 32px;
   margin-top: 40px;
 }
 
@@ -338,50 +253,24 @@ html.dark .btn-secondary:hover {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  color: #757575;
-}
-
-html.dark .feature-item {
-  color: #9CA3AF;
+  color: var(--text-tertiary);
 }
 
 .feature-item i {
   font-size: 24px;
-  color: #2E7D32;
+  color: var(--primary-green);
 }
 
-html.dark .feature-item i {
-  color: #66BB6A;
-}
+html.dark .feature-item i { color: var(--green); }
 
 .feature-item span {
   font-size: 13px;
   font-weight: 500;
 }
 
-/* Hide features on mobile */
-@media (max-width: 600px) {
-  .features-grid {
-    display: none;
-  }
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-  .headline {
-    font-size: 26px;
-  }
-  
-  .btn-large {
-    padding: 14px 32px;
-    font-size: 16px;
-  }
-  
-  .mobile-lang-toggle {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 100;
-  }
+@media (max-width: 500px) {
+  .features-grid { gap: 20px; margin-top: 28px; }
+  .feature-item i { font-size: 20px; }
+  .feature-item span { font-size: 11px; }
 }
 </style>

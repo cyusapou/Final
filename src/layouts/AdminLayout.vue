@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { store } from '../store/index.js'
 import AdminSidebar from '../components/admin/AdminSidebar.vue'
 import AdminTopBar from '../components/admin/AdminTopBar.vue'
@@ -20,16 +20,19 @@ import AdminTopBar from '../components/admin/AdminTopBar.vue'
 const router = useRouter()
 const sidebarCollapsed = ref(false)
 
-const userRole = computed(() => localStorage.getItem('userRole') || store.userRole)
-const currentUser = computed(() => store.user || {})
+const currentRoute = useRoute()
 
-// Role guard - redirect if not authenticated
-onMounted(() => {
-  const token = localStorage.getItem('token')
-  if (!token) {
-    router.push('/login')
-  }
+const userRole = computed(() => {
+  const stored = localStorage.getItem('userRole') || store.userRole
+  if (stored) return stored
+  const path = currentRoute.path
+  if (path.startsWith('/rura')) return 'SuperAdmin'
+  if (path.startsWith('/admin')) return 'Admin'
+  if (path.startsWith('/manager')) return 'Manager'
+  if (path.startsWith('/driver')) return 'Driver'
+  return 'Driver'
 })
+const currentUser = computed(() => store.user || { firstName: 'Guest', lastName: '' })
 </script>
 
 <style scoped>
@@ -59,5 +62,13 @@ onMounted(() => {
 :global(body.admin-layout) {
   max-width: 100vw !important;
   width: 100%;
+}
+
+html.dark .admin-shell {
+  background: #0a0a0a;
+}
+
+html.dark .admin-content {
+  background: #0a0a0a;
 }
 </style>

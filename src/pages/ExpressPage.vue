@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page-wrapper bg-white dark:bg-neutral-950 transition-colors">
     <!-- Mobile: Language toggle -->
     <div class="mobile-lang-toggle">
       <LanguageToggle />
@@ -7,7 +7,7 @@
 
     <StepProgress />
     
-    <div class="screen express-screen bg-white dark:bg-neutral-900">
+    <div class="screen express-screen bg-white dark:bg-neutral-950">
       <div class="header">
         <button class="btn-back" @click="goToLanding">
           <i class="fas fa-arrow-left"></i>
@@ -31,8 +31,23 @@
         </button>
       </div>
 
+      <!-- Loading State -->
+      <div v-if="isLoading" class="empty-state">
+        <div class="spinner"></div>
+        <p>Loading companies...</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="empty-state error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+        <button class="btn-retry" @click="fetchCompanies">
+          <i class="fas fa-redo"></i> Retry
+        </button>
+      </div>
+
       <!-- Express Cards -->
-      <div v-if="filteredExpresses.length > 0" class="express-grid">
+      <div v-else-if="filteredExpresses.length > 0" class="express-grid">
         <div 
           v-for="express in filteredExpresses" 
           :key="express.id"
@@ -60,10 +75,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from '../store/index.js'
 import { translations } from '../translations/index.js'
+import { companyService } from '../services/companyService.js'
 import LanguageToggle from '../components/LanguageToggle.vue'
 import StepProgress from '../components/StepProgress.vue'
 
@@ -71,35 +87,33 @@ const router = useRouter()
 const currentLang = computed(() => store.currentLang)
 const t = computed(() => translations[currentLang.value])
 
-// Search state
 const searchQuery = ref('')
+const expressCompanies = ref([])
+const isLoading = ref(false)
+const error = ref(null)
 
-// Data: Express Companies
-const expressCompanies = ref([
-  { id: 1, name: 'RITCO Ltd', description: 'Comfortable & punctual, government-partnered', logo: '' },
-  { id: 2, name: 'Volcano Express', description: 'Popular for northern routes, frequent & reliable', logo: '' },
-  { id: 3, name: 'Trinity Express', description: 'Cross-border to Uganda & Tanzania', logo: '' },
-  { id: 4, name: 'Virunga Express', description: 'Reliable for north & intercity travel', logo: '' },
-  { id: 5, name: 'Horizon Express', description: 'Good service & comfort', logo: '' },
-  { id: 6, name: 'Stella Express', description: 'Modern with electric buses', logo: '' },
-  { id: 7, name: 'Different Express', description: 'Regular intercity service', logo: '' },
-  { id: 8, name: 'La Colombe Express', description: 'Northern & western routes', logo: '' },
-  { id: 9, name: 'International Express', description: 'Regional lines', logo: '' },
-  { id: 10, name: 'Ruhire Express', description: 'Eastern & southern routes', logo: '' },
-  { id: 11, name: 'Select Express', description: 'International & regional', logo: '' },
-  { id: 12, name: 'Yahoo Car Express', description: 'To Burundi borders', logo: '' },
-  { id: 13, name: 'Capital Express', description: 'Kigali-Muhanga domestic', logo: '' },
-  { id: 14, name: 'Kigali Bus Services', description: 'Urban & regional', logo: '' },
-])
+const fetchCompanies = async () => {
+  isLoading.value = true
+  error.value = null
+  try {
+    expressCompanies.value = await companyService.getActive()
+  } catch (e) {
+    error.value = 'Failed to load companies. Please try again.'
+    console.error('Error fetching companies:', e)
+  } finally {
+    isLoading.value = false
+  }
+}
 
-// Filtered express companies based on search
+onMounted(fetchCompanies)
+
 const filteredExpresses = computed(() => {
   if (!searchQuery.value) return expressCompanies.value
   
   const query = searchQuery.value.toLowerCase()
   return expressCompanies.value.filter(express => 
     express.name.toLowerCase().includes(query) || 
-    express.description.toLowerCase().includes(query)
+    (express.description && express.description.toLowerCase().includes(query))
   )
 })
 
@@ -128,7 +142,7 @@ const selectExpress = (express) => {
 }
 
 html.dark .page-wrapper {
-  background: #121212;
+  background: var(--bg-primary);
 }
 
 .mobile-lang-toggle {
@@ -172,7 +186,7 @@ html.dark .page-wrapper {
 }
 
 html.dark .header h2 {
-  color: #E8E8E8;
+  color: var(--text-primary);
 }
 
 /* Desktop: Larger header */
@@ -197,14 +211,14 @@ html.dark .header h2 {
 }
 
 html.dark .btn-back {
-  background: #1F2937;
-  border-color: #374151;
-  color: #B0B0B0;
+  background: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
 }
 
 html.dark .btn-back:hover {
-  background: rgba(46, 125, 50, 0.2);
-  color: #4CAF50;
+  background: var(--green-muted);
+  color: var(--green);
 }
 
 .btn-back:hover {
@@ -219,7 +233,7 @@ html.dark .btn-back:hover {
 }
 
 html.dark .screen-desc {
-  color: #B0B0B0;
+  color: var(--text-secondary);
 }
 
 /* Search Bar */
@@ -238,7 +252,7 @@ html.dark .screen-desc {
 }
 
 html.dark .search-bar i {
-  color: #B0B0B0;
+  color: var(--text-secondary);
 }
 
 .search-input {
@@ -253,13 +267,13 @@ html.dark .search-bar i {
 }
 
 html.dark .search-input {
-  background: #1F2937;
-  border-color: #374151;
-  color: #E8E8E8;
+  background: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
 }
 
 html.dark .search-input::placeholder {
-  color: #808080;
+  color: var(--text-tertiary);
 }
 
 .search-input:focus {
@@ -269,8 +283,8 @@ html.dark .search-input::placeholder {
 }
 
 html.dark .search-input:focus {
-  border-color: #4CAF50;
-  box-shadow: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
 }
 
 .clear-search {
@@ -286,7 +300,7 @@ html.dark .search-input:focus {
 }
 
 html.dark .clear-search {
-  color: #B0B0B0;
+  color: var(--text-secondary);
 }
 
 .clear-search:hover {
@@ -294,7 +308,7 @@ html.dark .clear-search {
 }
 
 html.dark .clear-search:hover {
-  color: #E8E8E8;
+  color: var(--text-primary);
 }
 
 .express-grid {
@@ -331,8 +345,8 @@ html.dark .clear-search:hover {
 }
 
 html.dark .express-card {
-  background: #1F2937;
-  border-color: #374151;
+  background: var(--card-bg);
+  border-color: var(--border-color);
 }
 
 .express-card:hover {
@@ -342,7 +356,9 @@ html.dark .express-card {
 }
 
 html.dark .express-card:hover {
-  box-shadow: none;
+  border-left: 3px solid var(--green);
+  background: var(--hover);
+  box-shadow: var(--glow);
 }
 
 .express-card:active {
@@ -361,7 +377,11 @@ html.dark .express-card:hover {
 }
 
 html.dark .express-logo {
-  background: rgba(46, 125, 50, 0.2);
+  background: var(--green-muted);
+}
+
+html.dark .express-logo i {
+  color: var(--green);
 }
 
 .express-logo img {
@@ -384,7 +404,7 @@ html.dark .express-logo {
 }
 
 html.dark .express-info h3 {
-  color: #E8E8E8;
+  color: var(--text-primary);
 }
 
 .express-info p {
@@ -395,7 +415,7 @@ html.dark .express-info h3 {
 }
 
 html.dark .express-info p {
-  color: #B0B0B0;
+  color: var(--text-secondary);
 }
 
 /* Desktop: Larger cards */
@@ -421,7 +441,7 @@ html.dark .express-info p {
 }
 
 html.dark .empty-state {
-  color: #B0B0B0;
+  color: var(--text-secondary);
 }
 
 .empty-state i {
@@ -431,11 +451,58 @@ html.dark .empty-state {
 }
 
 html.dark .empty-state i {
-  color: #4B5563;
+  color: var(--green);
 }
 
 .empty-state p {
   font-size: 15px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #E8E8E8;
+  border-top-color: #2E7D32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+html.dark .spinner {
+  border-color: var(--border-color);
+  border-top-color: var(--green);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-state i {
+  color: #D32F2F !important;
+}
+
+.btn-retry {
+  margin-top: 12px;
+  padding: 8px 20px;
+  background: #2E7D32;
+  color: #FFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+html.dark .btn-retry {
+  background: var(--green);
+}
+
+.btn-retry:hover {
+  background: #1B5E20;
 }
 
 /* Mobile adjustments */

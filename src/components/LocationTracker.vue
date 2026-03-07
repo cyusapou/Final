@@ -264,7 +264,7 @@
 
 <script setup>
 import { computed, ref, onUnmounted } from 'vue'
-import { store, coordinates } from '../store/index.js'
+import { store } from '../store/index.js'
 import { useLocation } from '../composables/useLocation.js'
 import { translations } from '../translations/index.js'
 import { findNearestStops } from '../composables/useLocationUtils.js'
@@ -1267,4 +1267,30 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
 }
+
+/* Dark mode overrides */
+html.dark .close-btn:hover { background: rgba(255,224,178,0.1); }
+html.dark .quick-track-section { background: linear-gradient(135deg, rgba(46,125,50,0.15) 0%, rgba(46,125,50,0.08) 100%); }
+html.dark .quick-track-section h3 { color: var(--green); }
+html.dark .track-instruction { color: #81C784; }
+html.dark .nearest-station-card { background: var(--card-bg); }
+html.dark .station-icon { background: rgba(46,125,50,0.15); }
+html.dark .bus-location-card { background: var(--card-bg); }
+html.dark .bus-icon { background: rgba(255,111,0,0.15); }
+html.dark .success-icon { background: rgba(46,125,50,0.15); }
+html.dark .stop-item:hover { background: rgba(46,125,50,0.1); }
+html.dark .action-btn:hover { background: rgba(46,125,50,0.1); }
+html.dark .coordinates-section { background: linear-gradient(135deg, rgba(123,31,162,0.1) 0%, rgba(103,58,183,0.08) 100%); }
+html.dark .coordinate-item { background: var(--card-bg); }
+html.dark .coord-icon { background: rgba(123,31,162,0.15); }
+html.dark .coord-coords code { background: var(--bg-tertiary); }
+html.dark .remove-coord-btn { background: rgba(211,47,47,0.1); }
+html.dark .remove-coord-btn:hover { background: rgba(211,47,47,0.2); }
+html.dark .tab-btn.active { background: var(--green); border-color: var(--green); }
+html.dark .btn-primary { background: var(--green); }
+html.dark .btn-primary:hover { background: #16a34a; }
+html.dark .track-location-btn { background: var(--green); }
+html.dark .track-location-btn:hover { background: #16a34a; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+html.dark .spinner { border-top-color: var(--green); }
+html.dark .info-icon { color: var(--green); }
 </style>

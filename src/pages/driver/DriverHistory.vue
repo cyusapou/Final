@@ -1,12 +1,12 @@
 <template>
-  <div class="page bg-white dark:bg-neutral-900 transition-colors">
+  <div class="page bg-white dark:bg-neutral-950 transition-colors">
     <div class="page-header">
-      <h1>📑 Trip History</h1>
+      <h1><i class="fas fa-file-alt"></i> Trip History</h1>
       <p class="subtitle">View all your completed trips</p>
     </div>
 
     <div class="card">
-      <h3>📃 Recent Trips</h3>
+      <h3><i class="fas fa-file-alt"></i> Recent Trips</h3>
       <table class="data-table">
         <thead>
           <tr>
@@ -26,7 +26,7 @@
             <td>45</td>
             <td>145 km</td>
             <td>KES 2,100</td>
-            <td>⭐⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td><span class="badge">Completed</span></td>
           </tr>
           <tr>
@@ -35,7 +35,7 @@
             <td>48</td>
             <td>145 km</td>
             <td>KES 2,150</td>
-            <td>⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td><span class="badge">Completed</span></td>
           </tr>
           <tr>
@@ -44,7 +44,7 @@
             <td>42</td>
             <td>245 km</td>
             <td>KES 2,950</td>
-            <td>⭐⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td><span class="badge">Completed</span></td>
           </tr>
           <tr>
@@ -53,7 +53,7 @@
             <td>50</td>
             <td>245 km</td>
             <td>KES 2,900</td>
-            <td>⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td><span class="badge">Completed</span></td>
           </tr>
           <tr>
@@ -62,7 +62,7 @@
             <td>38</td>
             <td>168 km</td>
             <td>KES 1,890</td>
-            <td>⭐⭐⭐⭐⭐</td>
+            <td><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></td>
             <td><span class="badge">Completed</span></td>
           </tr>
         </tbody>
